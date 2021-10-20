@@ -1,4 +1,4 @@
-# Your project name here
+# Lego: Set Checklist Creator
 
 ## Information about this repository
 
