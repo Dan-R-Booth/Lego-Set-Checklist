@@ -1,26 +1,184 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-11-25" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="2.8.11" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-11-05" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="3.1.3102" locale="en_GB">
     <description/>
-    <view zooming-state="default:2" id="gantt-chart">
+    <view zooming-state="default:1" id="gantt-chart">
         <field id="tpd3" name="Name" width="181" order="0"/>
         <field id="tpd4" name="Begin date" width="65" order="1"/>
         <field id="tpd5" name="End date" width="61" order="2"/>
         <option id="taskLabelRight" value="resources"/>
-        <option id="color.recent"><![CDATA[#0099ff #ff9900 #00ff00 #00cc33 #ff6600 #ff0000]]></option>
+        <option id="color.recent">
+            <![CDATA[#ff00cc #00ff00 #eeeeee #0099ff #ff9900 #00cc33 #ff6600 #ff0000]]>
+        </option>
     </view>
     <view id="resource-table">
         <field id="0" name="Name" width="210" order="0"/>
         <field id="1" name="Default role" width="86" order="1"/>
     </view>
     <!-- -->
-    <calendars>
+    <calendars base-id="uk.england">
         <day-types>
             <day-type id="0"/>
             <day-type id="1"/>
             <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
-            <only-show-weekends value="true"/>
+            <only-show-weekends value="false"/>
             <overriden-day-types/>
             <days/>
         </day-types>
+        <date year="" month="1" date="1" type="HOLIDAY" color="#ff00cc">
+            <![CDATA[New Year's Day]]>
+        </date>
+        <date year="" month="12" date="25" type="HOLIDAY" color="#ff00cc">
+            <![CDATA[Christmas Day]]>
+        </date>
+        <date year="" month="12" date="26" type="HOLIDAY" color="#ff00cc">
+            <![CDATA[Boxing Day]]>
+        </date>
+        <date year="" month="4" date="23" type="NEUTRAL">
+            <![CDATA[St Georges Day]]>
+        </date>
+        <date year="" month="11" date="5" type="NEUTRAL">
+            <![CDATA[Guy Fawkes Night]]>
+        </date>
+        <date year="" month="12" date="24" type="HOLIDAY" color="#ff00cc">
+            <![CDATA[Christmas Eve]]>
+        </date>
+        <date year="" month="12" date="31" type="HOLIDAY" color="#ff00cc">
+            <![CDATA[New Year's Eve]]>
+        </date>
+        <date year="2015" month="12" date="28" type="HOLIDAY">
+            <![CDATA[Boxing Day (in lieu)]]>
+        </date>
+        <date year="2015" month="4" date="3" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2015" month="4" date="6" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2015" month="5" date="4" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2015" month="5" date="25" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2016" month="3" date="25" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2016" month="5" date="2" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2016" month="5" date="30" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2017" month="1" date="2" type="HOLIDAY">
+            <![CDATA[New Year's Day (in lieu)]]>
+        </date>
+        <date year="2017" month="4" date="14" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2017" month="5" date="1" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2017" month="5" date="29" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2018" month="3" date="30" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2018" month="5" date="7" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2018" month="5" date="28" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2019" month="4" date="19" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2019" month="5" date="6" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2019" month="5" date="27" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2020" month="4" date="10" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2020" month="5" date="8" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday (VE day)]]>
+        </date>
+        <date year="2020" month="5" date="25" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2021" month="4" date="2" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2021" month="5" date="3" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2021" month="5" date="31" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2015" month="8" date="31" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2016" month="3" date="28" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2016" month="8" date="29" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2017" month="4" date="17" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2017" month="8" date="28" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2018" month="4" date="2" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2018" month="8" date="27" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2019" month="4" date="22" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2019" month="8" date="26" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2020" month="4" date="13" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2020" month="8" date="31" type="HOLIDAY">
+            <![CDATA[Summer Bank Holiday]]>
+        </date>
+        <date year="2020" month="12" date="28" type="HOLIDAY">
+            <![CDATA[Boxing Day (in lieu)]]>
+        </date>
+        <date year="2021" month="4" date="5" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2021" month="8" date="30" type="HOLIDAY">
+            <![CDATA[Summer Bank Holiday]]>
+        </date>
+        <date year="2021" month="12" date="27" type="HOLIDAY">
+            <![CDATA[Christmas Day (in lieu)]]>
+        </date>
+        <date year="2021" month="12" date="28" type="HOLIDAY">
+            <![CDATA[Boxing Day (in lieu)]]>
+        </date>
+        <date year="2015" month="3" date="1" type="NEUTRAL">
+            <![CDATA[St Davids Day]]>
+        </date>
+        <date year="2018" month="3" date="1" type="NEUTRAL">
+            <![CDATA[St Davids Day]]>
+        </date>
+        <date year="2019" month="3" date="1" type="NEUTRAL">
+            <![CDATA[St Davids Day]]>
+        </date>
+        <date year="2020" month="3" date="1" type="NEUTRAL">
+            <![CDATA[St Davids Day]]>
+        </date>
+        <date year="2021" month="3" date="1" type="NEUTRAL">
+            <![CDATA[St Davids Day]]>
+        </date>
     </calendars>
     <tasks empty-milestones="true">
         <taskproperties>
@@ -37,34 +195,37 @@
         </taskproperties>
         <task id="58" name="Create list of possible features" color="#8cb6ce" meeting="false" start="2021-10-08" duration="14" complete="0" thirdDate="2021-10-21" thirdDate-constraint="0" expand="true"/>
         <task id="60" name="Create basic project timeline" color="#8cb6ce" meeting="false" start="2021-10-08" duration="14" complete="0" thirdDate="2021-10-21" thirdDate-constraint="0" expand="true"/>
-        <task id="104" name="Research" meeting="false" start="2021-10-22" duration="22" complete="0" expand="true">
-            <task id="100" name="Read API Documentation" color="#00ff00" meeting="false" start="2021-10-22" duration="1" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true">
-                <depend id="106" type="2" difference="0" hardness="Strong"/>
+        <task id="104" name="Research" meeting="false" start="2021-10-22" duration="15" complete="0" expand="true">
+            <task id="100" name="Read API Documentation and Test Features" color="#00ff00" meeting="false" start="2021-10-22" duration="1" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
+            <task id="287" name="Preliminary Research on Simular Projects" color="#00ff00" meeting="false" start="2021-10-25" duration="2" complete="0" thirdDate="2021-10-18" thirdDate-constraint="0" expand="true">
+                <depend id="124" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="106" name="Test basic API connections" color="#00ff00" meeting="false" start="2021-10-23" duration="1" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
-            <task id="147" name="Feature Questionaire" color="#00cc33" meeting="false" start="2021-10-24" duration="9" complete="0" thirdDate="2021-10-28" thirdDate-constraint="0" expand="true">
+            <task id="147" name="Feature Questionaire" color="#00cc33" meeting="false" start="2021-10-27" duration="9" complete="0" thirdDate="2021-10-28" thirdDate-constraint="0" expand="true">
                 <depend id="131" type="2" difference="0" hardness="Strong"/>
-                <task id="124" name="Design Feature Questionaire" color="#00ff00" meeting="false" start="2021-10-24" duration="1" complete="0" thirdDate="2021-10-30" thirdDate-constraint="0" expand="true">
+                <task id="124" name="Design and Create Feature Questionaire" color="#00ff00" meeting="false" start="2021-10-27" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
                     <depend id="125" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="125" name="Create and Send off Questionaire" color="#00ff00" meeting="false" start="2021-10-25" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
+                <task id="125" name="Send off Questionaire for Feedback" color="#00ff00" meeting="false" start="2021-10-28" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
+                    <depend id="295" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="295" name="Ethics for Question" color="#00ff00" meeting="false" start="2021-10-29" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
                     <depend id="172" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="172" name="Wait for Results" color="#00ff00" meeting="false" start="2021-10-26" duration="6" complete="0" thirdDate="2021-10-31" thirdDate-constraint="0" expand="true">
+                <task id="172" name="Send off and Wait for Results" color="#00ff00" meeting="false" start="2021-11-01" duration="5" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
                     <depend id="145" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="145" name="Analysis Questionaire Results and Decide Features" color="#00ff00" meeting="false" start="2021-11-01" duration="1" complete="0" thirdDate="2021-10-30" thirdDate-constraint="0" expand="true"/>
+                <task id="145" name="Analysis Questionaire Results and Decide Features" color="#00ff00" meeting="false" start="2021-11-08" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="111" name="Read Research Papers for simular projects" color="#00ff00" meeting="false" start="2021-10-26" duration="5" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
-            <task id="131" name="Read Research Papers for information to help develop features" color="#00ff00" meeting="false" start="2021-11-02" duration="6" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
-            <task id="242" name="UI Research" color="#00ff00" meeting="false" start="2021-11-08" duration="5" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true"/>
+            <task id="111" name="Further Research on Simular Projects" color="#00ff00" meeting="false" start="2021-10-28" duration="3" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
+            <task id="131" name="Preliminary Research Papers for information to help develop features" color="#00ff00" meeting="false" start="2021-11-09" duration="3" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
+            <task id="242" name="Preliminary UI Research" color="#00ff00" meeting="false" start="2021-11-03" duration="3" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="194" name="Refine Project Timeline" color="#8cb6ce" meeting="false" start="2021-10-31" duration="1" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true"/>
-        <task id="0" name="Interim Report Write-up" color="#ff6600" meeting="false" start="2021-11-13" duration="10" complete="0" thirdDate="2021-11-25" thirdDate-constraint="0" expand="true">
-            <task id="29" name="Aims and Objectives" color="#ff9900" meeting="false" start="2021-11-13" duration="1" complete="0" thirdDate="2021-11-15" thirdDate-constraint="0" expand="true">
+        <task id="194" name="Refine Project Timeline" color="#8cb6ce" meeting="false" start="2021-11-02" duration="1" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true"/>
+        <task id="0" name="Interim Report Write-up" color="#ff6600" meeting="false" start="2021-11-12" duration="8" complete="0" thirdDate="2021-11-25" thirdDate-constraint="0" expand="true">
+            <task id="29" name="Aims and Objectives" color="#ff9900" meeting="false" start="2021-11-12" duration="1" complete="0" thirdDate="2021-11-15" thirdDate-constraint="0" expand="true">
                 <depend id="30" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="30" name="Research Summary" color="#ff9900" meeting="false" start="2021-11-14" duration="3" complete="0" thirdDate="2021-11-15" thirdDate-constraint="0" expand="true">
+            <task id="30" name="Research Summary and Refereneces" color="#ff9900" meeting="false" start="2021-11-15" duration="2" complete="0" thirdDate="2021-11-15" thirdDate-constraint="0" expand="true">
                 <depend id="66" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="66" name="Requirements" color="#ff9900" meeting="false" start="2021-11-17" duration="1" complete="0" thirdDate="2021-10-14" thirdDate-constraint="0" expand="true">
@@ -73,17 +234,17 @@
             <task id="72" name="Outline of Specification and Design" color="#ff9900" meeting="false" start="2021-11-18" duration="1" complete="0" thirdDate="2021-11-16" thirdDate-constraint="0" expand="true">
                 <depend id="78" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="78" name="Planning and Timescales" color="#ff9900" meeting="false" start="2021-11-19" duration="2" complete="0" thirdDate="2021-11-06" thirdDate-constraint="0" expand="true">
-                <depend id="82" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="82" name="Add References" color="#ff9900" meeting="false" start="2021-11-21" duration="1" complete="0" thirdDate="2021-11-06" thirdDate-constraint="0" expand="true">
+            <task id="78" name="Planning and Timescales" color="#ff9900" meeting="false" start="2021-11-19" duration="2" complete="0" thirdDate="2021-11-08" thirdDate-constraint="0" expand="true">
                 <depend id="97" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="97" name="Proof Read and Fix mistakes" color="#ff9900" meeting="false" start="2021-11-22" duration="1" complete="0" thirdDate="2021-11-06" thirdDate-constraint="0" expand="true"/>
+            <task id="97" name="Proof Read and Fix mistakes" color="#ff9900" meeting="false" start="2021-11-23" duration="1" complete="0" thirdDate="2021-11-08" thirdDate-constraint="0" expand="true"/>
         </task>
         <task id="21" name="Interim Report Deadline" color="#ff0000" meeting="true" start="2021-11-25" duration="0" complete="0" thirdDate="2021-11-25" thirdDate-constraint="0" expand="true"/>
-        <task id="243" name="Design UI for website and Mobile App" color="#0099ff" meeting="false" start="2021-11-25" duration="7" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true"/>
-        <task id="246" name="Basic website to link to API and reurn data" color="#8cb6ce" meeting="false" start="2021-12-02" duration="3" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true"/>
+        <task id="314" name="Further Research to help develop features" color="#00ff00" meeting="false" start="2021-11-25" duration="2" complete="0" thirdDate="2021-11-09" thirdDate-constraint="0" expand="true"/>
+        <task id="243" name="Design UI for website and Mobile App" color="#0099ff" meeting="false" start="2021-11-29" duration="3" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true">
+            <depend id="246" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="246" name="Basic website to link to API and reurn data" color="#8cb6ce" meeting="false" start="2021-12-02" duration="4" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true"/>
         <task id="1" name="Interview" color="#ff0000" meeting="false" start="2022-02-21" duration="5" complete="0" thirdDate="2022-02-21" thirdDate-constraint="0" priority="2" expand="true"/>
         <task id="121" name="Dissertation Write-up" color="#8cb6ce" meeting="false" start="2022-04-18" duration="17" complete="0" thirdDate="2022-04-18" thirdDate-constraint="0" expand="true"/>
         <task id="3" name="Dissertation Deadline" color="#ff0000" meeting="true" start="2022-05-05" duration="0" complete="0" thirdDate="2021-10-11" thirdDate-constraint="0" expand="true"/>
