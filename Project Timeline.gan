@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-10-27" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="3.1.3102" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-10-30" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="3.1.3102" locale="en_GB">
     <description/>
     <view zooming-state="default:1" id="gantt-chart">
         <field id="tpd3" name="Name" width="181" order="0"/>
@@ -211,10 +211,13 @@
                 <task id="316" name="Wait for Response" color="#00ff00" meeting="false" start="2021-10-29" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
                     <depend id="295" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="295" name="Ethics for Question" color="#00ff00" meeting="false" start="2021-11-01" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
+                <task id="295" name="Ethics Consent for Question" color="#00ff00" meeting="false" start="2021-11-01" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
+                    <depend id="328" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="328" name="Get further feedback and make nessasary adjustments" color="#00ff00" meeting="false" start="2021-11-02" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
                     <depend id="172" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="172" name="Send off and Wait for Results" color="#00ff00" meeting="false" start="2021-11-02" duration="4" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
+                <task id="172" name="Send off and Wait for Results (let run over weekend)" color="#00ff00" meeting="false" start="2021-11-03" duration="3" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
                     <depend id="145" type="2" difference="0" hardness="Strong"/>
                 </task>
                 <task id="145" name="Analysis Questionaire Results and Decide Features" color="#00ff00" meeting="false" start="2021-11-08" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true"/>
