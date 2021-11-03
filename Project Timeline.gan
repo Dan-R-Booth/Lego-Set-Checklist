@@ -195,12 +195,12 @@
         </taskproperties>
         <task id="58" name="Create list of possible features" color="#8cb6ce" meeting="false" start="2021-10-08" duration="10" complete="0" thirdDate="2021-10-21" thirdDate-constraint="0" expand="true"/>
         <task id="60" name="Create basic project timeline" color="#8cb6ce" meeting="false" start="2021-10-08" duration="10" complete="0" thirdDate="2021-10-21" thirdDate-constraint="0" expand="true"/>
-        <task id="104" name="Research" meeting="false" start="2021-10-22" duration="15" complete="0" expand="true">
+        <task id="104" name="Research" meeting="false" start="2021-10-22" duration="16" complete="0" expand="true">
             <task id="100" name="Read API Documentation and Test Features" color="#00ff00" meeting="false" start="2021-10-22" duration="1" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
             <task id="287" name="Preliminary Research on Simular Projects" color="#00ff00" meeting="false" start="2021-10-25" duration="2" complete="0" thirdDate="2021-10-18" thirdDate-constraint="0" expand="true">
                 <depend id="124" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="147" name="Feature Questionaire" color="#00cc33" meeting="false" start="2021-10-27" duration="9" complete="0" thirdDate="2021-10-28" thirdDate-constraint="0" expand="true">
+            <task id="147" name="Feature Questionaire" color="#00cc33" meeting="false" start="2021-10-27" duration="10" complete="0" thirdDate="2021-10-28" thirdDate-constraint="0" expand="true">
                 <depend id="131" type="2" difference="0" hardness="Strong"/>
                 <task id="124" name="Design and Create Feature Questionaire" color="#00ff00" meeting="false" start="2021-10-27" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
                     <depend id="125" type="2" difference="0" hardness="Strong"/>
@@ -214,16 +214,16 @@
                 <task id="295" name="Ethics Consent for Question" color="#00ff00" meeting="false" start="2021-11-01" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
                     <depend id="328" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="328" name="Get further feedback and make nessasary adjustments" color="#00ff00" meeting="false" start="2021-11-02" duration="1" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
+                <task id="328" name="Get further feedback and make nessasary adjustments" color="#00ff00" meeting="false" start="2021-11-02" duration="2" complete="0" thirdDate="2021-10-29" thirdDate-constraint="0" expand="true">
                     <depend id="172" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="172" name="Send off and Wait for Results (let run over weekend)" color="#00ff00" meeting="false" start="2021-11-03" duration="3" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
+                <task id="172" name="Send off and Wait for Results (let run over weekend)" color="#00ff00" meeting="false" start="2021-11-04" duration="3" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
                     <depend id="145" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="145" name="Analysis Questionaire Results and Decide Features" color="#00ff00" meeting="false" start="2021-11-08" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true"/>
+                <task id="145" name="Analysis Questionaire Results and Decide Features" color="#00ff00" meeting="false" start="2021-11-09" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true"/>
             </task>
             <task id="111" name="Further Research on Simular Projects" color="#00ff00" meeting="false" start="2021-10-28" duration="3" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
-            <task id="131" name="Preliminary Research Papers for information to help develop features" color="#00ff00" meeting="false" start="2021-11-09" duration="3" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
+            <task id="131" name="Preliminary Research Papers for information to help develop features" color="#00ff00" meeting="false" start="2021-11-10" duration="3" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
             <task id="242" name="Preliminary UI Research" color="#00ff00" meeting="false" start="2021-11-03" duration="3" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true"/>
         </task>
         <task id="194" name="Refine Project Timeline" color="#8cb6ce" meeting="false" start="2021-11-02" duration="1" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true"/>
@@ -247,10 +247,10 @@
         </task>
         <task id="21" name="Interim Report Deadline" color="#ff0000" meeting="true" start="2021-11-25" duration="0" complete="0" thirdDate="2021-11-25" thirdDate-constraint="0" expand="true"/>
         <task id="314" name="Further Research to help develop features" color="#00ff00" meeting="false" start="2021-11-25" duration="2" complete="0" thirdDate="2021-11-09" thirdDate-constraint="0" expand="true"/>
-        <task id="243" name="Design UI for website and Mobile App" color="#0099ff" meeting="false" start="2021-11-29" duration="3" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true">
+        <task id="243" name="Design UI for website and/or Mobile App" color="#0099ff" meeting="false" start="2021-11-29" duration="3" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true">
             <depend id="246" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="246" name="Basic website to link to API and reurn data" color="#8cb6ce" meeting="false" start="2021-12-02" duration="4" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true"/>
+        <task id="246" name="Basic program to link to API and reurn data" color="#8cb6ce" meeting="false" start="2021-12-02" duration="3" complete="0" thirdDate="2021-11-18" thirdDate-constraint="0" expand="true"/>
         <task id="1" name="Interview" color="#ff0000" meeting="false" start="2022-02-21" duration="5" complete="0" thirdDate="2022-02-21" thirdDate-constraint="0" priority="2" expand="true"/>
         <task id="121" name="Dissertation Write-up" color="#8cb6ce" meeting="false" start="2022-04-18" duration="17" complete="0" thirdDate="2022-04-18" thirdDate-constraint="0" expand="true"/>
         <task id="3" name="Dissertation Deadline" color="#ff0000" meeting="true" start="2022-05-05" duration="0" complete="0" thirdDate="2021-10-11" thirdDate-constraint="0" expand="true"/>
