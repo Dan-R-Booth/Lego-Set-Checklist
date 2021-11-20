@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-10-28" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="3.1.3103" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-11-17" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="3.1.3103" locale="en_GB">
     <description/>
     <view zooming-state="default:1" id="gantt-chart">
         <field id="tpd3" name="Name" width="181" order="0"/>
@@ -233,10 +233,10 @@
             <task id="66" name="Requirements" color="#ff9900" meeting="false" start="2021-11-18" duration="1" complete="0" thirdDate="2021-10-14" thirdDate-constraint="0" expand="true">
                 <depend id="72" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="72" name="Outline of Specification and Design" color="#ff9900" meeting="false" start="2021-11-19" duration="1" complete="0" thirdDate="2021-11-16" thirdDate-constraint="0" expand="true">
+            <task id="72" name="Outline of Specification and Design" color="#ff9900" meeting="false" start="2021-11-19" duration="2" complete="0" thirdDate="2021-11-16" thirdDate-constraint="0" expand="true">
                 <depend id="78" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="78" name="Planning and Timescales" color="#ff9900" meeting="false" start="2021-11-22" duration="2" complete="0" thirdDate="2021-11-08" thirdDate-constraint="0" expand="true">
+            <task id="78" name="Planning and Timescales" color="#ff9900" meeting="false" start="2021-11-23" duration="1" complete="0" thirdDate="2021-11-08" thirdDate-constraint="0" expand="true">
                 <depend id="97" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="97" name="Proof Read and Fix mistakes" color="#ff9900" meeting="false" start="2021-11-24" duration="1" complete="0" thirdDate="2021-11-08" thirdDate-constraint="0" expand="true"/>
