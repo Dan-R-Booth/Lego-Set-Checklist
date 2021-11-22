@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-11-17" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="3.1.3103" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-11-16" view-index="0" gantt-divider-location="311" resource-divider-location="300" version="3.1.3103" locale="en_GB">
     <description/>
     <view zooming-state="default:1" id="gantt-chart">
-        <field id="tpd3" name="Name" width="181" order="0"/>
-        <field id="tpd4" name="Begin date" width="65" order="1"/>
-        <field id="tpd5" name="End date" width="61" order="2"/>
-        <option id="taskLabelRight" value="resources"/>
+        <field id="tpd3" name="Name" width="171" order="0"/>
+        <field id="tpd4" name="Begin date" width="62" order="1"/>
+        <field id="tpd5" name="End date" width="59" order="2"/>
         <option id="color.recent">
             <![CDATA[#00ff00 #ff00cc #eeeeee #0099ff #ff9900 #00cc33 #ff6600 #ff0000]]>
         </option>
@@ -201,7 +200,6 @@
                 <depend id="124" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="147" name="Feature Questionaire" color="#00cc33" meeting="false" start="2021-10-27" duration="19" complete="0" thirdDate="2021-10-28" thirdDate-constraint="0" expand="true">
-                <depend id="131" type="2" difference="0" hardness="Strong"/>
                 <task id="124" name="Design and Create Feature Questionaire" color="#00ff00" meeting="false" start="2021-10-27" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true">
                     <depend id="125" type="2" difference="0" hardness="Strong"/>
                 </task>
@@ -217,8 +215,8 @@
                 <task id="145" name="Analysis Questionaire Results and Decide Features" color="#00ff00" meeting="false" start="2021-11-22" duration="1" complete="0" thirdDate="2021-11-01" thirdDate-constraint="0" expand="true"/>
             </task>
             <task id="111" name="Further Research on Simular Projects" color="#00ff00" meeting="false" start="2021-10-28" duration="3" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
-            <task id="131" name="Preliminary Research Papers for information to help develop features" color="#00ff00" meeting="false" start="2021-11-23" duration="5" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
-            <task id="242" name="Preliminary UI Research" color="#00ff00" meeting="false" start="2021-11-30" duration="3" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true">
+            <task id="131" name="Reasearch information to help develop features" color="#00ff00" meeting="false" start="2021-11-25" duration="3" complete="0" thirdDate="2021-10-12" thirdDate-constraint="0" expand="true"/>
+            <task id="242" name="UI Research" color="#00ff00" meeting="false" start="2021-11-30" duration="3" complete="0" thirdDate="2021-10-20" thirdDate-constraint="0" expand="true">
                 <depend id="243" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
