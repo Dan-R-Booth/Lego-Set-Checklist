@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2022-03-16" view-index="0" gantt-divider-location="560" resource-divider-location="300" version="3.1.3103" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2022-03-04" view-index="0" gantt-divider-location="576" resource-divider-location="300" version="3.1.3103" locale="en_GB">
     <description/>
     <view zooming-state="default:3" id="gantt-chart">
-        <field id="tpd3" name="Name" width="401" order="0"/>
-        <field id="tpd4" name="Begin date" width="70" order="1"/>
-        <field id="tpd5" name="End date" width="70" order="2"/>
+        <field id="tpd3" name="Name" width="422" order="0"/>
+        <field id="tpd4" name="Begin date" width="60" order="1"/>
+        <field id="tpd5" name="End date" width="75" order="2"/>
         <option id="taskLabelRight" value="resources"/>
         <timeline>
-            <![CDATA[3]]>
+            <![CDATA[3,579,575,573,588,584,586]]>
         </timeline>
         <option id="color.recent">
-            <![CDATA[#ff00cc #ff9900 #00ff00 #ff0000 #eeeeee #0099ff #00cc33 #ff6600]]>
+            <![CDATA[#0000ff #ff00cc #ff9900 #00ff00 #ff0000 #eeeeee #0099ff #00cc33 #ff6600]]>
         </option>
     </view>
     <view id="resource-table">
@@ -132,9 +132,10 @@
         <task id="338" name="Add feature to display all pieces in a Lego set with an image" color="#8cb6ce" meeting="false" start="2021-12-20" duration="3" complete="0" thirdDate="2021-11-29" thirdDate-constraint="0" expand="true">
             <depend id="371" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="371" name="Add Basic Check feature to list of pieces in a set" color="#8cb6ce" meeting="false" start="2021-12-23" duration="3" complete="0" thirdDate="2021-12-23" thirdDate-constraint="0" expand="true">
+        <task id="371" name="Implement Check feature to checklist of pieces in a set" color="#8cb6ce" meeting="false" start="2021-12-23" duration="3" complete="0" thirdDate="2021-12-23" thirdDate-constraint="0" expand="true">
             <depend id="373" type="2" difference="0" hardness="Strong"/>
         </task>
+        <task id="573" name="Deadline for simple search for a Lego Set and checking pieces off a checklist" color="#0000ff" meeting="true" start="2021-12-29" duration="0" complete="0" thirdDate="2022-03-10" thirdDate-constraint="0" expand="true"/>
         <task id="373" name="Add feature to save checklist progress to the current devices storage" color="#8cb6ce" meeting="false" start="2021-12-29" duration="3" complete="0" thirdDate="2021-12-29" thirdDate-constraint="0" expand="true">
             <depend id="375" type="2" difference="0" hardness="Strong"/>
         </task>
@@ -153,6 +154,7 @@
         <task id="430" name="Add search parameter to sort alphabetically by set name" color="#8cb6ce" meeting="false" start="2022-01-21" duration="1" complete="0" thirdDate="2022-01-03" thirdDate-constraint="0" expand="true">
             <depend id="411" type="2" difference="0" hardness="Strong"/>
         </task>
+        <task id="579" name="Deadline for all Key Features" color="#0000ff" meeting="true" start="2022-01-24" duration="0" complete="0" thirdDate="2022-01-24" thirdDate-constraint="0" expand="true"/>
         <task id="411" name="Implement feature to filter a checklist by piece colour" color="#8cb6ce" meeting="false" start="2022-01-24" duration="2" complete="0" thirdDate="2022-01-21" thirdDate-constraint="0" expand="true">
             <depend id="412" type="2" difference="0" hardness="Strong"/>
         </task>
@@ -165,6 +167,7 @@
         <task id="414" name="Implement new website UI to the current system" color="#8cb6ce" meeting="false" start="2022-02-07" duration="5" complete="0" thirdDate="2022-02-07" thirdDate-constraint="0" expand="true">
             <depend id="452" type="2" difference="0" hardness="Strong"/>
         </task>
+        <task id="575" name="Website UI designed and implemented Deadline" color="#0000ff" meeting="true" start="2022-02-14" duration="0" complete="0" thirdDate="2022-01-10" thirdDate-constraint="0" expand="true"/>
         <task id="452" name="Prepare for Interview" color="#ff00cc" meeting="false" start="2022-02-14" duration="4" complete="0" thirdDate="2022-01-27" thirdDate-constraint="0" expand="true">
             <depend id="501" type="2" difference="0" hardness="Strong"/>
         </task>
@@ -186,6 +189,7 @@
         <task id="456" name="Implement 'Sets Owned List' feature" color="#8cb6ce" meeting="false" start="2022-03-04" duration="3" complete="0" thirdDate="2022-03-04" thirdDate-constraint="0" expand="true">
             <depend id="457" type="2" difference="0" hardness="Strong"/>
         </task>
+        <task id="588" name="Deadline for all Nice to have Features" color="#0000ff" meeting="true" start="2022-03-09" duration="0" complete="0" thirdDate="2022-03-04" thirdDate-constraint="0" expand="true"/>
         <task id="457" name="Implement feature to save checklists in progress to database" color="#8cb6ce" meeting="false" start="2022-03-09" duration="3" complete="0" thirdDate="2022-03-09" thirdDate-constraint="0" expand="true">
             <depend id="458" type="2" difference="0" hardness="Strong"/>
         </task>
@@ -198,7 +202,9 @@
         <task id="540" name="Design and Implement any other optional features that have not yet been completed" color="#8cb6ce" meeting="false" start="2022-03-22" duration="9" complete="0" thirdDate="2022-03-22" thirdDate-constraint="0" expand="true">
             <depend id="571" type="2" difference="0" hardness="Strong"/>
         </task>
+        <task id="584" name="Deadline for feature development" color="#0000ff" meeting="true" start="2022-04-04" duration="0" complete="0" thirdDate="2022-03-04" thirdDate-constraint="0" expand="true"/>
         <task id="571" name="Design and run software tests on the system, fixing any bugs found" color="#8cb6ce" meeting="false" start="2022-04-04" duration="5" complete="0" thirdDate="2022-04-04" thirdDate-constraint="0" expand="true"/>
+        <task id="586" name="Deadline for Software Testing" color="#0000ff" meeting="true" start="2022-04-11" duration="0" complete="0" thirdDate="2022-03-04" thirdDate-constraint="0" expand="true"/>
         <task id="363" name="End of Semester 1" color="#ff0000" meeting="true" start="2022-01-14" duration="0" complete="0" thirdDate="2021-12-07" thirdDate-constraint="0" expand="true"/>
         <task id="365" name="Start of Semester 2" color="#ff0000" meeting="true" start="2022-01-17" duration="0" complete="0" thirdDate="2021-12-09" thirdDate-constraint="0" expand="true"/>
         <task id="1" name="Interview" color="#ff0000" meeting="false" start="2022-02-21" duration="5" complete="0" thirdDate="2022-02-21" thirdDate-constraint="0" priority="2" expand="true"/>
