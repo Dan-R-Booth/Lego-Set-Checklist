@@ -1,7 +1,5 @@
-# Hide folders not needed to be uploaded from Spring Tools Suite
+# Hide the metadata used for STS config
 Program/.metadata/
-Program/LegoSetCheckList/.gradle
-Program/LegoSetCheckList/build
 
 # Hide files that only exist when word document is open
 Documents/~$*.docx
