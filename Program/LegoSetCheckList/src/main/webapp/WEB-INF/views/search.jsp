@@ -1,19 +1,15 @@
-<%-- Provides JSP tag library for the form --%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8">
+		<meta charset="UTF-8" content="text/html; charset=UTF-8">
 	</head>
 	<body>
-		<h2>Search:</h2>
+		<!-- This creates a textbox where users can enter a Lego set number and a button to search for the Lego set -->
+		<form action="/set">
+			<label>Set Number:</label>
+			<input name="set_number" type="text"/>
 		
-		<form:form action="/showSet" method="POST">
-			<form:label path="number">Set Number:</form:label>
-			<form:input path="number"/>
-			
-			<input type="submit"/>
-		</form:form>
+			<input type="submit" value="Find"/>
+		</form>
 	</body>
 </html>

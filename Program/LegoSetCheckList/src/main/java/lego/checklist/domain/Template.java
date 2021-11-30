@@ -2,23 +2,27 @@ package lego.checklist.domain;
 
 abstract class Template {
 	
-	private int num;
+	private String num;
+	
 	private String name;
+	
 	private String img_url;
 	
-	public Template(int num, String name, String img_url) {
+	public Template(String num, String name, String img_url) {
 		this.num = num;
 		this.name = name;
 		this.img_url = img_url;
 	}
 	
-	protected int getNum() {
+	public String getNum() {
 		return num;
 	}
-	protected String getName() {
+	
+	public String getName() {
 		return name;
 	}
-	protected String getImg_url() {
+	
+	public String getImg_url() {
 		return img_url;
 	}
 }

@@ -9,5 +9,4 @@ public class LegoSetCheckListApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LegoSetCheckListApplication.class, args);
 	}
-
 }

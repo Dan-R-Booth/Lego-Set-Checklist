@@ -1,15 +1,16 @@
 package lego.checklist.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Set extends Template {
 	
 	private int year;
+	
 	private String theme;
+	
 	private int num_pieces;
 	
-	public Set(int num, String name, String img_url, int year, String theme, int num_pieces) {
+	private Piece_list set_pieces;
+	
+	public Set(String num, String name, int year, String theme, int num_pieces, String img_url) {
 		super(num, name, img_url);
 		
 		this.year = year;
@@ -17,13 +18,19 @@ public class Set extends Template {
 		this.num_pieces = num_pieces;
 	}
 	
-	private int getYear() {
+	public int getYear() {
 		return year;
 	}
-	private String getTheme() {
+	
+	public String getTheme() {
 		return theme;
 	}
-	private int getNum_pieces() {
+	
+	public int getNum_pieces() {
 		return num_pieces;
+	}
+	
+	public Piece_list getSet_pieces() {
+		return set_pieces;
 	}
 }
