@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import lego.checklist.domain.Set;
 
 @Controller
-public class SearchController {
+public class SetController {
 	
 	// This stores the basic uri to the Rebrickable API
 	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
