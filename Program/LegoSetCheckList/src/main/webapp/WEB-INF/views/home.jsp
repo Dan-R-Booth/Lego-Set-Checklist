@@ -4,8 +4,6 @@
 		<meta charset="UTF-8" content="text/html; charset=UTF-8">
 	</head>
 	<body>
-		<form action="/search">		
-			<input type="submit" value="Search"/>
-		</form>
+		<a href="/search">Search</a>
 	</body>
 </html>

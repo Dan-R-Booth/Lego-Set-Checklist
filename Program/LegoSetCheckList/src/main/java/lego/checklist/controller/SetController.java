@@ -32,13 +32,12 @@ public class SetController {
 	}
 	
 	@GetMapping("/set")
-	public String showSet(Model model , @RequestParam String set_number, RestTemplate restTemplate) {
+	public String showSet(Model model , @RequestParam String set_number, String set_variant, RestTemplate restTemplate) {
 		
 		// As there are different versions of certain sets denoted by '-' and the version number,
 		// the standard for all sets is '-1', so if users don't enter a '-' and version it will automatically add this.
-		if (set_number.indexOf('-') == -1) {
-			set_number += "-1";
-		}
+		set_number += "-" + set_variant;
+//		set_number += "-1";
 		
 		// This is the uri to a specific set in the Rebrickable API
 		String set_uri = rebrickable_uri + "sets/" + set_number + "/?key=" + rebrickable_api_key;
@@ -106,18 +105,16 @@ public class SetController {
 		
 		String[] theme_info = theme_JSON.split(",");
 		
-		String theme_name = "";
+		// This adds the name of the theme to a string
+		String theme_name = theme_info[2].split(":")[1];
 		
 		String theme_parent_id = theme_info[1].split(":")[1];
 		
 		// Checks to see if the theme parent is null
-		// If it is null it returns the theme name
-		// If it is not null getTheme() recursively calls itself with the theme_parent_id until there are no more parents, and returns the theme
-		if (theme_parent_id.equals("null")) {
-			theme_name = theme_info[2].split(":")[1];
-		}
-		else {			
-			theme_name = getTheme(Integer.parseInt(theme_parent_id), restTemplate);
+		// If it is not null getTheme() recursively calls itself with the theme_parent_id until there are no more parents,
+		// and returns each of these parent theme names on to the end of the first theme name 
+		if (!theme_parent_id.equals("null")) {		
+			theme_name += ", " + getTheme(Integer.parseInt(theme_parent_id), restTemplate);
 		}
 		return theme_name;
 	}
