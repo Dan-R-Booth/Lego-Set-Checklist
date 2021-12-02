@@ -105,16 +105,18 @@ public class SetController {
 		
 		String[] theme_info = theme_JSON.split(",");
 		
-		// This adds the name of the theme to a string
-		String theme_name = theme_info[2].split(":")[1];
+		String theme_name = "";
 		
 		String theme_parent_id = theme_info[1].split(":")[1];
 		
 		// Checks to see if the theme parent is null
 		// If it is not null getTheme() recursively calls itself with the theme_parent_id until there are no more parents,
-		// and returns each of these parent theme names on to the end of the first theme name 
+		// and returns each of these parent theme names in front of their child theme name 
 		if (!theme_parent_id.equals("null")) {		
-			theme_name += ", " + getTheme(Integer.parseInt(theme_parent_id), restTemplate);
+			theme_name += getTheme(Integer.parseInt(theme_parent_id), restTemplate) + ", " + theme_info[2].split(":")[1];
+		}
+		else {
+			theme_name = theme_info[2].split(":")[1];
 		}
 		return theme_name;
 	}
