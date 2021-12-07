@@ -60,13 +60,15 @@ public class SetController {
 		int num_pieces = -1;
 		String img_url = "";
 		
-        
+        // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
         try {
-        	
+        	// This provides functionality for reading and writing JSON
         	ObjectMapper mapper = new ObjectMapper();
 			
+        	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
         	JsonNode setNode = mapper.readTree(set_JSON);
 			
+        	// These search search for a path on the setNode Tree and return the node that matches this
         	JsonNode numNode = setNode.path("set_num");
         	JsonNode nameNode = setNode.path("name");
         	JsonNode yearNode = setNode.path("year");
@@ -74,16 +76,18 @@ public class SetController {
         	JsonNode num_piecesNode = setNode.path("num_parts");
         	JsonNode img_urlNode = setNode.path("set_img_url");
         	
-        	
+        	// These return the data stored in the JsonNodes
         	num = numNode.textValue();
     		name = nameNode.textValue();
     		year = yearNode.intValue();
 			
+    		// This return the int stored in the JsonNode theme_idNode
         	int theme_id = theme_idNode.asInt();
         	// This calls the getTheme function to retrieve the theme name of a Lego set,
         	// which requires the theme_id to find this
         	theme_name = getTheme(theme_id, restTemplate);
         	
+        	// These return the data stored in JsonNodes
         	num_pieces = num_piecesNode.intValue();
         	img_url = img_urlNode.textValue();
         	
@@ -103,7 +107,7 @@ public class SetController {
 	public String getTheme(int theme_id, RestTemplate restTemplate) {
         String theme_name = "";
 		
-		// 
+        // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
 		try {
 			// This is the uri to a specific theme in the Rebrickable API
 			String theme_uri = rebrickable_uri + "themes/" + theme_id + "/?key=" + rebrickable_api_key;
@@ -111,11 +115,13 @@ public class SetController {
 			// The rest template is used to fetch the Lego set every time the website is loaded
 			String theme_JSON = restTemplate.getForObject(theme_uri, String.class);
 			
-			
+			// This provides functionality for reading and writing JSON
 			ObjectMapper mapper = new ObjectMapper();
 	        
-	        
+			// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
 	        JsonNode themeNode = mapper.readTree(theme_JSON);
+	        
+	        // These search search for a path on the setNode Tree and return the node that matches this
 	        JsonNode theme_nameNode = themeNode.path("name");
 	        JsonNode theme_parent_idNode = themeNode.path("parent_id");
 
@@ -128,6 +134,7 @@ public class SetController {
 				theme_name += getTheme(theme_parent_id, restTemplate) + ", " +  theme_nameNode.textValue();
 			}
 			else {
+				// This return the data stored in the JsonNode theme_nameNode
 				theme_name = theme_nameNode.textValue();
 			}
 			
