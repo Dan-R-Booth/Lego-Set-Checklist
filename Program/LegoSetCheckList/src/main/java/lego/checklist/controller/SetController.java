@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lego.checklist.domain.Set;
 
 @Controller
@@ -21,6 +26,7 @@ public class SetController {
 	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 	
 	// This creates a RestTemplate JavaBean used to transform a JSON file into a class
+	// I am using the 
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
@@ -35,22 +41,18 @@ public class SetController {
 	public String showSet(Model model , @RequestParam String set_number, String set_variant, RestTemplate restTemplate) {
 		
 		// As there are different versions of certain sets denoted by '-' and the version number,
-		// the standard for all sets is '-1', so if users don't enter a '-' and version it will automatically add this.
+		// the standard for all sets is '-1', so i added a second number box to show this with a
+		// default value of '1' and the numbers are then combined into a string with the dash in-between.
 		set_number += "-" + set_variant;
-//		set_number += "-1";
 		
 		// This is the uri to a specific set in the Rebrickable API
 		String set_uri = rebrickable_uri + "sets/" + set_number + "/?key=" + rebrickable_api_key;
 
-		// The rest template is used to fetch the Lego set every time the website is loaded
+		// The rest template created above is used to fetch the Lego set every time the website is loaded
+		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
 		String set_JSON = restTemplate.getForObject(set_uri, String.class);
 		
-		set_JSON = set_JSON.replace("\"", "");
-		set_JSON = set_JSON.replace("{", "");
-		set_JSON = set_JSON.replace("}", "");
-		
-		String[] set_info = set_JSON.split(",");
-		
+		// Sets default values in case the following try catch statement fails
 		String num = "";
 		String name = "";
 		int year = -1;
@@ -58,31 +60,37 @@ public class SetController {
 		int num_pieces = -1;
 		String img_url = "";
 		
-		
-		for (int i = 0; i < 8; i++) {
-			String value = set_info[i].split(":", 2)[1];
+        
+        try {
+        	
+        	ObjectMapper mapper = new ObjectMapper();
 			
-			switch (i) {
-			case 0:
-				num = value;
-				break;
-			case 1:
-				name = value;
-				break;
-			case 2:
-				year = Integer.parseInt(value);
-				break;
-			case 3:
-				int theme_id = Integer.parseInt(value);
-				theme_name = getTheme(theme_id, restTemplate);
-				break;
-			case 4:
-				num_pieces = Integer.parseInt(value);
-				break;
-			case 5:
-				img_url = value;
-				break;
-			}
+        	JsonNode setNode = mapper.readTree(set_JSON);
+			
+        	JsonNode numNode = setNode.path("set_num");
+        	JsonNode nameNode = setNode.path("name");
+        	JsonNode yearNode = setNode.path("year");
+        	JsonNode theme_idNode = setNode.path("theme_id");
+        	JsonNode num_piecesNode = setNode.path("num_parts");
+        	JsonNode img_urlNode = setNode.path("set_img_url");
+        	
+        	
+        	num = numNode.textValue();
+    		name = nameNode.textValue();
+    		year = yearNode.intValue();
+			
+        	int theme_id = theme_idNode.asInt();
+        	// This calls the getTheme function to retrieve the theme name of a Lego set,
+        	// which requires the theme_id to find this
+        	theme_name = getTheme(theme_id, restTemplate);
+        	
+        	num_pieces = num_piecesNode.intValue();
+        	img_url = img_urlNode.textValue();
+        	
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 		
 		Set set = new Set(num, name, year, theme_name, num_pieces, img_url);
@@ -93,31 +101,44 @@ public class SetController {
 	
 	@GetMapping
 	public String getTheme(int theme_id, RestTemplate restTemplate) {
-		// This is the uri to a specific theme in the Rebrickable API
-		String theme_uri = rebrickable_uri + "themes/" + theme_id + "/?key=" + rebrickable_api_key;
+        String theme_name = "";
 		
-		// The rest template is used to fetch the Lego set every time the website is loaded
-		String theme_JSON = restTemplate.getForObject(theme_uri, String.class);
-		
-		theme_JSON = theme_JSON.replace("\"", "");
-		theme_JSON = theme_JSON.replace("{", "");
-		theme_JSON = theme_JSON.replace("}", "");
-		
-		String[] theme_info = theme_JSON.split(",");
-		
-		String theme_name = "";
-		
-		String theme_parent_id = theme_info[1].split(":")[1];
-		
-		// Checks to see if the theme parent is null
-		// If it is not null getTheme() recursively calls itself with the theme_parent_id until there are no more parents,
-		// and returns each of these parent theme names in front of their child theme name 
-		if (!theme_parent_id.equals("null")) {		
-			theme_name += getTheme(Integer.parseInt(theme_parent_id), restTemplate) + ", " + theme_info[2].split(":")[1];
+		// 
+		try {
+			// This is the uri to a specific theme in the Rebrickable API
+			String theme_uri = rebrickable_uri + "themes/" + theme_id + "/?key=" + rebrickable_api_key;
+			
+			// The rest template is used to fetch the Lego set every time the website is loaded
+			String theme_JSON = restTemplate.getForObject(theme_uri, String.class);
+			
+			
+			ObjectMapper mapper = new ObjectMapper();
+	        
+	        
+	        JsonNode themeNode = mapper.readTree(theme_JSON);
+	        JsonNode theme_nameNode = themeNode.path("name");
+	        JsonNode theme_parent_idNode = themeNode.path("parent_id");
+
+	        
+	        // Checks to see if the theme parent is null
+			// If it is not null getTheme() recursively calls itself with the theme_parent_id until there are no more parents,
+			// and returns each of these parent theme names in front of their child theme name 
+			if (!theme_parent_idNode.isNull()) {
+				int theme_parent_id = theme_parent_idNode.intValue();
+				theme_name += getTheme(theme_parent_id, restTemplate) + ", " +  theme_nameNode.textValue();
+			}
+			else {
+				theme_name = theme_nameNode.textValue();
+			}
+			
 		}
-		else {
-			theme_name = theme_info[2].split(":")[1];
+		catch (JsonMappingException e) {
+			e.printStackTrace();
 		}
+		catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
 		return theme_name;
 	}
 }
