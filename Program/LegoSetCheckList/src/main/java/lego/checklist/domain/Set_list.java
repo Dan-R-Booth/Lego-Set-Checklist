@@ -5,19 +5,19 @@ public class Set_list {
 	private String name;
 	private Set[] sets;
 	
-	private String getName() {
+	public String getName() {
 		return name;
 	}
 	
-	private Set[] getSets() {
+	public Set[] getSets() {
 		return sets;
 	}
 	
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 	
-	private void addList() {}
+	public void addList() {}
 	
-	private void removeList() {}
+	public void removeList() {}
 }

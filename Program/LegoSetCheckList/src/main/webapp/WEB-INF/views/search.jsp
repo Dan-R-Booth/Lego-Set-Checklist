@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" content="text/html; charset=UTF-8">
 	</head>
 	<body>
-		<!-- This creates a textbox where users can enter a Lego set number and a button to search for the Lego set -->
+		<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to search for the Lego set -->
 		<form action="/set">
 			<label>Set Number:</label>
 			<input name="set_number" type="number"/>

@@ -91,9 +91,11 @@ public class SetController {
         	num_pieces = num_piecesNode.intValue();
         	img_url = img_urlNode.textValue();
         	
-		} catch (JsonMappingException e) {
+		}
+        catch (JsonMappingException e) {
 			e.printStackTrace();
-		} catch (JsonProcessingException e) {
+		}
+        catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		

@@ -12,8 +12,6 @@
 			<br>
 			Set Name: ${set.name}
 			<br>
-			Set Image URL: ${set.img_url}
-			<br>
 			<!-- The style width sets the percentage size the image will be on any screen -->
 			<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 45%" class="m-2">
 			<br>
@@ -21,7 +19,9 @@
 			<br>
 			Theme: ${set.theme}
 			<br>
-			Number of pieces:   ${set.num_pieces}
+			Number of pieces: ${set.num_pieces}
+			<br>
+			<a href="/set/${set.num}/pieces">Pieces</a>
 		</p>
 			
 	</body>
