@@ -106,7 +106,7 @@ public class SetController {
 	}
 	
 	@GetMapping
-	public String getTheme(int theme_id, RestTemplate restTemplate) {
+	private String getTheme(int theme_id, RestTemplate restTemplate) {
         String theme_name = "";
 		
         // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
