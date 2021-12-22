@@ -17,7 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
 
-// external stuff used
+// RestTemplate is used to perform HTTP request to a uri
+// 
 @Controller
 public class PieceController {
 	// This stores the basic uri to the Rebrickable API
@@ -25,13 +26,6 @@ public class PieceController {
 		
 	// The api key used to access the Rebrickable api
 	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
-		
-		// This creates a RestTemplate JavaBean used to transform a JSON file into a class
-		// I am using the 
-//		@Bean
-//		public RestTemplate restTemplate(RestTemplateBuilder builder) {
-//			return builder.build();
-//		}
 		
 	@GetMapping("set/{set_number}/pieces")
 	public String showPieces(Model model , @PathVariable String set_number, RestTemplate restTemplate) {
