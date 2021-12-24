@@ -76,40 +76,36 @@ public class PieceController {
         	
         	// This iterates through the JSON array of Lego pieces
             for (JsonNode pieceNode : piece_listNode) {
-    	        	
-            	JsonNode spare_partNode = pieceNode.path("is_spare");
-    	        	
-            	// This removes any pieces that are classed as spare pieces for the Lego set and are therefore not needed to build it
-            	if (!spare_partNode.asBoolean()) {
             	
-    	        	// These search search for a path on the pieceNode Tree and return the node that matches this
-            		
-            		// As the piece number, name and img url are stored as an element of part, I first have to get the part node to retrieve these
-    	        	JsonNode partNode = pieceNode.path("part");
-    	        	JsonNode numNode = partNode.path("part_num");
-    	        	JsonNode nameNode = partNode.path("name");
-    	        	JsonNode img_urlNode = partNode.path("part_img_url");
-    	        	
-    	        	// As the colour name is stored as an element of color, I first have to get the color node to retrieve this
-    	        	JsonNode colourNode = pieceNode.path("color");
-    	        	JsonNode colour_nameNode = colourNode.path("name");
-    	        	
-    	        	JsonNode quantityNode = pieceNode.path("quantity");
-    	        	
-    	        	// These return the data stored in the JsonNodes
-    	        	String num = numNode.textValue();
-    	        	String name = nameNode.textValue();
-    	        	String img_url = img_urlNode.textValue();
-    	        	String colour_name = colour_nameNode.textValue();
-    	    		int quantity = quantityNode.intValue();
-    	        	
-    	        	// This is set to 0 as the user may not have checked any of these pieces yet
-    				int quantity_checked = 0;
-    				
-    				Piece piece = new Piece(num, name, img_url, colour_name, quantity, quantity_checked);
-    				
-    				pieces.add(piece);
-            	}
+	        	// These search search for a path on the pieceNode Tree and return the node that matches this
+        		
+        		// As the piece number, name and img url are stored as an element of part, I first have to get the part node to retrieve these
+	        	JsonNode partNode = pieceNode.path("part");
+	        	JsonNode numNode = partNode.path("part_num");
+	        	JsonNode nameNode = partNode.path("name");
+	        	JsonNode img_urlNode = partNode.path("part_img_url");
+	        	
+	        	// As the colour name is stored as an element of color, I first have to get the color node to retrieve this
+	        	JsonNode colourNode = pieceNode.path("color");
+	        	JsonNode colour_nameNode = colourNode.path("name");
+	        	
+	        	JsonNode quantityNode = pieceNode.path("quantity");
+	        	JsonNode spare_partNode = pieceNode.path("is_spare");
+	        	
+	        	// These return the data stored in the JsonNodes
+	        	String num = numNode.textValue();
+	        	String name = nameNode.textValue();
+	        	String img_url = img_urlNode.textValue();
+	        	String colour_name = colour_nameNode.textValue();
+	    		int quantity = quantityNode.intValue();
+	    		boolean spare = spare_partNode.asBoolean();
+	        	
+	        	// This is set to 0 as the user may not have checked any of these pieces yet
+				int quantity_checked = 0;
+				
+				Piece piece = new Piece(num, name, img_url, colour_name, quantity, quantity_checked, spare);
+				
+				pieces.add(piece);
         	}
     		
             // If their is another page of pieces that needed to be collected from the api here this page will be called recursively using this class

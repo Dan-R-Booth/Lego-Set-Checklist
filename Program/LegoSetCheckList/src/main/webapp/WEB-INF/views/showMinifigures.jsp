@@ -28,6 +28,9 @@
 				    <div class="col">
 				      Quantity Found:
 				    </div>
+				    <div class="col">
+				      Pieces:
+				    </div>
 				</div>
 		    </div>
 		
