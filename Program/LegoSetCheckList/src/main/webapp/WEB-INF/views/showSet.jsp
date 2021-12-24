@@ -22,6 +22,8 @@
 			Number of pieces: ${set.num_pieces}
 			<br>
 			<a href="/set/${set.num}/pieces">Pieces</a>
+			<br>
+			<a href="/set/${set.num}/minifigures">Minifigures</a>
 		</p>
 			
 	</body>

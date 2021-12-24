@@ -15,19 +15,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lego.checklist.domain.Set;
 
 // RestTemplate is used to perform HTTP request to a uri
-// "RestTemplate (Spring Framework 5.3.14 API)", Docs.spring.io, 2021. [Online].
-// Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
-
-
+/* Reference:
+ * "RestTemplate (Spring Framework 5.3.14 API)",
+ * Docs.spring.io, 2021. [Online].
+ * Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
+ */
+	 
+// The Jackson library is used for working with JSON
 
 @Controller
 public class SetController {
-	
-//	@Bean
-//	private RestTemplate restTemplate(RestTemplateBuilder builder) {
-//		return builder.build();
-//	}
-	
 	// This stores the basic uri to the Rebrickable API
 	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 	

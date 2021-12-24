@@ -14,16 +14,13 @@
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with column names -->
 				<div class="row align-items-center my-3">
 				    <div class="col">
-				        Piece Image:
+				        Minifigure Image:
 				    </div>
 				    <div class="col">
-				      Piece Number:
+				      Minifigure Number:
 				    </div>
 				    <div class="col">
-				      Piece Name:
-				    </div>
-				    <div class="col">
-				      Piece Colour:
+				      Minifigure Name:
 				    </div>
 				    <div class="col">
 				      Quantity:
@@ -35,33 +32,33 @@
 		    </div>
 		
 		<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
-		<c:forEach items="${piece_list.pieces}" var="piece">
+		<c:forEach items="${minifigures}" var="minifigure">
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div class="container-fluid border">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 				<div class="row align-items-center my-3">
 				    <div class="col">
 				        <!-- The style width sets the percentage size the image will be on any screen -->
-						<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%" class="m-2">
+						<img src="${minifigure.img_url}" alt="Image of the Lego Minifigure: ${minifigure.name}" style="width: 80%" class="m-2">
 				    </div>
 				    <div class="col">
-				    	${piece.num}
+				    	${minifigure.num}
 				    </div>
 				    <div class="col">
-				     	${piece.name}
+				    	${minifigure.name}
 				    </div>
 				    <div class="col">
-				    	${piece.colour_name}
-				    </div>
-				    <div class="col">
-				       ${piece.quantity}
+				      	${minifigure.quantity}
 				    </div>
 				    <div class="col">
 				    
 						<button type="button" class="btn btn-outline-primary btn-sm">-</button>
 						<!--  -->
-					    	<input name="piece_quantity_checked" type="number" value="${piece.quantity_checked}" min=0 max="${piece.quantity}" />
+					    	<input name="Minifigure_quantity_checked" type="number" value="${minifigure.quantity_checked}" min=0 max="${minifigure.quantity}" />
 					    <button type="button" class="btn btn-outline-primary btn-sm">+</button>
+				    </div>
+				    <div  class="col">
+				    	<a href="/set/${set_number}/minifigures/${minifigure.num}/pieces">Pieces</a>
 				    </div>
 				</div>
 		    </div>

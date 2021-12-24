@@ -52,4 +52,8 @@ public class Set {
 	public Piece_list getSet_pieces() {
 		return set_pieces;
 	}
+
+	public void setSet_pieces(Piece_list set_pieces) {
+		this.set_pieces = set_pieces;
+	}
 }

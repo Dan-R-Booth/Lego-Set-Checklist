@@ -17,15 +17,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
 
-// RestTemplate is used to perform HTTP request to a uri
+//RestTemplate is used to perform HTTP request to a uri
+/* Reference:
+* "RestTemplate (Spring Framework 5.3.14 API)",
+* Docs.spring.io, 2021. [Online].
+* Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
+*/
+
 // 
+
 @Controller
 public class PieceController {
 	// This stores the basic uri to the Rebrickable API
 	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 		
 	// The api key used to access the Rebrickable api
-	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
 	public String showPieces(Model model , @PathVariable String set_number, RestTemplate restTemplate) {
@@ -48,7 +55,7 @@ public class PieceController {
 	
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
 	// If there are other pages containg pieces on the api, this class will then be called recursively to get all of these pieces
-	private List<Piece> getPiece_ListPage(String piece_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+	public static List<Piece> getPiece_ListPage(String piece_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
 		// The rest template created above is used to fetch the Lego set every time the website is loaded
 		// and here it uses the Lego set piece uri to call the API and then transforms the returned JSON into a String
 		String piece_list_JSON = restTemplate.getForObject(piece_list_uri, String.class);
