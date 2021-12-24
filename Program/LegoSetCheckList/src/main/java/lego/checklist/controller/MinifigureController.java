@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,12 +41,12 @@ public class MinifigureController {
 		String minifigure_list_uri = rebrickable_uri + "sets/" + set_number + "/minifigs/?key=" + rebrickable_api_key;
 		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
-		List<Minifigure> minifigures =  new ArrayList<>();
+		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
+		List<Minifigure> minifigures = new ArrayList<>();
         	
 		// This calls the getMinifigurePieces class that gets all the pieces in the Lego Set
 		minifigures = getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
-    	
+		
 		model.addAttribute("set_number", set_number);
     	model.addAttribute("minifigures", minifigures);
 		return "showMinifigures";
@@ -101,17 +100,29 @@ public class MinifigureController {
             		String piece_list_uri = rebrickable_uri + "minifigs/" + num + "/parts/?key=" + rebrickable_api_key;
                 	
             		// This creates an array list to store all the Lego pieces needed to build a Lego set
-            		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
+            		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
             		List<Piece> pieces =  new ArrayList<>();
             		
-            		// This calls the getPiece_ListPage class that gets all the pieces in the Lego Set
-            		pieces = PieceController.getPiece_ListPage(piece_list_uri, pieces, restTemplate);
+            		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
+            		pieces = PieceController.getPiece_listPage(piece_list_uri, pieces, restTemplate);
+            		
+            		// This times all the pieces for a single minifigure so they are the total to make the total quantity of minifigures 
+            		for (Piece piece : pieces) {				
+        				int piece_quantity = piece.getQuantity();
+        				int newPiece_quantity = piece_quantity*quantity;
+        				piece.setQuantity(newPiece_quantity);
+        				
+        				if (quantity_checked > newPiece_quantity) {
+        					// Checks the pieces to match number of minifigures checked
+        					piece.setQuantity_checked(quantity_checked);
+        				}
+        			}
+            		
                 	
                 	// This adds all the pieces in the Lego Set into the piece list class 
                 	Piece_list piece_list = new Piece_list(pieces);
                 	
                 	Minifigure minifigure = new Minifigure(num, name, img_url, quantity, quantity_checked, piece_list);
-                	
     				
     				minifigures.add(minifigure);
             	}
@@ -138,26 +149,17 @@ public class MinifigureController {
 	}
 	
 	@GetMapping("set/{set_number}/minifigures/{minifigure_number}/pieces")
-	public String showMinifigurePieces(Model model, @PathVariable String minifigure_number, /*@ModelAttribute("minifigures.set_pieces") Piece_list piece_list,*/ RestTemplate restTemplate) {		
-		//
-//    	for (Minifigure minifigure : minifigures) {
-//    		if (minifigure.getNum().equals(minifigure_number)) {
-//    			// This adds all the pieces in the Lego Set into the piece list class 
-//    	    	Piece_list piece_list = minifigure.getSet_pieces();
-//    			model.addAttribute("piece_list", piece_list);
-//    		}
-//    	}
-//		model.addAttribute("piece_list", minifigure.getSet_pieces());
+	public String showMinifigurePieces(Model model, @PathVariable String minifigure_number, /*@ModelAttribute("minifigures.set_pieces") Piece_list piece_list,*/ RestTemplate restTemplate) {
     	
     	// This is the uri to the specific pieces in a set in the Rebrickable API
 		String piece_list_uri = rebrickable_uri + "minifigs/" + minifigure_number + "/parts/?key=" + rebrickable_api_key;
     	
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
+		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
 		List<Piece> pieces =  new ArrayList<>();
 		
-		// This calls the getPiece_ListPage class that gets all the pieces in the Lego Set
-		pieces = PieceController.getPiece_ListPage(piece_list_uri, pieces, restTemplate);
+		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
+		pieces = PieceController.getPiece_listPage(piece_list_uri, pieces, restTemplate);
 		// This adds all the pieces in the Lego Set into the piece list class 
     	Piece_list piece_list = new Piece_list(pieces);
     	

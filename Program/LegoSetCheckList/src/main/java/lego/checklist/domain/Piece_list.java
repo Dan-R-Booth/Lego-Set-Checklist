@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Piece_list {
 	
-//	private Piece[] pieces;
 	private List<Piece> pieces;
 	
 	public Piece_list(List<Piece> pieces) {
@@ -13,5 +12,9 @@ public class Piece_list {
 
 	public List<Piece> getPieces() {
 		return pieces;
+	}
+
+	public void setPieces(List<Piece> pieces) {
+		this.pieces = pieces;
 	}
 }

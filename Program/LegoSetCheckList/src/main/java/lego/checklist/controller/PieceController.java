@@ -41,31 +41,60 @@ public class PieceController {
 		String piece_list_uri = rebrickable_uri + "sets/" + set_number + "/parts/?key=" + rebrickable_api_key;
 		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
+		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
 		List<Piece> pieces =  new ArrayList<>();
 		
-		// This calls the getPiece_ListPage class that gets all the pieces in the Lego Set
-		pieces = getPiece_ListPage(piece_list_uri, pieces, restTemplate);
+		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
+		pieces = getPiece_listPage(piece_list_uri, pieces, restTemplate);
 		
 		// This is the uri to the specific pieces in a set in the Rebrickable API
 		String minifigure_list_uri = rebrickable_uri + "sets/" + set_number + "/minifigs/?key=" + rebrickable_api_key;
-				
+		
+		// This calls the getMinifigurePiece_list class that gets all the pieces for all the minifigures in the Lego Set
+		pieces = getMinifigurePiece_list(minifigure_list_uri, pieces, restTemplate);
+		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
-		List<Minifigure> minifigures =  new ArrayList<>();
+		List<String> pieces_added = new ArrayList<>();
 		
-		// This calls the getMinifigurePieces class that gets all the pieces in the Lego Set
-		minifigures = MinifigureController.getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
+		// This creates a new array list to store all the pieces needed to build a Lego set, without duplicates
+		List<Piece> updated_pieces = new ArrayList<>();
 		
-		for (Minifigure minifigure : minifigures) {
-			Piece_list minifigure_pieces = minifigure.getSet_pieces();
-			for (Piece piece : minifigure_pieces.getPieces()) {				
-				pieces.add(piece);
+		for (Piece piece : pieces) {
+			boolean removed = false;
+			
+			for (String remove_piece_num : pieces_added) {
+				if ((piece.getNum()).equals(remove_piece_num)) {
+					removed = true;
+				}
+			}
+			
+			if (removed == false) {
+
+				Piece updated_piece = piece;
+			
+				pieces_added.add(piece.getNum());
+	
+				int new_quantity = 0;
+				int new_quantity_checked = 0;
+				
+				for (Piece other_piece : pieces) {
+					// Checks if the pieces are the same using piece number
+					// and if they are adds the quantity and quantity_checked to the new quantity and new quantity checked
+					if ((updated_piece.getNum()).equals(other_piece.getNum())) {
+						new_quantity += other_piece.getQuantity();
+						new_quantity_checked += other_piece.getQuantity_checked();
+					}
+				}
+				// These add the total quantity of all minifigure pieces that are the same, and total of these found to the updated_piece
+				// This updated_piece is then added to the list of all pieces in the Lego Set
+				updated_piece.setQuantity(new_quantity);
+				updated_piece.setQuantity_checked(new_quantity_checked);
+				updated_pieces.add(updated_piece);
 			}
 		}
-    	
+		
 		// This adds all the pieces in the Lego Set into the piece list class 
-    	Piece_list piece_list = new Piece_list(pieces);
+    	Piece_list piece_list = new Piece_list(updated_pieces);
     	
     	model.addAttribute("piece_list", piece_list);
 		return "showPiece_list";
@@ -73,7 +102,7 @@ public class PieceController {
 	
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
 	// If there are other pages containg pieces on the api, this class will then be called recursively to get all of these pieces
-	public static List<Piece> getPiece_ListPage(String piece_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+	public static List<Piece> getPiece_listPage(String piece_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
 		// The rest template created above is used to fetch the Lego set every time the website is loaded
 		// and here it uses the Lego set piece uri to call the API and then transforms the returned JSON into a String
 		String piece_list_JSON = restTemplate.getForObject(piece_list_uri, String.class);
@@ -131,7 +160,7 @@ public class PieceController {
             if (next != null) {
             	System.out.println("if");
             	piece_list_uri = next + "&key=" + rebrickable_api_key;
-            	pieces = getPiece_ListPage(piece_list_uri, pieces, restTemplate);
+            	pieces = getPiece_listPage(piece_list_uri, pieces, restTemplate);
             }
 
 		}
@@ -143,6 +172,65 @@ public class PieceController {
 		}
 		
 		
+		return pieces;
+	}
+	
+	// 
+	public List<Piece> getMinifigurePiece_list(String minifigure_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+		// This creates an array list to store all the Lego pieces needed to build a Lego set
+		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
+		List<Minifigure> minifigures = new ArrayList<>();
+		
+		// This calls the getMinifigurePieces class that gets all the pieces in the Lego Set
+		minifigures = MinifigureController.getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
+		
+		// This creates an array list to store all the minfigure pieces needed to build all the minifigures in a Lego set
+		List<Piece> minifigure_pieces = new ArrayList<>();
+		
+		for (Minifigure minifigure : minifigures) {
+			Piece_list minifigure_piece_list = minifigure.getSet_pieces();
+			for (Piece piece : minifigure_piece_list.getPieces()) {
+				minifigure_pieces.add(piece);
+			}
+		}
+			
+		// This creates an array list to store all the Lego pieces needed to build a Lego set
+		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
+		List<String> minifigure_pieces_added = new ArrayList<>();
+		
+		for (Piece piece : minifigure_pieces) {
+			boolean removed = false;
+			
+			for (String remove_piece_num : minifigure_pieces_added) {
+				if ((piece.getNum()).equals(remove_piece_num)) {
+					removed = true;
+				}
+			}
+			
+			if (removed == false) {
+
+				Piece updated_piece = piece;
+			
+				minifigure_pieces_added.add(piece.getNum());
+	
+				int new_quantity = 0;
+				int new_quantity_checked = 0;
+				
+				for (Piece other_piece : minifigure_pieces) {
+					// Checks if the pieces are the same using piece number
+					// and if they are adds the quantity and quantity_checked to the new quantity and new quantity checked
+					if ((updated_piece.getNum()).equals(other_piece.getNum())) {
+						new_quantity += other_piece.getQuantity();
+						new_quantity_checked += other_piece.getQuantity_checked();
+					}
+				}
+				// These add the total quantity of all minifigure pieces that are the same, and total of these found to the updated_piece
+				// This updated_piece is then added to the list of all pieces in the Lego Set
+				updated_piece.setQuantity(new_quantity);
+				updated_piece.setQuantity_checked(new_quantity_checked);
+				pieces.add(updated_piece);
+			}
+		}
 		return pieces;
 	}
 }

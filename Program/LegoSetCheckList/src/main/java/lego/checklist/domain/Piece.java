@@ -48,6 +48,10 @@ public class Piece {
 		return spare;
 	}
 
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	
 	public void setQuantity_checked(int quantity_checked) {
 		this.quantity_checked = quantity_checked;
 	}
