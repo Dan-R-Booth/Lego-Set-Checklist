@@ -1,5 +1,7 @@
 package lego.checklist.domain;
 
+import java.util.List;
+
 public class Set {
 	
 	private String num;
@@ -15,6 +17,8 @@ public class Set {
 	private String img_url;
 	
 	private Piece_list set_pieces;
+	
+	private List<Minifigure> minifigures;
 	
 	public Set(String num, String name, int year, String theme, int num_pieces, String img_url) {
 		this.num = num;
@@ -53,7 +57,15 @@ public class Set {
 		return set_pieces;
 	}
 
+	public List<Minifigure> getMinifigures() {
+		return minifigures;
+	}
+
 	public void setSet_pieces(Piece_list set_pieces) {
 		this.set_pieces = set_pieces;
+	}
+	
+	public void setMinifigures(List<Minifigure> minifigures) {
+		this.minifigures = minifigures;
 	}
 }

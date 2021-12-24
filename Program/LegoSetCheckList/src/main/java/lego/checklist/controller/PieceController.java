@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
 
@@ -45,6 +46,23 @@ public class PieceController {
 		
 		// This calls the getPiece_ListPage class that gets all the pieces in the Lego Set
 		pieces = getPiece_ListPage(piece_list_uri, pieces, restTemplate);
+		
+		// This is the uri to the specific pieces in a set in the Rebrickable API
+		String minifigure_list_uri = rebrickable_uri + "sets/" + set_number + "/minifigs/?key=" + rebrickable_api_key;
+				
+		// This creates an array list to store all the Lego pieces needed to build a Lego set
+		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
+		List<Minifigure> minifigures =  new ArrayList<>();
+		
+		// This calls the getMinifigurePieces class that gets all the pieces in the Lego Set
+		minifigures = MinifigureController.getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
+		
+		for (Minifigure minifigure : minifigures) {
+			Piece_list minifigure_pieces = minifigure.getSet_pieces();
+			for (Piece piece : minifigure_pieces.getPieces()) {				
+				pieces.add(piece);
+			}
+		}
     	
 		// This adds all the pieces in the Lego Set into the piece list class 
     	Piece_list piece_list = new Piece_list(pieces);

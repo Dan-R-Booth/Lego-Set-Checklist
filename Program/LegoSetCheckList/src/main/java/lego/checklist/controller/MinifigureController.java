@@ -45,11 +45,8 @@ public class MinifigureController {
 		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
 		List<Minifigure> minifigures =  new ArrayList<>();
         	
-    	// This calls the getPiece_ListPage class that gets all the pieces in the Lego Set
+		// This calls the getMinifigurePieces class that gets all the pieces in the Lego Set
 		minifigures = getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
-    	
-    	// This adds all the pieces in the Lego Set into the piece list class 
-//        	Piece_list piece_list = new Piece_list(pieces);
     	
 		model.addAttribute("set_number", set_number);
     	model.addAttribute("minifigures", minifigures);
