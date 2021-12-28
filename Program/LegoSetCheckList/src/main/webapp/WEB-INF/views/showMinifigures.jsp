@@ -7,6 +7,8 @@
 		
 		<!--Bootstrap style sheet, used for page styling, as well as helping to resize page for different screen sizes -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	</head>
 	<body class="m-2">
 		<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
@@ -55,10 +57,10 @@
 				    </div>
 				    <div class="col">
 				    
-						<button type="button" class="btn btn-outline-primary btn-sm">-</button>
+						<button type="button" class="btn btn-primary btn-sm"> <i class="fa fa-minus"></i></button>
 						<!--  -->
 					    	<input name="Minifigure_quantity_checked" type="number" value="${minifigure.quantity_checked}" min=0 max="${minifigure.quantity}" />
-					    <button type="button" class="btn btn-outline-primary btn-sm">+</button>
+					    <button type="button" class="btn btn-primary btn-sm"> <i class="fa fa-plus"></i></button>
 				    </div>
 				    <div  class="col">
 				    	<a href="/set/${set_number}/minifigures/${minifigure.num}/pieces">Pieces</a>

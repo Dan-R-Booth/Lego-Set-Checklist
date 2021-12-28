@@ -36,7 +36,18 @@ public class PieceController {
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model , @PathVariable String set_number, RestTemplate restTemplate) {
+	public String showPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
+		
+		// This call the getPieces class to get all the pieces in a Lego Set
+    	Piece_list piece_list = getPieces(model, set_number, restTemplate);
+    	
+    	model.addAttribute("num_items", piece_list.getPieces().size());
+    	model.addAttribute("set_number", set_number);
+    	model.addAttribute("piece_list", piece_list);
+		return "showPiece_list";
+	}
+	
+	public Piece_list getPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
 		// This is the uri to the specific pieces in a set in the Rebrickable API
 		String piece_list_uri = rebrickable_uri + "sets/" + set_number + "/parts/?key=" + rebrickable_api_key;
 		
@@ -54,6 +65,8 @@ public class PieceController {
 		pieces = getMinifigurePiece_list(minifigure_list_uri, pieces, restTemplate);
 		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
+		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
+		// This creates an array list to store all the Lego pieces needed to build a Lego set
 		List<String> pieces_added = new ArrayList<>();
 		
 		// This creates a new array list to store all the pieces needed to build a Lego set, without duplicates
@@ -62,8 +75,9 @@ public class PieceController {
 		for (Piece piece : pieces) {
 			boolean removed = false;
 			
-			for (String remove_piece_num : pieces_added) {
-				if ((piece.getNum()).equals(remove_piece_num)) {
+			for (String remove_piece_num_colour : pieces_added) {
+				String piece_num_colour = piece.getNum() + piece.getColour_name() + piece.isSpare();
+				if (piece_num_colour.equals(remove_piece_num_colour)) {
 					removed = true;
 				}
 			}
@@ -72,20 +86,20 @@ public class PieceController {
 
 				Piece updated_piece = piece;
 			
-				pieces_added.add(piece.getNum());
+				pieces_added.add(piece.getNum() + piece.getColour_name() + piece.isSpare());
 	
 				int new_quantity = 0;
 				int new_quantity_checked = 0;
 				
 				for (Piece other_piece : pieces) {
-					// Checks if the pieces are the same using piece number
+					// Checks if the pieces are the same using piece number, colour and if they are spare
 					// and if they are adds the quantity and quantity_checked to the new quantity and new quantity checked
-					if ((updated_piece.getNum()).equals(other_piece.getNum())) {
+					if ((updated_piece.getNum()).equals(other_piece.getNum()) && (updated_piece.getColour_name()).equals(other_piece.getColour_name()) && updated_piece.isSpare() == other_piece.isSpare()) {
 						new_quantity += other_piece.getQuantity();
 						new_quantity_checked += other_piece.getQuantity_checked();
 					}
 				}
-				// These add the total quantity of all minifigure pieces that are the same, and total of these found to the updated_piece
+				// These add the total quantity of all pieces that are the same, and total of these found to the updated_piece
 				// This updated_piece is then added to the list of all pieces in the Lego Set
 				updated_piece.setQuantity(new_quantity);
 				updated_piece.setQuantity_checked(new_quantity_checked);
@@ -96,8 +110,7 @@ public class PieceController {
 		// This adds all the pieces in the Lego Set into the piece list class 
     	Piece_list piece_list = new Piece_list(updated_pieces);
     	
-    	model.addAttribute("piece_list", piece_list);
-		return "showPiece_list";
+    	return piece_list;
 	}
 	
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
@@ -171,7 +184,6 @@ public class PieceController {
 			e.printStackTrace();
 		}
 		
-		
 		return pieces;
 	}
 	
@@ -190,47 +202,38 @@ public class PieceController {
 		for (Minifigure minifigure : minifigures) {
 			Piece_list minifigure_piece_list = minifigure.getSet_pieces();
 			for (Piece piece : minifigure_piece_list.getPieces()) {
-				minifigure_pieces.add(piece);
+				pieces.add(piece);
 			}
 		}
-			
-		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
-		List<String> minifigure_pieces_added = new ArrayList<>();
 		
-		for (Piece piece : minifigure_pieces) {
-			boolean removed = false;
-			
-			for (String remove_piece_num : minifigure_pieces_added) {
-				if ((piece.getNum()).equals(remove_piece_num)) {
-					removed = true;
-				}
-			}
-			
-			if (removed == false) {
-
-				Piece updated_piece = piece;
-			
-				minifigure_pieces_added.add(piece.getNum());
-	
-				int new_quantity = 0;
-				int new_quantity_checked = 0;
-				
-				for (Piece other_piece : minifigure_pieces) {
-					// Checks if the pieces are the same using piece number
-					// and if they are adds the quantity and quantity_checked to the new quantity and new quantity checked
-					if ((updated_piece.getNum()).equals(other_piece.getNum())) {
-						new_quantity += other_piece.getQuantity();
-						new_quantity_checked += other_piece.getQuantity_checked();
-					}
-				}
-				// These add the total quantity of all minifigure pieces that are the same, and total of these found to the updated_piece
-				// This updated_piece is then added to the list of all pieces in the Lego Set
-				updated_piece.setQuantity(new_quantity);
-				updated_piece.setQuantity_checked(new_quantity_checked);
-				pieces.add(updated_piece);
-			}
-		}
+		pieces.addAll(minifigure_pieces);
+		
 		return pieces;
+	}
+	
+	// This remove 1 from quantity checked, unless it is zero, from a Lego piece
+	// It does this by getting all the pieces in the set and changing the quantity found of the piece that matches the piece number provided
+	@GetMapping("/set/{set_number}/pieces/{piece_number}/{quantity_change}")
+	public String changeQuantity(Model model , @PathVariable String set_number, @PathVariable String piece_number, @PathVariable String quantity_change, RestTemplate restTemplate) {
+		
+		// This call the getPieces class to get all the pieces in a Lego Set
+    	Piece_list piece_list = getPieces(model, set_number, restTemplate);
+		
+    	List<Piece> pieces =  piece_list.getPieces();
+    	
+    	for (Piece piece : pieces) {
+    		if (piece_number.equals(piece.getNum())) {
+    			if (piece.getQuantity_checked() != 0 && quantity_change.equals("minus")) {
+    				piece.minusQuantityChecked();
+    			}
+    			else if (piece.getQuantity_checked() < piece.getQuantity() && quantity_change.equals("add")) {
+    				piece.addQuantityChecked();
+    			}
+    		}
+    	}
+    	
+    	model.addAttribute("set_number", set_number);
+    	model.addAttribute("piece_list", piece_list);
+		return "showPiece_list";
 	}
 }

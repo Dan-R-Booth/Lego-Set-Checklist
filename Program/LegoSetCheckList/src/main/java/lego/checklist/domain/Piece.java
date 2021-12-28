@@ -55,4 +55,12 @@ public class Piece {
 	public void setQuantity_checked(int quantity_checked) {
 		this.quantity_checked = quantity_checked;
 	}
+	
+	public void minusQuantityChecked() {
+		quantity --;
+	}
+	
+	public void addQuantityChecked() {
+		quantity ++;
+	}
 }

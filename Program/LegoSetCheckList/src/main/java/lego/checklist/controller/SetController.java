@@ -3,7 +3,6 @@ package lego.checklist.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,7 +30,7 @@ public class SetController {
 	// The api key used to access the Rebrickable api
 	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 	
-	@RequestMapping("/search")
+	@GetMapping("/search")
 	public String search(Model model) {
 		return "search";
 	}

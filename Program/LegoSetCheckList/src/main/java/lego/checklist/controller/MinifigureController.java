@@ -149,7 +149,7 @@ public class MinifigureController {
 	}
 	
 	@GetMapping("set/{set_number}/minifigures/{minifigure_number}/pieces")
-	public String showMinifigurePieces(Model model, @PathVariable String minifigure_number, /*@ModelAttribute("minifigures.set_pieces") Piece_list piece_list,*/ RestTemplate restTemplate) {
+	public String showMinifigurePieces(Model model, @PathVariable String set_number, @PathVariable String minifigure_number, RestTemplate restTemplate) {
     	
     	// This is the uri to the specific pieces in a set in the Rebrickable API
 		String piece_list_uri = rebrickable_uri + "minifigs/" + minifigure_number + "/parts/?key=" + rebrickable_api_key;
@@ -163,6 +163,8 @@ public class MinifigureController {
 		// This adds all the pieces in the Lego Set into the piece list class 
     	Piece_list piece_list = new Piece_list(pieces);
     	
+    	model.addAttribute("num_items", piece_list.getPieces().size());
+    	model.addAttribute("set_number", set_number);
 		model.addAttribute("piece_list", piece_list);
 		return "showPiece_list";
 	}
