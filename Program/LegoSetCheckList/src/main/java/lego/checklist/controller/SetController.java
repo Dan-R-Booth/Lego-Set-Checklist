@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
 
 // RestTemplate is used to perform HTTP request to a uri
@@ -23,6 +25,7 @@ import lego.checklist.domain.Set;
 // The Jackson library is used for working with JSON
 
 @Controller
+@SessionAttributes("set")
 public class SetController {
 	// This stores the basic uri to the Rebrickable API
 	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
@@ -57,6 +60,7 @@ public class SetController {
 		String theme_name = "";
 		int num_pieces = -1;
 		String img_url = "";
+		Piece_list piece_list = null;
 		
         // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
         try {
@@ -89,6 +93,9 @@ public class SetController {
         	num_pieces = num_piecesNode.intValue();
         	img_url = img_urlNode.textValue();
         	
+        	// This call the getPieces class to get all the pieces in a Lego Set
+        	piece_list = PieceController.getPieces(model, set_number, restTemplate);
+        	
 		}
         catch (JsonMappingException e) {
 			e.printStackTrace();
@@ -98,6 +105,8 @@ public class SetController {
 		}
 		
 		Set set = new Set(num, name, year, theme_name, num_pieces, img_url);
+		
+		set.setSet_pieces(piece_list);
 		
 		model.addAttribute("set", set);
 		return "showSet";

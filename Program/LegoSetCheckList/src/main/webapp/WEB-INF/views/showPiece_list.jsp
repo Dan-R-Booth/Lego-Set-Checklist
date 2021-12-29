@@ -121,8 +121,8 @@
 					    </div>
 					    <div class="col">
 					    	<button id="decreaseQuantityCheckedButton_${loop.index}" name="${loop.index}" type="button" class="btn btn-primary btn-sm" onclick="decreaseQuantityChecked(this.name)"> <i class="fa fa-minus"></i></button>
-							<!--  -->
-						    	<input id="piece_quantity_checked_${loop.index}" type="number" value="${piece.quantity_checked}" min=0 max="${piece.quantity}" disabled />
+							<!-- Displays the quantity found and is disabled so the value can only be changed by the buttons -->
+						    <input id="piece_quantity_checked_${loop.index}" type="number" value="${piece.quantity_checked}" min=0 max="${piece.quantity}" disabled />
 						    <button id="increaseQuantityCheckedButton_${loop.index}" name="${loop.index}" type="button" class="btn btn-primary btn-sm" onclick="increaseQuantityChecked(this.name)"> <i class="fa fa-plus"></i></button>
 					    </div>
 					</div>
@@ -138,7 +138,7 @@
 		<div class="my-5">
 			<button type="button" id="save" onclick="saveProgress()" class="btn btn-primary"> <i class="fa fa-save"></i> Save CheckList</button>
         </div>
-        
+        ${set.name}
         <textarea id="test" rows="5" cols="160"></textarea>
 	</body>
 </html>

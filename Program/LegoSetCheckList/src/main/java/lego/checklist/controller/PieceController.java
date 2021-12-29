@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
+import lego.checklist.domain.Set;
 
 //RestTemplate is used to perform HTTP request to a uri
 /* Reference:
@@ -28,26 +31,26 @@ import lego.checklist.domain.Piece_list;
 // 
 
 @Controller
+@SessionAttributes("set")
 public class PieceController {
 	// This stores the basic uri to the Rebrickable API
-	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
+	public final static String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 		
 	// The api key used to access the Rebrickable api
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
+	public String showPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate, @ModelAttribute("set") Set set) {
 		
-		// This call the getPieces class to get all the pieces in a Lego Set
-    	Piece_list piece_list = getPieces(model, set_number, restTemplate);
+		// This gets all the pieces in a Lego Set
+    	Piece_list piece_list = set.getSet_pieces();
     	
     	model.addAttribute("num_items", piece_list.getPieces().size());
-    	model.addAttribute("set_number", set_number);
     	model.addAttribute("piece_list", piece_list);
 		return "showPiece_list";
 	}
 	
-	public Piece_list getPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
+	public static Piece_list getPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
 		// This is the uri to the specific pieces in a set in the Rebrickable API
 		String piece_list_uri = rebrickable_uri + "sets/" + set_number + "/parts/?key=" + rebrickable_api_key;
 		
@@ -188,7 +191,7 @@ public class PieceController {
 	}
 	
 	// 
-	public List<Piece> getMinifigurePiece_list(String minifigure_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+	public static List<Piece> getMinifigurePiece_list(String minifigure_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
 		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
 		List<Minifigure> minifigures = new ArrayList<>();

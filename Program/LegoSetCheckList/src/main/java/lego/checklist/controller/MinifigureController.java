@@ -164,7 +164,6 @@ public class MinifigureController {
     	Piece_list piece_list = new Piece_list(pieces);
     	
     	model.addAttribute("num_items", piece_list.getPieces().size());
-    	model.addAttribute("set_number", set_number);
 		model.addAttribute("piece_list", piece_list);
 		return "showPiece_list";
 	}
