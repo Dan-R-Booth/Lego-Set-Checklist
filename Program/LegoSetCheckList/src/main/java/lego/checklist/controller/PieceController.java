@@ -210,30 +210,4 @@ public class PieceController {
 		
 		return pieces;
 	}
-	
-	// This remove 1 from quantity checked, unless it is zero, from a Lego piece
-	// It does this by getting all the pieces in the set and changing the quantity found of the piece that matches the piece number provided
-	@GetMapping("/set/{set_number}/pieces/{piece_number}/{quantity_change}")
-	public String changeQuantity(Model model , @PathVariable String set_number, @PathVariable String piece_number, @PathVariable String quantity_change, RestTemplate restTemplate) {
-		
-		// This call the getPieces class to get all the pieces in a Lego Set
-    	Piece_list piece_list = getPieces(model, set_number, restTemplate);
-		
-    	List<Piece> pieces =  piece_list.getPieces();
-    	
-    	for (Piece piece : pieces) {
-    		if (piece_number.equals(piece.getNum())) {
-    			if (piece.getQuantity_checked() != 0 && quantity_change.equals("minus")) {
-    				piece.minusQuantityChecked();
-    			}
-    			else if (piece.getQuantity_checked() < piece.getQuantity() && quantity_change.equals("add")) {
-    				piece.addQuantityChecked();
-    			}
-    		}
-    	}
-    	
-    	model.addAttribute("set_number", set_number);
-    	model.addAttribute("piece_list", piece_list);
-		return "showPiece_list";
-	}
 }
