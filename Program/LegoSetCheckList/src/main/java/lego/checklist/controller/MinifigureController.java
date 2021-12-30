@@ -163,8 +163,9 @@ public class MinifigureController {
 		// This adds all the pieces in the Lego Set into the piece list class 
     	Piece_list piece_list = new Piece_list(pieces);
     	
+    	model.addAttribute("set_number", set_number);
     	model.addAttribute("num_items", piece_list.getPieces().size());
-		model.addAttribute("piece_list", piece_list);
-		return "showPiece_list";
+    	model.addAttribute("piece_list", piece_list);
+		return "showMinifigurePiece_list";
 	}
 }

@@ -16,22 +16,22 @@
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with column names -->
 				<div class="row align-items-center my-3">
 				    <div class="col">
-				        Minifigure Image:
+				        <p class="h6">Minifigure Image:</p>
 				    </div>
 				    <div class="col">
-				      Minifigure Number:
+				     	<p class="h6">Minifigure Number:</p>
 				    </div>
 				    <div class="col">
-				      Minifigure Name:
+				    	<p class="h6">Minifigure Name:</p>
 				    </div>
 				    <div class="col">
-				      Quantity:
+				    	<p class="h6">Quantity:</p>
 				    </div>
 				    <div class="col">
-				      Quantity Found:
+				    	<p class="h6">Quantity Found:</p>
 				    </div>
 				    <div class="col">
-				      Pieces:
+				    	<p class="h6">Pieces:</p>
 				    </div>
 				</div>
 		    </div>

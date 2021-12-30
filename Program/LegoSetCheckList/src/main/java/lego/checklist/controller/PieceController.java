@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,13 +41,13 @@ public class PieceController {
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate, @ModelAttribute("set") Set set) {
+	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set) {
 		
 		// This gets all the pieces in a Lego Set
     	Piece_list piece_list = set.getSet_pieces();
     	
+    	model.addAttribute(set_number, set.getNum());
     	model.addAttribute("num_items", piece_list.getPieces().size());
-    	model.addAttribute("piece_list", piece_list);
 		return "showPiece_list";
 	}
 	
@@ -212,5 +213,26 @@ public class PieceController {
 		pieces.addAll(minifigure_pieces);
 		
 		return pieces;
+	}
+	
+	@GetMapping("/set/{set_number}/pieces/save")
+	public String save(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) {
+		
+		
+		// This gets all the pieces in a Lego Set
+    	Piece_list piece_list = set.getSet_pieces();
+    	List<Piece> pieces = piece_list.getPieces();
+    	
+    	for (int i = 0; i < pieces.size(); i++) {
+    		Piece piece = pieces.get(i);
+    		piece.setQuantity_checked(quantityChecked.get(i));
+    	}
+    	
+    	piece_list.setPieces(pieces);
+    	set.setSet_pieces(piece_list);
+    	
+    	model.addAttribute(set_number, set.getNum());
+    	model.addAttribute("num_items", piece_list.getPieces().size());
+		return "showPiece_list";
 	}
 }
