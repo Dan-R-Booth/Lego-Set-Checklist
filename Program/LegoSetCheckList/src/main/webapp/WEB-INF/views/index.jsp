@@ -5,5 +5,7 @@
 	</head>
 	<body>
 		<a href="/search">Search</a>
+		<br>
+		<a href="/import">Import Checklist</a>
 	</body>
 </html>

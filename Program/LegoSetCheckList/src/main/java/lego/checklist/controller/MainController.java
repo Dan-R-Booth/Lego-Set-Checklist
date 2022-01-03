@@ -20,6 +20,6 @@ public class MainController {
 	
 	@RequestMapping("/")
 	public String home(Model model) {
-		return "home";
+		return "index";
 	}
 }

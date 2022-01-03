@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-12-10" view-index="0" gantt-divider-location="431" resource-divider-location="300" version="3.1.3103" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2021-12-23" view-index="0" gantt-divider-location="431" resource-divider-location="300" version="3.1.3103" locale="en_GB">
     <description/>
     <view zooming-state="default:3" id="gantt-chart">
         <field id="tpd3" name="Name" width="325" order="0"/>
@@ -6,7 +6,7 @@
         <field id="tpd5" name="End date" width="42" order="2"/>
         <option id="taskLabelRight" value="resources"/>
         <timeline>
-            <![CDATA[575,579,573,3,588,586,584]]>
+            <![CDATA[579,573,575,3,584,586,588]]>
         </timeline>
         <option id="color.recent">
             <![CDATA[#0000ff #ff00cc #ff9900 #00ff00 #ff0000 #eeeeee #0099ff #00cc33 #ff6600]]>
@@ -132,14 +132,17 @@
         <task id="338" name="Add feature to display all pieces in a Lego set with an image" color="#8cb6ce" meeting="false" start="2021-12-20" duration="4" complete="0" thirdDate="2021-11-29" thirdDate-constraint="0" expand="true">
             <depend id="371" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="371" name="Implement Check feature to checklist of pieces in a set" color="#8cb6ce" meeting="false" start="2021-12-27" duration="3" complete="0" thirdDate="2021-12-23" thirdDate-constraint="0" expand="true">
+        <task id="371" name="Implement Check feature to checklist of pieces in a set" color="#8cb6ce" meeting="false" start="2021-12-27" duration="2" complete="0" thirdDate="2021-12-23" thirdDate-constraint="0" expand="true">
             <depend id="373" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="573" name="Deadline for a simple search for a Lego Set and checking pieces off a checklist" color="#0000ff" meeting="true" start="2021-12-29" duration="0" complete="0" thirdDate="2022-03-10" thirdDate-constraint="0" expand="true"/>
-        <task id="373" name="Add feature to save checklist progress to the current devices storage" color="#8cb6ce" meeting="false" start="2021-12-30" duration="3" complete="0" thirdDate="2021-12-29" thirdDate-constraint="0" expand="true">
+        <task id="373" name="Add feature to save checklist progress to the current devices storage" color="#8cb6ce" meeting="false" start="2021-12-29" duration="3" complete="0" thirdDate="2021-12-29" thirdDate-constraint="0" expand="true">
+            <depend id="612" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="612" name="Add feature to import a saved checklist" color="#8cb6ce" meeting="false" start="2022-01-04" duration="2" complete="0" thirdDate="2021-12-23" thirdDate-constraint="0" expand="true">
             <depend id="375" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="375" name="Improve search feature so that their text search that displays a possible list of sets with image" color="#8cb6ce" meeting="false" start="2022-01-05" duration="4" complete="0" thirdDate="2022-01-04" thirdDate-constraint="0" expand="true">
+        <task id="375" name="Improve search feature so that their text search that displays a possible list of sets with image" color="#8cb6ce" meeting="false" start="2022-01-06" duration="3" complete="0" thirdDate="2022-01-04" thirdDate-constraint="0" expand="true">
             <depend id="384" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="384" name="Add filter and sort by theme and year made to search feature" color="#8cb6ce" meeting="false" start="2022-01-11" duration="3" complete="0" thirdDate="2021-12-13" thirdDate-constraint="0" expand="true">

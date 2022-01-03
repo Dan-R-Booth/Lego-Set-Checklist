@@ -1,5 +1,10 @@
 package lego.checklist.controller;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +61,8 @@ public class PieceController {
 		String piece_list_uri = rebrickable_uri + "sets/" + set_number + "/parts/?key=" + rebrickable_api_key;
 		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
+		// This is then passed to the classes getPiece_listPage and getMinifigurePiece_list to
+		// Retrieve all the Lego Pieces for the set
 		List<Piece> pieces =  new ArrayList<>();
 		
 		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
@@ -69,24 +75,30 @@ public class PieceController {
 		pieces = getMinifigurePiece_list(minifigure_list_uri, pieces, restTemplate);
 		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
-		// This creates an array list to store all the Lego pieces needed to build a Lego set
 		List<String> pieces_added = new ArrayList<>();
 		
 		// This creates a new array list to store all the pieces needed to build a Lego set, without duplicates
 		List<Piece> updated_pieces = new ArrayList<>();
 		
+		// This goes through each piece in the pieces array and then iterates through the array again to find all the pieces
+		// and total up their quantity. This new quantity is then set as the new quantity of the piece and added to the updated piece array
+		// Unique identifier string for each piece is also added to a list, that is then used to stop duplicate pieces whose quantity has already
+		// been added being added to the unique piece list again
 		for (Piece piece : pieces) {
-			boolean removed = false;
+			boolean added = false;
 			
-			for (String remove_piece_num_colour : pieces_added) {
+			// Checks if the Lego piece has already been added to the updated_piece list
+			for (String added_piece : pieces_added) {
+				// This adds the number, colour name and if its a spare of the piece,
+    			// as these values uniquely identity each Lego piece
 				String piece_num_colour = piece.getNum() + piece.getColour_name() + piece.isSpare();
-				if (piece_num_colour.equals(remove_piece_num_colour)) {
-					removed = true;
+				if (piece_num_colour.equals(added_piece)) {
+					added = true;
 				}
 			}
 			
-			if (removed == false) {
+			// This only runs if this piece has not already had duplicates removed and has been added to the updated_piece list
+			if (added == false) {
 
 				Piece updated_piece = piece;
 			
@@ -223,6 +235,7 @@ public class PieceController {
     	Piece_list piece_list = set.getSet_pieces();
     	List<Piece> pieces = piece_list.getPieces();
     	
+    	// This updates the quantity checked for each piece in the Lego set
     	for (int i = 0; i < pieces.size(); i++) {
     		Piece piece = pieces.get(i);
     		piece.setQuantity_checked(quantityChecked.get(i));
@@ -231,8 +244,60 @@ public class PieceController {
     	piece_list.setPieces(pieces);
     	set.setSet_pieces(piece_list);
     	
+    	// This then returns the updated Lego set to the view displaying the quantity the user has checked for each piece
     	model.addAttribute(set_number, set.getNum());
     	model.addAttribute("num_items", piece_list.getPieces().size());
 		return "showPiece_list";
+	}
+	
+	@GetMapping("/set/{set_number}/pieces/export")
+	public String export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) throws IOException {
+		
+		
+		// This gets all the pieces in a Lego Set
+    	Piece_list piece_list = set.getSet_pieces();
+    	List<Piece> pieces = piece_list.getPieces();
+    	
+    	for (int i = 0; i < pieces.size(); i++) {
+    		Piece piece = pieces.get(i);
+    		piece.setQuantity_checked(quantityChecked.get(i));
+    	}
+    	
+    	
+    	String set_name = set.getName();
+    	
+    	// This removes spaces from the name and replaces them with underscores in case this causes issues with saving the file
+    	set_name = set_name.replace(" ", "_");
+    	
+    	// This temporary file is used to store the csv file before 
+    	Path temp = Files.createTempFile(set_name + "_Checklist", ".csv");
+    	
+    	// This adds checklist data to the file, but only of pieces whose quantity are above 0 to save storage
+    	// and only essential details to identify these pieces, as the rest of the pieces will be retrieved from
+    	// the Rebrickable API when importing a saved Checklist
+    	try (BufferedWriter bw = new BufferedWriter(new FileWriter(temp.toFile()))) {
+    		// This adds  to the file
+    		bw.write(set.getNum() + "\n");
+    		
+    		for (Piece piece : pieces) {
+    			// This adds the number, colour name and if its a spare of pieces that have a quantity above zero,
+    			// as these values uniquely identity each Lego piece
+    			if (piece.getQuantity_checked() != 0) {
+    				bw.write(piece.getNum() + "," + piece.getColour_name() + "," + String.valueOf(piece.isSpare()) + "," + String.valueOf(piece.getQuantity_checked()) + "\n");
+    			}
+    		}
+    	}
+    	
+    	piece_list.setPieces(pieces);
+    	set.setSet_pieces(piece_list);
+    	
+    	model.addAttribute(set_number, set.getNum());
+    	model.addAttribute("num_items", piece_list.getPieces().size());
+		return "showPiece_list";
+	}
+	
+	@GetMapping("/import")
+	public String importPage(Model model) {
+		return "importPage";
 	}
 }

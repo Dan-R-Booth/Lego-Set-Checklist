@@ -101,16 +101,7 @@
 			}
 			
 			function saveProgress() {
-				var text = "";
-				
 				var array = getQuantityChecked();
-				
-				const num_items = "${num_items}";
-				for (let i = 0; i < num_items; i++) {
-					text += array[i];
-				}
-				
-				document.getElementById("test").value = text;
 				
 				window.location = "/set/${set.num}/pieces/save/?quantityChecked=" + array;
 			}
@@ -118,7 +109,7 @@
 			function exportList() {
 				var array = getQuantityChecked();
 				
-				
+				window.location = "/set/${set.num}/pieces/export/?quantityChecked=" + array;
 			}
 		</script>
 		
@@ -237,7 +228,6 @@
 			<button type="button" id="export" onclick="exportList()" class="btn btn-secondary"> <i class="fa fa-download"></i> Export</button>
         </div>
 
-        <textarea id="test" rows="5" cols="160"></textarea>
 	</body>
 	
 </html>
