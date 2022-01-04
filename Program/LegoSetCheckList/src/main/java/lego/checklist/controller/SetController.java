@@ -1,17 +1,28 @@
 package lego.checklist.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVReader;
 
+import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
 
@@ -41,13 +52,20 @@ public class SetController {
 	}
 	
 	@GetMapping("/set")
-	public String showSet(Model model , @RequestParam String set_number, String set_variant, RestTemplate restTemplate) {
+	public String showSet(Model model, @RequestParam String set_number, String set_variant, RestTemplate restTemplate) {
 		
 		// As there are different versions of certain sets denoted by '-' and the version number,
 		// the standard for all sets is '-1', so i added a second number box to show this with a
 		// default value of '1' and the numbers are then combined into a string with the dash in-between.
 		set_number += "-" + set_variant;
 		
+		Set set = getSet(model, set_number, restTemplate);
+		
+		model.addAttribute("set", set);
+		return "showSet";
+	}
+	
+	private Set getSet(Model model, String set_number, RestTemplate restTemplate) {
 		// This is the uri to a specific set in the Rebrickable API
 		String set_uri = rebrickable_uri + "sets/" + set_number + "/?key=" + rebrickable_api_key;
 
@@ -106,12 +124,9 @@ public class SetController {
 			e.printStackTrace();
 		}
 		
-		Set set = new Set(num, name, year, theme_name, num_pieces, img_url);
-		
-		set.setSet_pieces(piece_list);
-		
-		model.addAttribute("set", set);
-		return "showSet";
+		Set set = new Set(num, name, year, theme_name, num_pieces, img_url, piece_list);
+
+		return set;
 	}
 	
 	@GetMapping
@@ -158,5 +173,59 @@ public class SetController {
 		}
 		
 		return theme_name;
+	}
+	
+	@PostMapping("/openImport")
+	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate) {
+		
+		// validate file
+        if (importFile.isEmpty()) {
+            model.addAttribute("message", "Please select a CSV file to upload.");
+            model.addAttribute("error", true);
+        } else {
+            // parse CSV file to create a list of `User` objects
+            try {
+            	
+            	Reader reader = new BufferedReader(new InputStreamReader(importFile.getInputStream()));
+                
+            	// create csv reader
+                CSVReader csvReader = new CSVReader(reader);
+                
+                String set_number = csvReader.readNext()[0];
+                
+                List<String[]> pieces_checked = new ArrayList<>();
+                
+                // read one record at a time
+                String[] record;
+                
+                while ((record = csvReader.readNext()) != null) {
+                	pieces_checked.add(record);
+                }
+                
+                csvReader.close();
+                
+                Set set = getSet(model, set_number, restTemplate);
+                
+                Piece_list set_pieces = set.getSet_pieces();
+                
+                for (Piece piece : set_pieces.getPieces()) {
+                	for (String[] piece_checked : pieces_checked) {
+                		if (piece_checked[0].equals(piece.getNum()) && piece_checked[1].equals(piece.getColour_name()) && piece_checked[2].equals(String.valueOf(piece.isSpare()))) {
+                			piece.setQuantity_checked(Integer.parseInt(piece_checked[3]));
+                		}
+                	}
+                }
+                
+                set.setSet_pieces(set_pieces);
+                
+                model.addAttribute("set", set);
+        		return "showSet";
+            } catch (Exception ex) {
+                model.addAttribute("message", "An error occurred while processing the CSV file.");
+                model.addAttribute("error", true);
+            }
+        }
+		
+        return "importPage";
 	}
 }

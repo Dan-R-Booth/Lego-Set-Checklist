@@ -211,7 +211,7 @@ public class PieceController {
 		return pieces;
 	}
 	
-	// 
+	// This returns a piece_list for pieces needed to build all the minifigures in a Lego set
 	public static List<Piece> getMinifigurePiece_list(String minifigure_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
 		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
@@ -235,6 +235,7 @@ public class PieceController {
 		return pieces;
 	}
 	
+	// This saves all changes made by the user to pieces checked to the Set class
 	@GetMapping("/set/{set_number}/pieces/save")
 	public String save(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) {
 		
@@ -259,7 +260,7 @@ public class PieceController {
 	}
 	
 	/*
-	 * In this controller I have combined code from two websites [3] and [4] to create and export a CSV file
+	 * Here I have combined code from two websites [3] and [4] to create and export a CSV file
 	 * for a Lego Set checklist  on a clients machine, as this was not vital to the running of the program
 	 * I have labelled the start
 	 */
@@ -284,7 +285,7 @@ public class PieceController {
     	String fileName = set_name.replace(" ", "_") + "_Checklist.csv";
     	
     	/*
-    	 * This is where I start using code taken from [3] and [4]
+    	 * From here till the end of the method using code bits of code taken from [3] and [4]
     	 */
 
         response.setContentType("text/csv");
@@ -292,8 +293,7 @@ public class PieceController {
                 "attachment; filename=\"" + fileName + "\"");
         
         //create a csv writer
-        ICSVWriter writer = new CSVWriterBuilder(response.getWriter())
-                .build();
+        ICSVWriter writer = new CSVWriterBuilder(response.getWriter()).build();
 
         //write all users to csv file
 		writer.writeNext(new String[] {set_number});
