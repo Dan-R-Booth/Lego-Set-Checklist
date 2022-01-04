@@ -100,6 +100,7 @@
 				return array;
 			}
 			
+			// This saves all the changes to Piece quantity found to the class
 			function saveProgress() {
 				var array = getQuantityChecked();
 				
@@ -193,7 +194,7 @@
 				<div class="row align-items-center my-3">
 				    <div class="col">
 				        <!-- The style width sets the percentage size the image will be on any screen -->
-						<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%" class="m-2">
+						<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 40%" class="m-2">
 				    </div>
 				    <div class="col">
 				    	${piece.num}

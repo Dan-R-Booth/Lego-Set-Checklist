@@ -1,6 +1,7 @@
 package lego.checklist.controller;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,6 +9,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +25,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVWriter;
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
@@ -51,7 +62,7 @@ public class PieceController {
 		// This gets all the pieces in a Lego Set
     	Piece_list piece_list = set.getSet_pieces();
     	
-    	model.addAttribute(set_number, set.getNum());
+    	model.addAttribute("set_number", set.getNum());
     	model.addAttribute("num_items", piece_list.getPieces().size());
 		return "showPiece_list";
 	}
@@ -245,19 +256,20 @@ public class PieceController {
     	set.setSet_pieces(piece_list);
     	
     	// This then returns the updated Lego set to the view displaying the quantity the user has checked for each piece
-    	model.addAttribute(set_number, set.getNum());
+    	model.addAttribute("set_number", set.getNum());
     	model.addAttribute("num_items", piece_list.getPieces().size());
 		return "showPiece_list";
 	}
 	
 	@GetMapping("/set/{set_number}/pieces/export")
-	public String export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) throws IOException {
+	public void export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws IOException {
 		
 		
 		// This gets all the pieces in a Lego Set
     	Piece_list piece_list = set.getSet_pieces();
     	List<Piece> pieces = piece_list.getPieces();
     	
+    	// This updates the quantity checked for each piece in the Lego set
     	for (int i = 0; i < pieces.size(); i++) {
     		Piece piece = pieces.get(i);
     		piece.setQuantity_checked(quantityChecked.get(i));
@@ -266,34 +278,29 @@ public class PieceController {
     	
     	String set_name = set.getName();
     	
-    	// This removes spaces from the name and replaces them with underscores in case this causes issues with saving the file
-    	set_name = set_name.replace(" ", "_");
-    	
-    	// This temporary file is used to store the csv file before 
-    	Path temp = Files.createTempFile(set_name + "_Checklist", ".csv");
-    	
-    	// This adds checklist data to the file, but only of pieces whose quantity are above 0 to save storage
-    	// and only essential details to identify these pieces, as the rest of the pieces will be retrieved from
-    	// the Rebrickable API when importing a saved Checklist
-    	try (BufferedWriter bw = new BufferedWriter(new FileWriter(temp.toFile()))) {
-    		// This adds  to the file
-    		bw.write(set.getNum() + "\n");
-    		
-    		for (Piece piece : pieces) {
-    			// This adds the number, colour name and if its a spare of pieces that have a quantity above zero,
-    			// as these values uniquely identity each Lego piece
-    			if (piece.getQuantity_checked() != 0) {
-    				bw.write(piece.getNum() + "," + piece.getColour_name() + "," + String.valueOf(piece.isSpare()) + "," + String.valueOf(piece.getQuantity_checked()) + "\n");
-    			}
-    		}
-    	}
-    	
-    	piece_list.setPieces(pieces);
-    	set.setSet_pieces(piece_list);
-    	
-    	model.addAttribute(set_number, set.getNum());
-    	model.addAttribute("num_items", piece_list.getPieces().size());
-		return "showPiece_list";
+    	// This stores a proposed name for the file
+    	// This also removes spaces from the name and replaces them with underscores (in case this causes issues with saving the file)
+    	String fileName = set_name.replace(" ", "_") + "_Checklist.csv";
+
+        response.setContentType("text/csv");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + fileName + "\"");
+        
+        //create a csv writer
+        ICSVWriter writer = new CSVWriterBuilder(response.getWriter())
+                .build();
+
+        //write all users to csv file
+		writer.writeNext(new String[] {set_number});
+		
+		for (Piece piece : pieces) {
+			// This adds the number, colour name and if its a spare of pieces that have a quantity above zero,
+			// as these values uniquely identity each Lego piece
+			if (piece.getQuantity_checked() != 0) {
+				String[] csv_data = {piece.getNum(), piece.getColour_name(), String.valueOf(piece.isSpare()), String.valueOf(piece.getQuantity_checked())};
+				writer.writeNext(csv_data);
+			}
+		}
 	}
 	
 	@GetMapping("/import")

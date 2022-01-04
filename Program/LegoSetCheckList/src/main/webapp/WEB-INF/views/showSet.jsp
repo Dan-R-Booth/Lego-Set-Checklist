@@ -7,24 +7,21 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	</head>
 	<body class="m-2">
-		<p>
-			Set Number: ${set.num}
-			<br>
-			Set Name: ${set.name}
-			<br>
-			<!-- The style width sets the percentage size the image will be on any screen -->
-			<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 45%" class="m-2">
-			<br>
-			Year Released: ${set.year}
-			<br>
-			Theme: ${set.theme}
-			<br>
-			Number of pieces: ${set.num_pieces}
-			<br>
-			<a href="/set/${set.num}/pieces">Pieces</a>
-			<br>
-			<a href="/set/${set.num}/minifigures">Minifigures</a>
-		</p>
-			
+		Set Number: ${set.num}
+		<br>
+		Set Name: ${set.name}
+		<br>
+		<!-- The style width sets the percentage size the image will be on any screen -->
+		<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 45%" class="m-2">
+		<br>
+		Year Released: ${set.year}
+		<br>
+		Theme: ${set.theme}
+		<br>
+		Number of pieces: ${set.num_pieces}
+		<br>
+		<a href="/set/${set.num}/pieces">Pieces</a>
+		<br>
+		<a href="/set/${set.num}/minifigures">Minifigures</a>
 	</body>
 </html>

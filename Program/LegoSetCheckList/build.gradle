@@ -19,6 +19,9 @@ dependencies {
 	//runtimeOnly 'mysql:mysql-connector-java'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	
+	// Needed to create a CSV file
+	implementation 'com.opencsv:opencsv:5.5.2'
+	
 	// Needed for JSPs used to render views
 	runtimeOnly 'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.39'
 	runtimeOnly 'javax.servlet:jstl:1.2'
