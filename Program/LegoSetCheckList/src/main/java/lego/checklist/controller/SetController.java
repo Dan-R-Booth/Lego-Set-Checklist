@@ -15,14 +15,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
 
-// RestTemplate is used to perform HTTP request to a uri
-/* Reference:
- * "RestTemplate (Spring Framework 5.3.14 API)",
- * Docs.spring.io, 2021. [Online].
- * Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
- */
-	 
+// RestTemplate is used to perform HTTP request to a uri [1]
+
 // The Jackson library is used for working with JSON
+
+
+/* References:
+ * [1] "RestTemplate (Spring Framework 5.3.14 API)",
+ * 		Docs.spring.io, 2021. [Online].
+ * 		Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
+ */ 
 
 @Controller
 @SessionAttributes("set")

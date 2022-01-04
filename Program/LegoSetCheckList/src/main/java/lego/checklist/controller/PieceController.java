@@ -1,11 +1,5 @@
 package lego.checklist.controller;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,27 +19,30 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.opencsv.CSVWriter;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
 
-//RestTemplate is used to perform HTTP request to a uri
-/* Reference:
-* "RestTemplate (Spring Framework 5.3.14 API)",
-* Docs.spring.io, 2021. [Online].
-* Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
-*/
+//RestTemplate is used to perform HTTP request to a uri [1]
 
-// 
+//The Jackson library is used for working with JSON [2]
+
+/* References:
+ * [1]	"RestTemplate (Spring Framework 5.3.14 API)",
+ * 		Docs.spring.io, 2021. [Online].
+ * 		Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
+ * [2]
+ * [3]	Atta, "Export & Download Data as CSV File in Spring Boot",
+ * 		Atta-Ur-Rehman Shah, 2019. [Online].
+ * 		Available: https://attacomsian.com/blog/export-download-data-csv-file-spring-boot. [Accessed: 03- Jan- 2022]
+ * [4]	Atta, "Reading and writing CSV files using OpenCSV",
+ * 		Atta-Ur-Rehman Shah, 2019. [Online].
+ * 		Available: https://attacomsian.com/blog/read-write-csv-files-opencsv. [Accessed: 03- Jan- 2022]
+ */ 
 
 @Controller
 @SessionAttributes("set")
@@ -261,8 +258,13 @@ public class PieceController {
 		return "showPiece_list";
 	}
 	
+	/*
+	 * In this controller I have combined code from two websites [3] and [4] to create and export a CSV file
+	 * for a Lego Set checklist  on a clients machine, as this was not vital to the running of the program
+	 * I have labelled the start
+	 */
 	@GetMapping("/set/{set_number}/pieces/export")
-	public void export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws IOException {
+	public void export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws Exception {
 		
 		
 		// This gets all the pieces in a Lego Set
@@ -275,12 +277,15 @@ public class PieceController {
     		piece.setQuantity_checked(quantityChecked.get(i));
     	}
     	
-    	
     	String set_name = set.getName();
     	
     	// This stores a proposed name for the file
     	// This also removes spaces from the name and replaces them with underscores (in case this causes issues with saving the file)
     	String fileName = set_name.replace(" ", "_") + "_Checklist.csv";
+    	
+    	/*
+    	 * This is where I start using code taken from [3] and [4]
+    	 */
 
         response.setContentType("text/csv");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
