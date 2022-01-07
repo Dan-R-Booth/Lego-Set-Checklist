@@ -261,8 +261,8 @@ public class PieceController {
 	
 	/*
 	 * Here I have combined code from two websites [3] and [4] to create and export a CSV file
-	 * for a Lego Set checklist  on a clients machine, as this was not vital to the running of the program
-	 * I have labelled the start
+	 * for a Lego Set checklist on a clients machine, as this was not vital to the main function of the program
+	 * I have labelled where I have started using this code below
 	 */
 	@GetMapping("/set/{set_number}/pieces/export")
 	public void export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws Exception {

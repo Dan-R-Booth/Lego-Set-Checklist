@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -26,16 +25,22 @@ import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
 
-// RestTemplate is used to perform HTTP request to a uri [1]
+//RestTemplate is used to perform HTTP request to a uri [1]
 
-// The Jackson library is used for working with JSON
-
+//The Jackson library is used for working with JSON [2]
 
 /* References:
- * [1] "RestTemplate (Spring Framework 5.3.14 API)",
- * 		Docs.spring.io, 2021. [Online].
- * 		Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
- */ 
+* [1]	"RestTemplate (Spring Framework 5.3.14 API)",
+* 		Docs.spring.io, 2021. [Online].
+* 		Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
+* [2]
+* [3]	Atta, "Uploading and Parsing CSV File using Spring Boot",
+* 		Atta-Ur-Rehman Shah, 2020. [Online].
+* 		Available: https://attacomsian.com/blog/spring-boot-upload-parse-csv-file. [Accessed: 04- Jan- 2022]
+* [4]	Atta, "Reading and writing CSV files using OpenCSV",
+* 		Atta-Ur-Rehman Shah, 2019. [Online].
+* 		Available: https://attacomsian.com/blog/read-write-csv-files-opencsv. [Accessed: 03- Jan- 2022]
+*/ 
 
 @Controller
 @SessionAttributes("set")
@@ -175,6 +180,10 @@ public class SetController {
 		return theme_name;
 	}
 	
+	/*
+	 * Here I have combined code from two websites [3] and [4] to import and read a CSV file
+	 * for a Lego Set checklist on a clients machine, as this was not vital to the main function of the program
+	 */
 	@PostMapping("/openImport")
 	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate) {
 		
