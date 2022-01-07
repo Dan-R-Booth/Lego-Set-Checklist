@@ -20,6 +20,14 @@ public class Set {
 	
 	private List<Minifigure> minifigures;
 	
+	public Set(String num, String name, int year, int num_pieces, String img_url) {
+		this.num = num;
+		this.name = name;
+		this.year = year;
+		this.num_pieces = num_pieces;
+		this.img_url = img_url;
+	}
+	
 	public Set(String num, String name, int year, String theme, int num_pieces, String img_url, Piece_list set_pieces) {
 		this.num = num;
 		this.name = name;

@@ -12,6 +12,7 @@
 		
 		<script type="text/javascript">
 		
+			// This does setup for the page when it is first loaded
 			function setup() {
 				const num_items = "${num_items}";
 				
@@ -32,6 +33,7 @@
 				piecesFound();
 			}
 			
+			// This decreases the quantity of a piece found
 			function decreaseQuantityChecked(id) {
 				var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 				quantityChecked --;
@@ -46,6 +48,7 @@
 				 piecesFound();
 			}
 		
+			// This increases the quantity of a piece found
 			function increaseQuantityChecked(id) {
 				var quantity = document.getElementById("piece_quantity_checked_" + id).max;
 				var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
@@ -61,6 +64,7 @@
 				 piecesFound();
 			}
 		
+			// This calculates add displays the total quanity of a piece found
 			function piecesFound() {
 				var total = 0;
 				const num_items = "${num_items}";
@@ -87,6 +91,7 @@
 				document.getElementById("piecesNeededTotal").innerText = piecesNeededTotal;
 			}
 			
+			// This gets the total quantity of all pieces checked (only counting pieces where the total quantity has been found)
 			function getQuantityChecked() {
 				const array = [];
 				const num_items = "${num_items}";
@@ -107,6 +112,7 @@
 				window.location = "/set/${set.num}/pieces/save/?quantityChecked=" + array;
 			}
 			
+			// This calls a controller to export the checklist as a csv file
 			function exportList() {
 				var array = getQuantityChecked();
 				

@@ -152,6 +152,7 @@ public class PieceController {
         	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
         	JsonNode piece_listNode = mapper.readTree(piece_list_JSON);
         	
+        	// These get and store the uri to the next page containing set pieces
         	JsonNode nextNode = piece_listNode.path("next");
         	String next = nextNode.textValue();
 			
@@ -161,7 +162,7 @@ public class PieceController {
         	// This iterates through the JSON array of Lego pieces
             for (JsonNode pieceNode : piece_listNode) {
             	
-	        	// These search search for a path on the pieceNode Tree and return the node that matches this
+	        	// The following search search for a path on the pieceNode Tree and return the node that matches this
         		
         		// As the piece number, name and img url are stored as an element of part, I first have to get the part node to retrieve these
 	        	JsonNode partNode = pieceNode.path("part");
@@ -306,10 +307,5 @@ public class PieceController {
 				writer.writeNext(csv_data);
 			}
 		}
-	}
-	
-	@GetMapping("/import")
-	public String importPage(Model model) {
-		return "importPage";
 	}
 }

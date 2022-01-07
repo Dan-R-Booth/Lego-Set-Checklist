@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 	</head>
-	<body>
+	<body class="m-2">
 		<form method="POST" action="/openImport" enctype="multipart/form-data">
 			<label>Choose a file containing a saved checklist to import</label>
 			<br>
