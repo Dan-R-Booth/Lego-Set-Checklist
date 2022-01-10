@@ -60,12 +60,14 @@ public class SetController {
 	}
 	
 	@GetMapping("/set")
-	public String showSet(Model model, @RequestParam String set_number, String set_variant, RestTemplate restTemplate) {
+	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate) {
 		
-		// As there are different versions of certain sets denoted by '-' and the version number,
-		// the standard for all sets is '-1', so i added a second number box to show this with a
-		// default value of '1' and the numbers are then combined into a string with the dash in-between.
-		set_number += "-" + set_variant;
+		if (set_variant != null) {
+			// As there are different versions of certain sets denoted by '-' and the version number,
+			// the standard for all sets is '-1', so i added a second number box to show this with a
+			// default value of '1' and the numbers are then combined into a string with the dash in-between.
+			set_number += "-" + set_variant;
+		}
 		
 		Set set = getSet(model, set_number, restTemplate);
 		
@@ -156,6 +158,7 @@ public class SetController {
 	@GetMapping("sets/page/**")
 	public String showSetPage(Model model, HttpServletRequest request, RestTemplate restTemplate) {
 		
+		// These are used so I can get the URL to the Rebrickable API for the set page
 		String url = request.getRequestURI().toString();
 		String query = request.getQueryString();
 		

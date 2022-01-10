@@ -21,7 +21,7 @@
 				}
 				
 				if (next == "") {
-					document.getElementById("previousPageButton").disabled = true;
+					document.getElementById("nextPageButton").disabled = true;
 				}
 			}
 			
@@ -104,7 +104,7 @@
 						<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 100%" class="m-2">
 				    </div>
 				    <div class="col">
-				    	${set.num}
+				    	<a href="/set?set_number=${set.num}">${set.num}</a>
 				    </div>
 				    <div class="col">
 				     	${set.name}
