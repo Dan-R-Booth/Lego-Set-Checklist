@@ -6,9 +6,12 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -73,7 +76,8 @@ public class SetController {
 	@GetMapping("/sets")
 	public String showSets(Model model, @RequestParam String text, RestTemplate restTemplate) {
 		// This is the uri to a gets sets in the Rebrickable API that match the text search
-		String set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + text;
+		// The page size is set to 15, so that I don't get an error 429 Too Many Requests response from the Rebrickable API
+		String set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + text + "&page_size=15";
 
 		// The rest template created above is used to fetch the Lego set every time the website is loaded
 		// and here it uses the Lego sets uri to call the API and then transforms the returned JSON into a String
@@ -81,6 +85,10 @@ public class SetController {
 		
 		// This creates an array list to store all the Lego Sets that match the search condition
 		List<Set> sets =  new ArrayList<>();
+		
+		// These store the next and previous pages of results, declared here in case try statement fails
+		String next = "";
+		String previous = "";
 		
 		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
         try {
@@ -92,10 +100,10 @@ public class SetController {
         	
         	// These get and store the uri to the next and previous pages containing sets
         	JsonNode nextNode = set_listNode.path("next");
-        	String next = nextNode.textValue();
+        	next = nextNode.textValue();
         	
         	JsonNode previousNode = set_listNode.path("previous");
-        	String previous = previousNode.textValue();
+        	previous = previousNode.textValue();
 			
         	// This provides the root of the JSON element where the JSON array of Lego pieces is stored
         	set_listNode = set_listNode.path("results");
@@ -121,13 +129,13 @@ public class SetController {
             	int theme_id = theme_idNode.asInt();
             	// This calls the getTheme function to retrieve the theme name of a Lego set,
             	// which requires the theme_id to find this
-//            	String theme_name = getTheme(theme_id, restTemplate);
+            	String theme_name = getTheme(theme_id, restTemplate);
             	
             	// These return the data stored in JsonNodes
             	int num_pieces = num_piecesNode.intValue();
             	String img_url = img_urlNode.textValue();
             	
-            	Set set = new Set(num, name, year, num_pieces, img_url);
+            	Set set = new Set(num, name, year, theme_name, num_pieces, img_url);
             	
             	sets.add(set);
             }
@@ -140,6 +148,92 @@ public class SetController {
 		}
 		
         model.addAttribute("sets", sets);
+        model.addAttribute("nextPage", next);
+        model.addAttribute("previousPage", previous);
+		return "showSets";
+	}
+	
+	@GetMapping("sets/page/**")
+	public String showSetPage(Model model, HttpServletRequest request, RestTemplate restTemplate) {
+		
+		String url = request.getRequestURI().toString();
+		String query = request.getQueryString();
+		
+		url += "?" + query;
+		
+		String set_list_uri = url.split("sets/page/")[1];
+		
+		// The rest template created above is used to fetch the Lego set every time the website is loaded
+		// and here it uses the Lego sets uri to call the API and then transforms the returned JSON into a String
+		String set_list_JSON = restTemplate.getForObject(set_list_uri, String.class);
+		
+		// This creates an array list to store all the Lego Sets that match the search condition
+		List<Set> sets =  new ArrayList<>();
+		
+		// These store the next and previous pages of results, declared here in case try statement fails
+		String next = "";
+		String previous = "";
+		
+		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
+        try {
+        	// This provides functionality for reading and writing JSON
+        	ObjectMapper mapper = new ObjectMapper();
+        	
+        	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
+        	JsonNode set_listNode = mapper.readTree(set_list_JSON);
+        	
+        	// These get and store the uri to the next and previous pages containing sets
+        	JsonNode nextNode = set_listNode.path("next");
+        	next = nextNode.textValue();
+        	
+        	JsonNode previousNode = set_listNode.path("previous");
+        	previous = previousNode.textValue();
+			
+        	// This provides the root of the JSON element where the JSON array of Lego pieces is stored
+        	set_listNode = set_listNode.path("results");
+        	
+        	// This iterates through the JSON array of Lego sets and gets all the data for
+        	// each set except Lego Pieces as these will not be needed yet
+            for (JsonNode setNode : set_listNode) {
+        		
+            	// The following search search for a path on the setNode Tree and return the node that matches this
+            	JsonNode numNode = setNode.path("set_num");
+            	JsonNode nameNode = setNode.path("name");
+            	JsonNode yearNode = setNode.path("year");
+            	JsonNode theme_idNode = setNode.path("theme_id");
+            	JsonNode num_piecesNode = setNode.path("num_parts");
+            	JsonNode img_urlNode = setNode.path("set_img_url");
+	        	
+            	// These return the data stored in the JsonNodes
+            	String num = numNode.textValue();
+        		String name = nameNode.textValue();
+        		int year = yearNode.intValue();
+    			
+        		// This return the int stored in the JsonNode theme_idNode
+            	int theme_id = theme_idNode.asInt();
+            	// This calls the getTheme function to retrieve the theme name of a Lego set,
+            	// which requires the theme_id to find this
+            	String theme_name = getTheme(theme_id, restTemplate);
+            	
+            	// These return the data stored in JsonNodes
+            	int num_pieces = num_piecesNode.intValue();
+            	String img_url = img_urlNode.textValue();
+            	
+            	Set set = new Set(num, name, year, theme_name, num_pieces, img_url);
+            	
+            	sets.add(set);
+            }
+        }
+        catch (JsonMappingException e) {
+			e.printStackTrace();
+		}
+        catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+        model.addAttribute("sets", sets);
+        model.addAttribute("nextPage", next);
+        model.addAttribute("previousPage", previous);
 		return "showSets";
 	}
 	

@@ -11,6 +11,31 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
+			// This does setup for the page when it is first loaded
+			function setup() {
+				var previous = "${previousPage}";
+				var next = "${nextPage}";
+				
+				if (previous == "") {	
+					document.getElementById("previousPageButton").disabled = true;
+				}
+				
+				if (next == "") {
+					document.getElementById("previousPageButton").disabled = true;
+				}
+			}
+			
+			function previousPage() {
+				var previous = "${previousPage}";
+				
+				window.location = "/sets/page/" + previous;
+			}
+			
+			function nextPage() {
+				var next = "${nextPage}";
+				
+				window.location = "/sets/page/" + next;
+			}
 			
 		</script>
 		
@@ -97,6 +122,8 @@
 		    </div>
 		</c:forEach>
 
+		<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> Previous </button>
+		<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next </button>
 	</body>
 	
 </html>
