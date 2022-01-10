@@ -12,7 +12,8 @@
 		
 		<script type="text/javascript">
 			
-			// This saves all the changes to Piece quantity found to the class
+			// This checks if text has been inputted to the search box, and if it has then sends this text to a controller
+			// if not it will display an error to the user
 			function textSearch() {
 				var text = document.getElementById("text_search").value;
 				

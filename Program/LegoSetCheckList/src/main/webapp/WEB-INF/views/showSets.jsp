@@ -13,28 +13,45 @@
 		<script type="text/javascript">
 			// This does setup for the page when it is first loaded
 			function setup() {
-				var previous = "${previousPage}";
-				var next = "${nextPage}";
-				
-				if (previous == "") {	
+				// The following disables the previous button if their is not a previous page of results
+				// and the next button if their is not another page of results				
+				if ("${previousPage}" == "") {	
 					document.getElementById("previousPageButton").disabled = true;
 				}
 				
-				if (next == "") {
+				if ("${nextPage}" == "") {
 					document.getElementById("nextPageButton").disabled = true;
 				}
+				
+				// This adds the previously adds the text search previously entered to the search box
+				document.getElementById("text_search").value = "${searchText}";
 			}
 			
+			// The following two functions call the api with the either the previous or next page uri
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/sets/page/" + previous;
+				window.location = "/sets/page/${searchText}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/sets/page/" + next;
+				window.location = "/sets/page/${searchText}/uri/" + next;
+			}
+			
+			// This checks if text has been inputted to the search box, and if it has then sends this text to a controller
+			// if not it will display an error to the user
+			function textSearch() {
+				var text = document.getElementById("text_search").value;
+				
+				if (text == "") {
+					document.getElementById("text_search").setAttribute("class", "form-control col-md-3 is-invalid")
+					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger")
+				}
+				else {					
+					window.location = "/sets?text=" + text;
+				}
 			}
 			
 		</script>
@@ -45,7 +62,7 @@
 	
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
 		<div class="sticky-top" data-toggle="affix">
-		<!--
+		
 			<nav class="navbar navbar-expand-md navbar-dark bg-dark">
 				<div class="container">
 					<label class="navbar-brand mr-5 pr-5">Lego: Set Checklist Creator</label>
@@ -57,16 +74,19 @@
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav">
 							<li class="nav-item mx-5">
-								<a class="nav-link" onclick="saveProgress()"> <i class="fa fa-save"></i> Save CheckList</a>
-							</li>
-							<li class="nav-item mx-5">
-								<a class="nav-link" onclick="exportList()"> <i class="fa fa-download"></i> Export</a>
+								<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
+								<form class="form-inline" action="/sets">
+						
+									<input id="text_search" class="form-control mr-sm-2" name="text_search" type="text" placeholder="Search for Lego Set"/>
+								
+									<input class="btn btn-primary my-2 my-sm-0" type="button" value="Search" onclick="textSearch()"/>
+								</form>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</nav>
-		-->
+		
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div class="container-fluid border  bg-white">
 				<!-- This is the header for all the Lego sets, made using a bootstrap row and columns with column names -->
