@@ -76,21 +76,26 @@ public class SetController {
 	}
 	
 	@GetMapping("/sets")
-	public String showSets(Model model, @RequestParam("text") String searchText, RestTemplate restTemplate) {
+	public String showSets(Model model, @RequestParam("text") String searchText, @RequestParam(required = false) String sort, RestTemplate restTemplate) {
 		// This is the uri to a gets sets in the Rebrickable API that match the text search
-		// The page size is set to 15, so that I don't get an error 429 Too Many Requests response from the Rebrickable API
-		String set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + searchText + "&page_size=15";
+		// The page size is set to 12, so that I don't get an error 429 Too Many Requests response from the Rebrickable API
+		String set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + searchText + "&page_size=12";
 
+		if (sort != null) {
+			set_list_uri += "&ordering=" + sort;
+			model.addAttribute("sort", sort);
+		}
+		
 		// This calls the getSets class to get all the Lego Sets that match the search condition
-				List<Set> sets =  getSets(model, set_list_uri, restTemplate);
+		List<Set> sets =  getSets(model, set_list_uri, restTemplate);
 		
         model.addAttribute("searchText", searchText);
         model.addAttribute("sets", sets);
 		return "showSets";
 	}
 	
-	@GetMapping("sets/page/{text}/uri/**")
-	public String showSetPage(Model model, @PathVariable("text") String searchText, RestTemplate restTemplate, HttpServletRequest request) {
+	@GetMapping("sets/page/{text}/sort={sort}/uri/**")
+	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable(required = false) String sort, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString();
@@ -98,10 +103,15 @@ public class SetController {
 		url += "?" + query;
 		String set_list_uri = url.split("/uri/")[1];
 		
+		if (sort != null) {
+			model.addAttribute("sort", sort);
+		}
+		
 		// This calls the getSets class to get all the Lego Sets that match the search condition
 		List<Set> sets =  getSets(model, set_list_uri, restTemplate);
 		
         model.addAttribute("searchText", searchText);
+        model.addAttribute("current", set_list_uri);
         model.addAttribute("sets", sets);
 		return "showSets";
 	}

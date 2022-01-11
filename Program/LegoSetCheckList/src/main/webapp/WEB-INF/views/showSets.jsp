@@ -25,19 +25,26 @@
 				
 				// This adds the previously adds the text search previously entered to the search box
 				document.getElementById("text_search").value = "${searchText}";
+				
+				if ("${sort}" == "theme_id") {
+					document.getElementById("themeSortIcon").setAttribute("class","fa fa-sort-down");
+				}
+				else if ("${sort}" == "-theme_id") {
+					document.getElementById("themeSortIcon").setAttribute("class","fa fa-sort-up");
+				}
 			}
 			
 			// The following two functions call the api with the either the previous or next page uri
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/sets/page/${searchText}/uri/" + previous;
+				window.location = "/sets/page/${searchText}/sort=${sort}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/sets/page/${searchText}/uri/" + next;
+				window.location = "/sets/page/${searchText}/sort=${sort}/uri/" + next;
 			}
 			
 			// This checks if text has been inputted to the search box, and if it has then sends this text to a controller
@@ -46,11 +53,24 @@
 				var text = document.getElementById("text_search").value;
 				
 				if (text == "") {
-					document.getElementById("text_search").setAttribute("class", "form-control col-md-3 is-invalid")
-					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger")
+					document.getElementById("text_search").setAttribute("class", "form-control mr-sm-2 is-invalid");
+					document.getElementById("text_search").setAttribute("data-bs-toggle","tooltip");
+					document.getElementById("text_search").setAttribute("title","Cannot be Empty");
+					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
 					window.location = "/sets?text=" + text;
+				}
+			}
+			
+			function themeSort() {
+				var iconClass = document.getElementById("themeSortIcon").className;
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
+					window.location = "/sets?text=${searchText}&sort=theme_id";
+				}
+				else if (iconClass == "fa fa-sort-down") {
+					window.location = "/sets?text=${searchText}&sort=-theme_id";
 				}
 			}
 			
@@ -95,19 +115,19 @@
 						<p class="h6">Set Image:</p>
 					</div>
 					<div class="col">
-						<p class="h6">Set Number:</p>
+						<p class="h6">Set Number: <i class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6">Set Name:</p>
+						<p class="h6">Set Name: <i class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6">Year Released:</p>
+						<p class="h6">Year Released: <i class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6">Theme:</p>
+						<p class="h6" onclick="themeSort()" data-bs-toggle="tooltip" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6">Number of pieces:</p>
+						<p class="h6">Number of pieces: <i class="fa fa-sort"></i></p>
 					</div>
 				</div>
 			</div>

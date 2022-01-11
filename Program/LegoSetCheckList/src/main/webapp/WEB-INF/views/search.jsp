@@ -18,8 +18,10 @@
 				var text = document.getElementById("text_search").value;
 				
 				if (text == "") {
-					document.getElementById("text_search").setAttribute("class", "form-control col-md-3 is-invalid")
-					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger")
+					document.getElementById("text_search").setAttribute("class", "form-control col-md-3 is-invalid");
+					document.getElementById("text_search").setAttribute("data-bs-toggle","tooltip");
+					document.getElementById("text_search").setAttribute("title","Cannot be Empty");
+					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
 					window.location = "/sets?text=" + text;
