@@ -26,11 +26,18 @@
 				// This adds the previously adds the text search previously entered to the search box
 				document.getElementById("text_search").value = "${searchText}";
 				
+				// If their is a sort this sets the correct column to the correct sort symbol
 				if ("${sort}" == "theme_id") {
 					document.getElementById("themeSortIcon").setAttribute("class","fa fa-sort-down");
 				}
 				else if ("${sort}" == "-theme_id") {
 					document.getElementById("themeSortIcon").setAttribute("class","fa fa-sort-up");
+				}
+				else if ("${sort}" == "year") {
+					document.getElementById("yearSortIcon").setAttribute("class","fa fa-sort-numeric-asc");
+				}
+				else if ("${sort}" == "-year") {
+					document.getElementById("yearSortIcon").setAttribute("class","fa fa-sort-numeric-desc");
 				}
 			}
 			
@@ -63,6 +70,19 @@
 				}
 			}
 			
+			// This calls the the controller setting the sort parametre as year
+			function yearSort() {
+				var iconClass = document.getElementById("yearSortIcon").className;
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
+					window.location = "/sets?text=${searchText}&sort=year";
+				}
+				else if (iconClass == "fa fa-sort-numeric-asc") {
+					window.location = "/sets?text=${searchText}&sort=-year";
+				}
+			}
+			
+			// This calls the the controller setting the sort parametre as theme_id
 			function themeSort() {
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
@@ -121,7 +141,7 @@
 						<p class="h6">Set Name: <i class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6">Year Released: <i class="fa fa-sort"></i></p>
+						<p class="h6" onclick="yearSort()" data-bs-toggle="tooltip" title="Sort by Year">Year Released: <i id="yearSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
 						<p class="h6" onclick="themeSort()" data-bs-toggle="tooltip" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></p>
