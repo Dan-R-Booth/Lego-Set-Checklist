@@ -75,8 +75,8 @@ public class SetController {
 		return "showSet";
 	}
 	
-	@GetMapping("sets/page/text={text}/sort={sort}/uri/**")
-	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable(required = false) String sort, RestTemplate restTemplate, HttpServletRequest request) {
+	@GetMapping("sets/page/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/uri/**")
+	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable(required = false) String sort, @PathVariable(required = false) String minYear, @PathVariable(required = false) String maxYear, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString();
@@ -90,9 +90,22 @@ public class SetController {
 			set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + searchText + "&page_size=12";
 		}
 		
+		// If there is a attribute the user would like to sort by this is added to the uri and the model
 		if (sort != null) {
 			set_list_uri += "&ordering=" + sort;
 			model.addAttribute("sort", sort);
+		}
+		
+		// If there is a min year the user would like to filter by this is added to the uri and the model
+		if (minYear != null) {
+			set_list_uri += "&min_year=" + minYear;
+			model.addAttribute("minYear", minYear);
+		}
+		
+		// If there is a max year the user would like to filter by this is added to the uri and the model
+		if (minYear != null) {
+			set_list_uri += "&max_year=" + maxYear;
+			model.addAttribute("maxYear", maxYear);
 		}
 		
 		// The rest template created above is used to fetch the Lego set every time the website is loaded

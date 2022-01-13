@@ -24,7 +24,7 @@
 					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
-					window.location = "/sets/page/text=" + text + "/sort=/uri/"
+					window.location = "/sets/page/text=" + text + "/sort=/minYear=/maxYear=/uri/"
 				}
 			}
 		</script>
@@ -44,7 +44,7 @@
 		
 		<p>Or by searching for a set from a list of sets</p>
 		
-		<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
+		<!-- This creates a text box where users can enter text to search and a button to display the Lego sets that match this search -->
 		<form action="/sets">
 
 				<input id="text_search" class="form-control col-md-3" name="text_search" type="text" placeholder="Search for Lego Set"/>

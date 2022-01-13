@@ -7,6 +7,12 @@
 		
 		<!--Bootstrap style sheet, used for page styling, as well as helping to resize page for different screen sizes -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+		<!-- jQuery library, needed for Bootstrap JavaScript -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+		<!-- Bootstrap JavaScript for page styling -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
@@ -39,19 +45,23 @@
 				else if ("${sort}" == "-year") {
 					document.getElementById("yearSortIcon").setAttribute("class","fa fa-sort-numeric-desc");
 				}
+				
+				// These add the current min year and max year filters to their number boxes
+				document.getElementById("minYearBox").value = "${minYear}";
+				document.getElementById("maxYearBox").value = "${maxYear}";
 			}
 			
 			// The following two functions call the api with the either the previous or next page uri
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/sets/page/text=${searchText}/sort=${sort}/uri/" + previous;
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/sets/page/text=${searchText}/sort=${sort}/uri/" + next;
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/uri/" + next;
 			}
 			
 			// This checks if text has been inputted to the search box, and if it has then sends this text to a controller
@@ -66,7 +76,7 @@
 					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
-					window.location = "/sets/page/text=" + text + "/sort=/uri/";
+					window.location = "/sets/page/text=" + text + "/sort=/minYear=${minYear}/maxYear=${maxYear}/uri/";
 				}
 			}
 			
@@ -75,10 +85,10 @@
 				var iconClass = document.getElementById("yearSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					window.location = "/sets/page/text=${searchText}/sort=year/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=year/minYear=${minYear}/maxYear=${maxYear}/uri/";
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					window.location = "/sets/page/text=${searchText}/sort=-year/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=-year/minYear=${minYear}/maxYear=${maxYear}/uri/";
 				}
 			}
 			
@@ -87,11 +97,19 @@
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					window.location = "/sets/page/text=${searchText}/sort=theme_id/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/uri/";
 				}
 				else if (iconClass == "fa fa-sort-down") {
-					window.location = "/sets/page/text=${searchText}/sort=-theme_id/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/uri/";
 				}
+			}
+			
+			// This calls the controller with all the filters that the user wants to apply to the list
+			function filter() {
+				var minYear = document.getElementById("minYearBox").value;
+				var maxYear = document.getElementById("maxYearBox").value;
+				
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/uri/";
 			}
 			
 		</script>
@@ -114,13 +132,29 @@
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav">
 							<li class="nav-item mx-5">
-								<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
+								<!-- This creates a text box where users can enter text to search and a button to display the Lego sets that match this search -->
 								<form class="form-inline" action="/sets">
 						
 									<input id="text_search" class="form-control mr-sm-2" name="text_search" type="text" placeholder="Search for Lego Set"/>
 								
 									<input class="btn btn-primary my-2 my-sm-0" type="button" value="Search" onclick="textSearch()"/>
 								</form>
+							</li>
+							<li class="nav-item dropdown mx-5">
+								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+									<i class="fa fa-filter"></i> Filter
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li class="nav-item mx-5">
+										<form class="form-inline" action="/sets">
+							
+											Minimum Year: <input id="minYearBox" name="minYearBox" type="number" min=0 max="9999"/>
+											Maximum Year: <input id="maxYearBox" name="maxYearBox" type="number" min=0 max="9999"/>
+										
+											<input class="btn btn-primary my-2 my-sm-0" type="button" value="Filter" onclick="filter()"/>
+										</form>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</div>
