@@ -24,7 +24,7 @@
 					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
-					window.location = "/sets?text=" + text;
+					window.location = "/sets/page/text=" + text + "/sort=/uri/"
 				}
 			}
 		</script>

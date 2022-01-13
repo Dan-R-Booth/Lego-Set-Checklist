@@ -45,13 +45,13 @@
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/sets/page/${searchText}/sort=${sort}/uri/" + previous;
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/sets/page/${searchText}/sort=${sort}/uri/" + next;
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/uri/" + next;
 			}
 			
 			// This checks if text has been inputted to the search box, and if it has then sends this text to a controller
@@ -66,7 +66,7 @@
 					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
-					window.location = "/sets?text=" + text;
+					window.location = "/sets/page/text=" + text + "/sort=/uri/";
 				}
 			}
 			
@@ -75,10 +75,10 @@
 				var iconClass = document.getElementById("yearSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					window.location = "/sets?text=${searchText}&sort=year";
+					window.location = "/sets/page/text=${searchText}/sort=year/uri/";
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					window.location = "/sets?text=${searchText}&sort=-year";
+					window.location = "/sets/page/text=${searchText}/sort=-year/uri/";
 				}
 			}
 			
@@ -87,10 +87,10 @@
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					window.location = "/sets?text=${searchText}&sort=theme_id";
+					window.location = "/sets/page/text=${searchText}/sort=theme_id/uri/";
 				}
 				else if (iconClass == "fa fa-sort-down") {
-					window.location = "/sets?text=${searchText}&sort=-theme_id";
+					window.location = "/sets/page/text=${searchText}/sort=-theme_id/uri/";
 				}
 			}
 			
