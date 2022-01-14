@@ -30,7 +30,7 @@ import lego.checklist.domain.Theme;
 
 @Controller
 public class MainController {
-	public Dictionary<Integer, Theme> themes = new Hashtable<Integer, Theme>();
+	public static Dictionary<Integer, Theme> themes = new Hashtable<Integer, Theme>();
 	
 //	// This creates a RestTemplate JavaBean used to perform HTTP request to a uri
 //	// I am using the 
@@ -97,7 +97,7 @@ public class MainController {
 	        	int parent_id = parent_idNode.asInt();
 	        	String name = nameNode.textValue();
 				
-				Theme theme = new Theme(id, parent_id, name);
+				Theme theme = new Theme(name, parent_id);
 				
 				themes.put(id, theme);
         	}

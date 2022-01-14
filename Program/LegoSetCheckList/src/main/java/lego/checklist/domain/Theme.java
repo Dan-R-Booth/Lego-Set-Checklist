@@ -1,27 +1,21 @@
 package lego.checklist.domain;
 
 public class Theme {
-	private int id;
-	
-	private int parent_id;
 	
 	private String name;
 	
-	public Theme(int id, int parent_id, String name) {
-		this.id = id;
-		this.parent_id = parent_id;
+	private int parent_id;
+	
+	public Theme(String name, int parent_id) {
 		this.name = name;
+		this.parent_id = parent_id;
 	}
 
-	protected int getId() {
-		return id;
-	}
-
-	protected int getParent_id() {
+	public int getParent_id() {
 		return parent_id;
 	}
 
-	protected String getName() {
+	public String getName() {
 		return name;
 	}
 }

@@ -27,6 +27,7 @@ import com.opencsv.CSVReader;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
+import lego.checklist.domain.Theme;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
@@ -87,7 +88,7 @@ public class SetController {
 		if (set_list_uri.equals("?null")) {
 			// This is the uri to a gets sets in the Rebrickable API that match the text search
 			// The page size is set to 12, so that I don't get an error 429 Too Many Requests response from the Rebrickable API
-			set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + searchText + "&page_size=12";
+			set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + searchText;
 		}
 		
 		// If there is a attribute the user would like to sort by this is added to the uri and the model
@@ -158,7 +159,7 @@ public class SetController {
             	int theme_id = theme_idNode.asInt();
             	// This calls the getTheme function to retrieve the theme name of a Lego set,
             	// which requires the theme_id to find this
-            	String theme_name = getTheme(theme_id, restTemplate);
+            	String theme_name = getTheme(theme_id);
             	
             	// These return the data stored in JsonNodes
             	int num_pieces = num_piecesNode.intValue();
@@ -227,7 +228,7 @@ public class SetController {
         	int theme_id = theme_idNode.asInt();
         	// This calls the getTheme function to retrieve the theme name of a Lego set,
         	// which requires the theme_id to find this
-        	theme_name = getTheme(theme_id, restTemplate);
+        	theme_name = getTheme(theme_id);
         	
         	// These return the data stored in JsonNodes
         	num_pieces = num_piecesNode.intValue();
@@ -249,46 +250,20 @@ public class SetController {
 		return set;
 	}
 	
-	private String getTheme(int theme_id, RestTemplate restTemplate) {
-        String theme_name = "";
-		
-        // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
-		try {
-			// This is the uri to a specific theme in the Rebrickable API
-			String theme_uri = rebrickable_uri + "themes/" + theme_id + "/?key=" + rebrickable_api_key;
-			
-			// The rest template is used to fetch the Lego set every time the website is loaded
-			String theme_JSON = restTemplate.getForObject(theme_uri, String.class);
-			
-			// This provides functionality for reading and writing JSON
-			ObjectMapper mapper = new ObjectMapper();
-	        
-			// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
-	        JsonNode themeNode = mapper.readTree(theme_JSON);
-	        
-	        // These search search for a path on the setNode Tree and return the node that matches this
-	        JsonNode theme_nameNode = themeNode.path("name");
-	        JsonNode theme_parent_idNode = themeNode.path("parent_id");
+	private String getTheme(int theme_id) {
+        Theme theme = MainController.themes.get(theme_id);
 
-	        
-	        // Checks to see if the theme parent is null
-			// If it is not null getTheme() recursively calls itself with the theme_parent_id until there are no more parents,
-			// and returns each of these parent theme names in front of their child theme name 
-			if (!theme_parent_idNode.isNull()) {
-				int theme_parent_id = theme_parent_idNode.intValue();
-				theme_name += getTheme(theme_parent_id, restTemplate) + ", " +  theme_nameNode.textValue();
-			}
-			else {
-				// This return the data stored in the JsonNode theme_nameNode
-				theme_name = theme_nameNode.textValue();
-			}
-			
+        String theme_name = "";
+        
+        // Checks to see if the theme's parent_id is 0, meaning their is no parent
+		// If it is not null getTheme() recursively calls itself with the parent_id until there are no more parents,
+		// and returns each of these parent theme names in front of child theme name 
+		if (theme.getParent_id() != 0) {
+			theme_name += getTheme(theme.getParent_id()) + ", " +  theme.getName();
 		}
-		catch (JsonMappingException e) {
-			e.printStackTrace();
-		}
-		catch (JsonProcessingException e) {
-			e.printStackTrace();
+		else {
+			// This return the name of the theme stored in the theme object
+			theme_name = theme.getName();
 		}
 		
 		return theme_name;
