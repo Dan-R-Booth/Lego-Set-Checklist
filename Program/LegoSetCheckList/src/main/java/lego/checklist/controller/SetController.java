@@ -249,7 +249,6 @@ public class SetController {
 		return set;
 	}
 	
-	@GetMapping
 	private String getTheme(int theme_id, RestTemplate restTemplate) {
         String theme_name = "";
 		

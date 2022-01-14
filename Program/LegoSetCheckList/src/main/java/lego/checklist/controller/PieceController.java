@@ -138,10 +138,9 @@ public class PieceController {
 	}
 	
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
-	// If there are other pages containg pieces on the api, this class will then be called recursively to get all of these pieces
+	// If there are other pages containing pieces on the api, this class will then be called recursively to get all of these pieces
 	public static List<Piece> getPiece_listPage(String piece_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
-		// The rest template created above is used to fetch the Lego set every time the website is loaded
-		// and here it uses the Lego set piece uri to call the API and then transforms the returned JSON into a String
+		// This uses restTemplate and the Lego set piece uri to call the API and then transforms the returned JSON into a String
 		String piece_list_JSON = restTemplate.getForObject(piece_list_uri, String.class);
 		
 		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
@@ -196,7 +195,6 @@ public class PieceController {
             // If their is another page of pieces that needed to be collected from the api here this page will be called recursively using this class
             // and the piece list will be sent each time so when it is then returned it will contain all these pieces
             if (next != null) {
-            	System.out.println("if");
             	piece_list_uri = next + "&key=" + rebrickable_api_key;
             	pieces = getPiece_listPage(piece_list_uri, pieces, restTemplate);
             }

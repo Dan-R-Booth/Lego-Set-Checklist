@@ -53,10 +53,9 @@ public class MinifigureController {
 	}
 	
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
-	// If there are other pages containg pieces on the api, this class will then be called recursively to get all of these pieces
+	// If there are other pages containing pieces on the api, this class will then be called recursively to get all of these pieces
 	public static List<Minifigure> getMinifigure_ListPage(String minifigure_list_uri, List<Minifigure> minifigures, RestTemplate restTemplate) {
-		// The rest template created above is used to fetch the Lego set every time the website is loaded
-		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
+		// This uses restTemplate and the Lego set uri to call the API and then transforms the returned JSON into a String
 		String minifigure_JSON = restTemplate.getForObject(minifigure_list_uri, String.class);
 		
 		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
@@ -81,7 +80,7 @@ public class MinifigureController {
             	// This removes any pieces that are classed as spare pieces for the Lego set and are therefore not needed to build it
             	if (!spare_partNode.asBoolean()) {
             	
-            		// These search search for a path on the setNode Tree and return the node that matches this
+            		// These search for a path on the setNode Tree and return the node that matches this
                 	JsonNode numNode = minifigureNode.path("set_num");
                 	JsonNode nameNode = minifigureNode.path("set_name");
                 	JsonNode img_urlNode = minifigureNode.path("set_img_url");
@@ -117,7 +116,6 @@ public class MinifigureController {
         					piece.setQuantity_checked(quantity_checked);
         				}
         			}
-            		
                 	
                 	// This adds all the pieces in the Lego Set into the piece list class 
                 	Piece_list piece_list = new Piece_list(pieces);
@@ -131,7 +129,6 @@ public class MinifigureController {
             // If their is another page of pieces that needed to be collected from the api here this page will be called recursively using this class
             // and the piece list will be sent each time so when it is then returned it will contain all these pieces
             if (next != null) {
-            	System.out.println("if");
             	minifigure_list_uri = next + "&key=" + rebrickable_api_key;
             	minifigures = getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
             }
