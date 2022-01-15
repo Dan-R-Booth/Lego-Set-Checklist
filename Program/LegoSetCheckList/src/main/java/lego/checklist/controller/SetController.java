@@ -76,8 +76,8 @@ public class SetController {
 		return "showSet";
 	}
 	
-	@GetMapping("sets/page/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/uri/**")
-	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable(required = false) String sort, @PathVariable(required = false) String minYear, @PathVariable(required = false) String maxYear, RestTemplate restTemplate, HttpServletRequest request) {
+	@GetMapping("sets/page/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/theme_id={theme_id}/uri/**")
+	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString();
@@ -87,26 +87,31 @@ public class SetController {
 		
 		if (set_list_uri.equals("?null")) {
 			// This is the uri to a gets sets in the Rebrickable API that match the text search
-			// The page size is set to 12, so that I don't get an error 429 Too Many Requests response from the Rebrickable API
 			set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + searchText;
 		}
 		
 		// If there is a attribute the user would like to sort by this is added to the uri and the model
-		if (sort != null) {
+		if (sort != "") {
 			set_list_uri += "&ordering=" + sort;
 			model.addAttribute("sort", sort);
 		}
 		
 		// If there is a min year the user would like to filter by this is added to the uri and the model
-		if (minYear != null) {
+		if (minYear != "") {
 			set_list_uri += "&min_year=" + minYear;
 			model.addAttribute("minYear", minYear);
 		}
 		
 		// If there is a max year the user would like to filter by this is added to the uri and the model
-		if (minYear != null) {
+		if (minYear != "") {
 			set_list_uri += "&max_year=" + maxYear;
 			model.addAttribute("maxYear", maxYear);
+		}
+		
+		// If there is a theme_id the user would like to filter by this is added to the uri and the model
+		if (filteredTheme_id != "") {
+			set_list_uri += "&theme_id=" + filteredTheme_id;
+			model.addAttribute("theme_id", filteredTheme_id);
 		}
 		
 		// The rest template created above is used to fetch the Lego set every time the website is loaded
@@ -157,9 +162,11 @@ public class SetController {
     			
         		// This return the int stored in the JsonNode theme_idNode
             	int theme_id = theme_idNode.asInt();
-            	// This calls the getTheme function to retrieve the theme name of a Lego set,
-            	// which requires the theme_id to find this
-            	String theme_name = getTheme(theme_id);
+            	
+            	// This gets the Theme relating to the theme_id from the HashMap themes set on start up in the theme_controller
+            	// and then uses this theme to display the theme name to the user
+            	Theme theme = ThemeController.themes.get(theme_id);
+            	String theme_name = theme.getName();
             	
             	// These return the data stored in JsonNodes
             	int num_pieces = num_piecesNode.intValue();
@@ -177,12 +184,13 @@ public class SetController {
 			e.printStackTrace();
 		}
         
-        model.addAttribute("nextPage", next);
         model.addAttribute("previousPage", previous);
-		
+        model.addAttribute("nextPage", next);
         model.addAttribute("searchText", searchText);
         model.addAttribute("current", set_list_uri);
         model.addAttribute("sets", sets);
+        model.addAttribute("themes", ThemeController.themes);
+        model.addAttribute("themeList", ThemeController.themeList);
 		return "showSets";
 	}
 	
@@ -226,9 +234,11 @@ public class SetController {
 			
     		// This return the int stored in the JsonNode theme_idNode
         	int theme_id = theme_idNode.asInt();
-        	// This calls the getTheme function to retrieve the theme name of a Lego set,
-        	// which requires the theme_id to find this
-        	theme_name = getTheme(theme_id);
+        	
+        	// This gets the Theme relating to the theme_id from the HashMap themes set on start up in the theme_controller
+        	// and then uses this theme to display the theme name to the user
+        	Theme theme = ThemeController.themes.get(theme_id);
+        	theme_name = theme.getName();
         	
         	// These return the data stored in JsonNodes
         	num_pieces = num_piecesNode.intValue();
@@ -248,25 +258,6 @@ public class SetController {
 		Set set = new Set(num, name, year, theme_name, num_pieces, img_url, piece_list);
 
 		return set;
-	}
-	
-	private String getTheme(int theme_id) {
-        Theme theme = MainController.themes.get(theme_id);
-
-        String theme_name = "";
-        
-        // Checks to see if the theme's parent_id is 0, meaning their is no parent
-		// If it is not null getTheme() recursively calls itself with the parent_id until there are no more parents,
-		// and returns each of these parent theme names in front of child theme name 
-		if (theme.getParent_id() != 0) {
-			theme_name += getTheme(theme.getParent_id()) + ", " +  theme.getName();
-		}
-		else {
-			// This return the name of the theme stored in the theme object
-			theme_name = theme.getName();
-		}
-		
-		return theme_name;
 	}
 	
 	@GetMapping("/import")

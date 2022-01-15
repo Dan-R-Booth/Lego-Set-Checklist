@@ -55,13 +55,13 @@
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/uri/" + previous;
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/uri/" + next;
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/" + next;
 			}
 			
 			// This checks if text has been inputted to the search box, and if it has then sends this text to a controller
@@ -76,7 +76,7 @@
 					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
-					window.location = "/sets/page/text=" + text + "/sort=/minYear=${minYear}/maxYear=${maxYear}/uri/";
+					window.location = "/sets/page/text=" + text + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -85,10 +85,10 @@
 				var iconClass = document.getElementById("yearSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					window.location = "/sets/page/text=${searchText}/sort=year/minYear=${minYear}/maxYear=${maxYear}/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=year/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					window.location = "/sets/page/text=${searchText}/sort=-year/minYear=${minYear}/maxYear=${maxYear}/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=-year/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -97,10 +97,10 @@
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					window.location = "/sets/page/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
 				}
 				else if (iconClass == "fa fa-sort-down") {
-					window.location = "/sets/page/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/uri/";
+					window.location = "/sets/page/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -109,7 +109,13 @@
 				var minYear = document.getElementById("minYearBox").value;
 				var maxYear = document.getElementById("maxYearBox").value;
 				
-				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/uri/";
+				var themeFilter = document.querySelector('input[name="themeFilter"]:checked');
+				var theme_id = "";
+				if (themeFilter.value != "All") {
+					theme_id = themeFilter.value;
+				}
+				
+				window.location = "/sets/page/text=${searchText}/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/theme_id=" + theme_id + "/uri/";
 			}
 			
 		</script>
@@ -139,6 +145,22 @@
 								
 									<input class="btn btn-primary my-2 my-sm-0" type="button" value="Search" onclick="textSearch()"/>
 								</form>
+							</li>
+							<li class="nav-item dropdown mx-5">
+								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+									<i class="fa fa-filter"></i> Filter
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li class="nav-item mx-5">
+										<form class="form-inline" action="/sets">
+							
+											Minimum Year: <input id="minYearBox" name="minYearBox" type="number" min=0 max="9999"/>
+											Maximum Year: <input id="maxYearBox" name="maxYearBox" type="number" min=0 max="9999"/>
+										
+											<input class="btn btn-primary my-2 my-sm-0" type="button" value="Filter" onclick="filter()"/>
+										</form>
+									</li>
+								</ul>
 							</li>
 							<li class="nav-item dropdown mx-5">
 								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
@@ -187,10 +209,10 @@
 			</div>
 		</div>
 	    
-		<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
+		<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
 		<c:forEach items="${sets}" var="set" varStatus="loop">
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
-			<div id="piece_${loop.index}" class="container-fluid border">
+			<div id="set_${loop.index}" class="container-fluid border">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 				<div class="row align-items-center my-3">
 				    <div class="col">
@@ -218,6 +240,20 @@
 
 		<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> Previous </button>
 		<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next </button>
+		
+		<div class="form-check">
+			<input type="radio" name="themeFilter" id="All" checked>
+		  	<label class="form-check-label" for="0"> All Themes </label>
+  		</div>
+		
+		<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
+		<c:forEach items="${themeList}" var="theme" varStatus="themeLoop">
+			<div class="form-check">
+				<input type="radio" name="themeFilter" id="${themeLoop.index}" value="${theme.id}">
+			  	<label class="form-check-label" for="${themeLoop.index}"> ${theme.id}: ${theme.name} </label>
+			</div>
+		</c:forEach>
+		<button type="button" class="btn btn-primary my-2 my-sm-0" onclick="filter()"> Filter </button>
 	</body>
 	
 </html>

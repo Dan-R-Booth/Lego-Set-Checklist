@@ -24,7 +24,7 @@
 					document.getElementById("text_searchEmptyHelp").setAttribute("class", "alert alert-danger");
 				}
 				else {					
-					window.location = "/sets/page/text=" + text + "/sort=/minYear=/maxYear=/uri/"
+					window.location = "/sets/page/text=" + text + "/sort=/minYear=/maxYear=/theme_id=/uri/"
 				}
 			}
 		</script>
