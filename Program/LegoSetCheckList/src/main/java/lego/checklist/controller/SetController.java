@@ -55,11 +55,6 @@ public class SetController {
 	// The api key used to access the Rebrickable api
 	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 	
-	@GetMapping("/search")
-	public String search(Model model) {
-		return "search";
-	}
-	
 	@GetMapping("/set")
 	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate) {
 		
@@ -76,7 +71,7 @@ public class SetController {
 		return "showSet";
 	}
 	
-	@GetMapping("sets/page/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/theme_id={theme_id}/uri/**")
+	@GetMapping("/search/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/theme_id={theme_id}/uri/**")
 	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
@@ -186,12 +181,12 @@ public class SetController {
         
         model.addAttribute("previousPage", previous);
         model.addAttribute("nextPage", next);
-        model.addAttribute("searchText", searchText);
         model.addAttribute("current", set_list_uri);
+        model.addAttribute("searchText", searchText);
         model.addAttribute("sets", sets);
         model.addAttribute("themes", ThemeController.themes);
         model.addAttribute("themeList", ThemeController.themeList);
-		return "showSets";
+		return "search";
 	}
 	
 	private Set getSet(Model model, String set_number, RestTemplate restTemplate) {
