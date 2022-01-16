@@ -168,18 +168,18 @@
 				<div class="container-fluid">
 					<label class="navbar-brand"> <i class="fa fa-filter"></i> Filter: </label>
 	
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#filterBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
 	
-					<div class="collapse navbar-collapse" id="navbar">
+					<div class="collapse navbar-collapse" id="filterBar">
 						<!-- This creates a text box where users can enter text to search and a button to display the Lego sets that match this search -->
 						<form class="container-fluid d-flex row">
 							<div class="col-auto form-floating">
 								<input id="text_search" class="form-control" name="text_search" type="text" placeholder="Search for Lego Set"/>
 								<label class="text-secondary" for="text_search"> Search Text </label>
 							</div>
-							<div class="col-auto mt-3">
+							<div class="col-auto mt-2">
 								<ul class="navbar-nav">
 									<li class="nav-item dropdown">
 										<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
