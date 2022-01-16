@@ -1,6 +1,8 @@
 package lego.checklist.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class ThemeController {
 	
 	public static void createThemeMap() {
 		// This is the uri to all Lego themes in the Rebrickable API
-		String themes_uri = rebrickable_uri + "themes/?key=" + rebrickable_api_key;
+		String themes_uri = rebrickable_uri + "themes/?ordering=name&key=" + rebrickable_api_key;
 
 		RestTemplate restTemplate = new RestTemplate();
 		
@@ -61,6 +63,14 @@ public class ThemeController {
 			
 			System.out.println(theme.getId() + ": " + fullThemeName);
 		}
+		
+		// This sorts the list of themes so they are in alphabetical order by name
+		Collections.sort(themeList, new Comparator<Theme>() {
+			@Override
+			public int compare(Theme theme1, Theme theme2) {
+				return theme1.getName().compareTo(theme2.getName());
+			}
+		});
 	}
 	
 	public static String getTheme(int theme_id) {

@@ -164,17 +164,49 @@
 							</li>
 							<li class="nav-item dropdown mx-5">
 								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-									<i class="fa fa-filter"></i> Filter
+									<i class="fa fa-filter"></i> Filters
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 									<li class="nav-item mx-5">
-										<form class="form-inline" action="/sets">
-							
-											Minimum Year: <input id="minYearBox" name="minYearBox" type="number" min=0 max="9999"/>
-											Maximum Year: <input id="maxYearBox" name="maxYearBox" type="number" min=0 max="9999"/>
-										
-											<input class="btn btn-primary my-2 my-sm-0" type="button" value="Filter" onclick="filter()"/>
-										</form>
+										<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+											<div class="container">
+												<label class="navbar-brand mr-5 pr-5">Lego: Set Checklist Creator</label>
+								
+												<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+													<span class="navbar-toggler-icon"></span>
+												</button>
+								
+												<div class="collapse navbar-collapse" id="navbar">
+													<ul class="navbar-nav">
+														<li class="nav-item mx-5">
+															<!-- This creates a text box where users can enter text to search and a button to display the Lego sets that match this search -->
+															<form class="form-inline" action="/sets">
+													
+																<input id="text_search" class="form-control mr-sm-2" name="text_search" type="text" placeholder="Search for Lego Set"/>
+															
+																<input class="btn btn-primary my-2 my-sm-0" type="button" value="Search" onclick="textSearch()"/>
+															</form>
+														</li>
+														<li class="nav-item dropdown mx-5">
+															<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+																<i class="fa fa-filter"></i> Filter
+															</a>
+															<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+																<li class="nav-item mx-5">
+																	<form class="form-inline" action="/sets">
+														
+																		Minimum Year: <input id="minYearBox" name="minYearBox" type="number" min=0 max="9999"/>
+																		Maximum Year: <input id="maxYearBox" name="maxYearBox" type="number" min=0 max="9999"/>
+																	
+																		<input class="btn btn-primary my-2 my-sm-0" type="button" value="Filter" onclick="filter()"/>
+																	</form>
+																</li>
+															</ul>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</nav>
 									</li>
 								</ul>
 							</li>
@@ -250,7 +282,7 @@
 		<c:forEach items="${themeList}" var="theme" varStatus="themeLoop">
 			<div class="form-check">
 				<input type="radio" name="themeFilter" id="${themeLoop.index}" value="${theme.id}">
-			  	<label class="form-check-label" for="${themeLoop.index}"> ${theme.id}: ${theme.name} </label>
+			  	<label class="form-check-label" for="${themeLoop.index}"> ${theme.name}: ${theme.id} </label>
 			</div>
 		</c:forEach>
 		<button type="button" class="btn btn-primary my-2 my-sm-0" onclick="filter()"> Filter </button>
