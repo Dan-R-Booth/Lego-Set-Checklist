@@ -13,10 +13,10 @@
 	</head>
 	<body class="m-2">
 		<form method="POST" action="/openImport" enctype="multipart/form-data">
-			<label>Choose a file containing a saved checklist to import</label>
-			<br>
-			<input type="file" name="importFile" accept=".csv">
-			<br>
+			<div class="mb-3">
+		  		<label for="formFile" class="form-label">Choose a file containing a saved checklist to import</label>
+		 		<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv">
+			</div>
 			<input type="submit" value="Import"/>
 		</form>
          

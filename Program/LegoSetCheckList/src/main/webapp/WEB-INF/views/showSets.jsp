@@ -128,89 +128,74 @@
 		<div class="sticky-top" data-toggle="affix">
 		
 			<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-				<div class="container">
-					<label class="navbar-brand mr-5 pr-5">Lego: Set Checklist Creator</label>
+				<div class="container-fluid">
+					<label class="navbar-brand"> Lego: Set Checklist Creator </label>
 	
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
 	
 					<div class="collapse navbar-collapse" id="navbar">
-						<ul class="navbar-nav">
-							<li class="nav-item mx-5">
-								<!-- This creates a text box where users can enter text to search and a button to display the Lego sets that match this search -->
-								<form class="form-inline" action="/sets">
 						
-									<input id="text_search" class="form-control mr-sm-2" name="text_search" type="text" placeholder="Search for Lego Set"/>
-								
-									<input class="btn btn-primary my-2 my-sm-0" type="button" value="Search" onclick="textSearch()"/>
-								</form>
-							</li>
-							<li class="nav-item dropdown mx-5">
-								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-									<i class="fa fa-filter"></i> Filter
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li class="nav-item mx-5">
-										<form class="form-inline" action="/sets">
-							
-											Minimum Year: <input id="minYearBox" name="minYearBox" type="number" min=0 max="9999"/>
-											Maximum Year: <input id="maxYearBox" name="maxYearBox" type="number" min=0 max="9999"/>
-										
-											<input class="btn btn-primary my-2 my-sm-0" type="button" value="Filter" onclick="filter()"/>
-										</form>
-									</li>
-								</ul>
-							</li>
-							<li class="nav-item dropdown mx-5">
-								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-									<i class="fa fa-filter"></i> Filters
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li class="nav-item mx-5">
-										<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-											<div class="container">
-												<label class="navbar-brand mr-5 pr-5">Lego: Set Checklist Creator</label>
-								
-												<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-													<span class="navbar-toggler-icon"></span>
-												</button>
-								
-												<div class="collapse navbar-collapse" id="navbar">
-													<ul class="navbar-nav">
-														<li class="nav-item mx-5">
-															<!-- This creates a text box where users can enter text to search and a button to display the Lego sets that match this search -->
-															<form class="form-inline" action="/sets">
-													
-																<input id="text_search" class="form-control mr-sm-2" name="text_search" type="text" placeholder="Search for Lego Set"/>
-															
-																<input class="btn btn-primary my-2 my-sm-0" type="button" value="Search" onclick="textSearch()"/>
-															</form>
-														</li>
-														<li class="nav-item dropdown mx-5">
-															<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-																<i class="fa fa-filter"></i> Filter
-															</a>
-															<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-																<li class="nav-item mx-5">
-																	<form class="form-inline" action="/sets">
-														
-																		Minimum Year: <input id="minYearBox" name="minYearBox" type="number" min=0 max="9999"/>
-																		Maximum Year: <input id="maxYearBox" name="maxYearBox" type="number" min=0 max="9999"/>
-																	
-																		<input class="btn btn-primary my-2 my-sm-0" type="button" value="Filter" onclick="filter()"/>
-																	</form>
-																</li>
-															</ul>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</nav>
-									</li>
-								</ul>
-							</li>
-						</ul>
+					</div>
+				</div>
+			</nav>
+			<nav class="navbar navbar-expand-md navbar-dark bg-secondary">
+				<div class="container-fluid">
+					<label class="navbar-brand"> <i class="fa fa-filter"></i> Filter: </label>
+	
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+	
+					<div class="collapse navbar-collapse" id="navbar">
+						<!-- This creates a text box where users can enter text to search and a button to display the Lego sets that match this search -->
+						<form class="container-fluid">
+							<div>
+								<label class="text-white" for="text_search"> Text: </label>
+								<input id="text_search" class="form-control mr-sm-2" name="text_search" type="text" placeholder="Search for Lego Set"/>
+							</div>
+							<ul class="navbar-nav">
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa-filter"></i> Filter by Theme
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+										<li class="dropdown-item form-check">
+											<input type="radio" name="themeFilter" id="All" checked>
+											<label class="form-check-label" for="0"> All Themes </label>
+										</li>
+										<li><hr class="dropdown-divider"></li>
+										<div style="max-height: 50vh; overflow-y: auto;">
+											<!-- This creates a dropdown item using bootstrap, for every Lego theme and displays a radio button and the theme name -->
+											<c:forEach items="${themeList}" var="theme" varStatus="themeLoop">
+												<li class="dropdown-item form-check">
+													<input type="radio" name="themeFilter" id="${themeLoop.index}" value="${theme.id}">
+													<label class="form-check-label" for="${themeLoop.index}"> ${theme.name} </label>
+												</li>
+											</c:forEach>
+										</div>
+									</ul>
+								</li>
+							</ul>
+							<div>
+								<label class="text-white" for="minYearBox">	Minimum Year: </label>
+								<input id="minYearBox" class="form-control mr-sm-2" name="minYearBox" type="number" min=0 max="9999"/>
+							</div>
+							<div>
+								<label class="text-white" for="maxYearBox">	Maximum Year: </label>
+								<input id="maxYearBox" class="form-control mr-sm-2" name="maxYearBox" type="number" min=0 max="9999"/>
+							</div>
+							<div>
+								<label class="text-white" for="minPieceBox"> Minimum Number of Pieces: </label>
+								<input id="minPieceBox" class="form-control mr-sm-2" name="minPieceBox" type="number" min=0 max="9999"/>
+							</div>
+							<div>
+								<label class="text-white" for="maxPieceBox">	Maximum Number of Pieces: </label>
+								<input id="maxPieceBox" class="form-control mr-sm-2" name="maxPieceBox" type="number" min=0 max="9999"/>
+							</div>
+							<button class="btn btn-primary" type="button" onclick="filter()"> <i class="fa fa-filter"></i> Filter </button>
+						</form>
 					</div>
 				</div>
 			</nav>
@@ -272,20 +257,6 @@
 
 		<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> Previous </button>
 		<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next </button>
-		
-		<div class="form-check">
-			<input type="radio" name="themeFilter" id="All" checked>
-		  	<label class="form-check-label" for="0"> All Themes </label>
-  		</div>
-		
-		<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
-		<c:forEach items="${themeList}" var="theme" varStatus="themeLoop">
-			<div class="form-check">
-				<input type="radio" name="themeFilter" id="${themeLoop.index}" value="${theme.id}">
-			  	<label class="form-check-label" for="${themeLoop.index}"> ${theme.name}: ${theme.id} </label>
-			</div>
-		</c:forEach>
-		<button type="button" class="btn btn-primary my-2 my-sm-0" onclick="filter()"> Filter </button>
 	</body>
 	
 </html>
