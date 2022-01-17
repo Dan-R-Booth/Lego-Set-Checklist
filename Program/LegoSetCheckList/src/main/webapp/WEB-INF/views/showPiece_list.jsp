@@ -16,6 +16,7 @@
 			function setup() {
 				const num_items = "${num_items}";
 				
+				// This sets the quantity checked buttons for each piece to be disabled if can't decresse quantity further or increased any further
 				var element = "piece_quantity_checked_";
 				for (let id = 0; id < num_items; id++) {
 					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
@@ -31,6 +32,14 @@
 				}
 				
 				piecesFound();
+				
+				// If their is a sort this sets the correct column to the correct sort symbol
+				if ("${sort}" == "colour") {
+					document.getElementById("colourSortIcon").setAttribute("class","fa fa-sort-alpha-asc");
+				}
+				else if ("${sort}" == "-colour") {
+					document.getElementById("colourSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
+				}
 			}
 			
 			// This decreases the quantity of a piece found
@@ -94,10 +103,9 @@
 			// This gets the total quantity of all pieces checked (only counting pieces where the total quantity has been found)
 			function getQuantityChecked() {
 				const array = [];
-				const num_items = "${num_items}";
 				
 				var element = "piece_quantity_checked_";
-				for (let id = 0; id < num_items; id++) {
+				for (let id = 0; id < "${num_items}"; id++) {
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					array[id] = quantityChecked;
 				}
@@ -117,6 +125,19 @@
 				var array = getQuantityChecked();
 				
 				window.location = "/set/${set.num}/pieces/export/?quantityChecked=" + array;
+			}
+			
+			// This calls the the controller setting the sort parameter as colourName
+			function colourSort() {
+				var array = getQuantityChecked();
+				var iconClass = document.getElementById("colourSortIcon").className;
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
+					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array";
+				}
+				else if (iconClass == "fa fa-sort-alpha-asc") {
+					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array";
+				}
 			}
 		</script>
 		
@@ -180,7 +201,7 @@
 						<p class="h6">Piece Name:</p>
 					</div>
 					<div class="col">
-						<p class="h6">Piece Colour:</p>
+						<p class="h6" onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Theme">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
 						<p class="h6">Quantity:</p>

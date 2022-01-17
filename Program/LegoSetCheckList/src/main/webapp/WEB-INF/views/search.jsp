@@ -85,7 +85,7 @@
 				}
 			}
 			
-			// This calls the the controller setting the sort parametre as year
+			// This calls the the controller setting the sort parameter as year
 			function yearSort() {
 				var iconClass = document.getElementById("yearSortIcon").className;
 				
@@ -97,7 +97,7 @@
 				}
 			}
 			
-			// This calls the the controller setting the sort parametre as theme_id
+			// This calls the the controller setting the sort parameter as theme_id
 			function themeSort() {
 				var iconClass = document.getElementById("themeSortIcon").className;
 				

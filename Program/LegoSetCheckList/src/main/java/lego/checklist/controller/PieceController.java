@@ -1,6 +1,8 @@
 package lego.checklist.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,10 +56,29 @@ public class PieceController {
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set) {
+	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort) {
 		
 		// This gets all the pieces in a Lego Set
-    	Piece_list piece_list = set.getSet_pieces();
+		Piece_list piece_list = set.getSet_pieces();
+		
+		if (sort != null) {
+			
+	    	if (sort.equals("colour") || sort.equals("-colour")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by colour
+	    		Collections.sort(piece_list.getPieces(), new Comparator<Piece>() {
+	    			@Override
+	    			public int compare(Piece piece1, Piece piece2) {
+	    				return piece1.getColour_name().compareTo(piece2.getColour_name());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-colour")) {
+	    			Collections.reverse(piece_list.getPieces());
+	    		}
+	    	}
+	    	
+	    	model.addAttribute("sort", sort);
+		}
     	
     	model.addAttribute("set_number", set.getNum());
     	model.addAttribute("num_items", piece_list.getPieces().size());

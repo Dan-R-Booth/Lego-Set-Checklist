@@ -60,8 +60,6 @@ public class ThemeController {
 			theme.setName(fullThemeName);
 			
 			themeList.add(theme);
-			
-			System.out.println(theme.getId() + ": " + fullThemeName);
 		}
 		
 		// This sorts the list of themes so they are in alphabetical order by name
