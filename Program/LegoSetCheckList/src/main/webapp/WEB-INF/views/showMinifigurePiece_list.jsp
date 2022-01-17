@@ -195,7 +195,7 @@
 		</div>
 	    
 		<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
-		<c:forEach items="${piece_list.pieces}" var="piece" varStatus="loop">
+		<c:forEach items="${piece_list}" var="piece" varStatus="loop">
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div id="piece_${loop.index}" class="container-fluid border">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->

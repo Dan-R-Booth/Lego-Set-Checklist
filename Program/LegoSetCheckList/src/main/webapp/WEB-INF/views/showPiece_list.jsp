@@ -133,10 +133,10 @@
 				var iconClass = document.getElementById("colourSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array";
+					window.location = "/set/${set_number}/pieces/?sort=colour";
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array";
+					window.location = "/set/${set_number}/pieces/?sort=-colour";
 				}
 			}
 		</script>
@@ -214,7 +214,7 @@
 		</div>
 	    
 		<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
-		<c:forEach items="${set.set_pieces.pieces}" var="piece" varStatus="loop">
+		<c:forEach items="${set.piece_list}" var="piece" varStatus="loop">
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div id="piece_${loop.index}" class="container-fluid border">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->

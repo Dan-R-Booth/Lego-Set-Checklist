@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
 
 import lego.checklist.domain.Piece;
-import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
 import lego.checklist.domain.Theme;
 
@@ -204,7 +203,7 @@ public class SetController {
 		String theme_name = "";
 		int num_pieces = -1;
 		String img_url = "";
-		Piece_list piece_list = null;
+		List<Piece> piece_list = new ArrayList<>();
 		
         // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
         try {
@@ -295,9 +294,9 @@ public class SetController {
                 
                 Set set = getSet(model, set_number, restTemplate);
                 
-                Piece_list set_pieces = set.getSet_pieces();
+                List<Piece> piece_list = set.getPiece_list();
                 
-                for (Piece piece : set_pieces.getPieces()) {
+                for (Piece piece : piece_list) {
                 	for (String[] piece_checked : pieces_checked) {
                 		if (piece_checked[0].equals(piece.getNum()) && piece_checked[1].equals(piece.getColour_name()) && piece_checked[2].equals(String.valueOf(piece.isSpare()))) {
                 			piece.setQuantity_checked(Integer.parseInt(piece_checked[3]));
@@ -305,7 +304,7 @@ public class SetController {
                 	}
                 }
                 
-                set.setSet_pieces(set_pieces);
+                set.setPiece_list(piece_list);
                 
                 model.addAttribute("set", set);
         		return "showSet";

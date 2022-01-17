@@ -26,7 +26,6 @@ import com.opencsv.ICSVWriter;
 
 import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
-import lego.checklist.domain.Piece_list;
 import lego.checklist.domain.Set;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
@@ -59,13 +58,13 @@ public class PieceController {
 	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort) {
 		
 		// This gets all the pieces in a Lego Set
-		Piece_list piece_list = set.getSet_pieces();
+		List<Piece> piece_list = set.getPiece_list();
 		
 		if (sort != null) {
 			
 	    	if (sort.equals("colour") || sort.equals("-colour")) {
 	    		// This sorts the list of pieces so they are in alphabetical order by colour
-	    		Collections.sort(piece_list.getPieces(), new Comparator<Piece>() {
+	    		Collections.sort(piece_list, new Comparator<Piece>() {
 	    			@Override
 	    			public int compare(Piece piece1, Piece piece2) {
 	    				return piece1.getColour_name().compareTo(piece2.getColour_name());
@@ -73,7 +72,7 @@ public class PieceController {
 	    		});
 	    		
 	    		if (sort.equals("-colour")) {
-	    			Collections.reverse(piece_list.getPieces());
+	    			Collections.reverse(piece_list);
 	    		}
 	    	}
 	    	
@@ -81,11 +80,11 @@ public class PieceController {
 		}
     	
     	model.addAttribute("set_number", set.getNum());
-    	model.addAttribute("num_items", piece_list.getPieces().size());
+    	model.addAttribute("num_items", piece_list.size());
 		return "showPiece_list";
 	}
 	
-	public static Piece_list getPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
+	public static List<Piece> getPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
 		// This is the uri to the specific pieces in a set in the Rebrickable API
 		String piece_list_uri = rebrickable_uri + "sets/" + set_number + "/parts/?key=" + rebrickable_api_key;
 		
@@ -151,11 +150,8 @@ public class PieceController {
 				updated_pieces.add(updated_piece);
 			}
 		}
-		
-		// This adds all the pieces in the Lego Set into the piece list class 
-    	Piece_list piece_list = new Piece_list(updated_pieces);
     	
-    	return piece_list;
+    	return updated_pieces;
 	}
 	
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
@@ -244,8 +240,8 @@ public class PieceController {
 		List<Piece> minifigure_pieces = new ArrayList<>();
 		
 		for (Minifigure minifigure : minifigures) {
-			Piece_list minifigure_piece_list = minifigure.getSet_pieces();
-			for (Piece piece : minifigure_piece_list.getPieces()) {
+			List<Piece> minifigure_piece_list = minifigure.getMinifigure_pieces();
+			for (Piece piece : minifigure_piece_list) {
 				pieces.add(piece);
 			}
 		}
@@ -261,21 +257,19 @@ public class PieceController {
 		
 		
 		// This gets all the pieces in a Lego Set
-    	Piece_list piece_list = set.getSet_pieces();
-    	List<Piece> pieces = piece_list.getPieces();
+		List<Piece> piece_list = set.getPiece_list();
     	
     	// This updates the quantity checked for each piece in the Lego set
-    	for (int i = 0; i < pieces.size(); i++) {
-    		Piece piece = pieces.get(i);
+    	for (int i = 0; i < piece_list.size(); i++) {
+    		Piece piece = piece_list.get(i);
     		piece.setQuantity_checked(quantityChecked.get(i));
     	}
     	
-    	piece_list.setPieces(pieces);
-    	set.setSet_pieces(piece_list);
+    	set.setPiece_list(piece_list);
     	
     	// This then returns the updated Lego set to the view displaying the quantity the user has checked for each piece
     	model.addAttribute("set_number", set.getNum());
-    	model.addAttribute("num_items", piece_list.getPieces().size());
+    	model.addAttribute("num_items", piece_list.size());
 		return "showPiece_list";
 	}
 	
@@ -289,12 +283,11 @@ public class PieceController {
 		
 		
 		// This gets all the pieces in a Lego Set
-    	Piece_list piece_list = set.getSet_pieces();
-    	List<Piece> pieces = piece_list.getPieces();
+		List<Piece> piece_list = set.getPiece_list();
     	
     	// This updates the quantity checked for each piece in the Lego set
-    	for (int i = 0; i < pieces.size(); i++) {
-    		Piece piece = pieces.get(i);
+    	for (int i = 0; i < piece_list.size(); i++) {
+    		Piece piece = piece_list.get(i);
     		piece.setQuantity_checked(quantityChecked.get(i));
     	}
     	
@@ -318,7 +311,7 @@ public class PieceController {
         //write all users to csv file
 		writer.writeNext(new String[] {set_number});
 		
-		for (Piece piece : pieces) {
+		for (Piece piece : piece_list) {
 			// This adds the number, colour name and if its a spare of pieces that have a quantity above zero,
 			// as these values uniquely identity each Lego piece
 			if (piece.getQuantity_checked() != 0) {

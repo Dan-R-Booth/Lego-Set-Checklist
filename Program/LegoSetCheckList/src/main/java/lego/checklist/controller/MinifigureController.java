@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
-import lego.checklist.domain.Piece_list;
 
 // RestTemplate is used to perform HTTP request to a uri
 /* Reference:
@@ -100,13 +99,13 @@ public class MinifigureController {
                 	
             		// This creates an array list to store all the Lego pieces needed to build a Lego set
             		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
-            		List<Piece> pieces =  new ArrayList<>();
+            		List<Piece> piece_list = new ArrayList<>();
             		
             		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
-            		pieces = PieceController.getPiece_listPage(piece_list_uri, pieces, restTemplate);
+            		piece_list = PieceController.getPiece_listPage(piece_list_uri, piece_list, restTemplate);
             		
             		// This times all the pieces for a single minifigure so they are the total to make the total quantity of minifigures 
-            		for (Piece piece : pieces) {				
+            		for (Piece piece : piece_list) {				
         				int piece_quantity = piece.getQuantity();
         				int newPiece_quantity = piece_quantity*quantity;
         				piece.setQuantity(newPiece_quantity);
@@ -116,9 +115,6 @@ public class MinifigureController {
         					piece.setQuantity_checked(quantity_checked);
         				}
         			}
-                	
-                	// This adds all the pieces in the Lego Set into the piece list class 
-                	Piece_list piece_list = new Piece_list(pieces);
                 	
                 	Minifigure minifigure = new Minifigure(num, name, img_url, quantity, quantity_checked, piece_list);
     				
@@ -153,15 +149,13 @@ public class MinifigureController {
     	
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
 		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
-		List<Piece> pieces =  new ArrayList<>();
+		List<Piece> piece_list =  new ArrayList<>();
 		
 		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
-		pieces = PieceController.getPiece_listPage(piece_list_uri, pieces, restTemplate);
-		// This adds all the pieces in the Lego Set into the piece list class 
-    	Piece_list piece_list = new Piece_list(pieces);
+		piece_list = PieceController.getPiece_listPage(piece_list_uri, piece_list, restTemplate);
     	
     	model.addAttribute("set_number", set_number);
-    	model.addAttribute("num_items", piece_list.getPieces().size());
+    	model.addAttribute("num_items", piece_list.size());
     	model.addAttribute("piece_list", piece_list);
 		return "showMinifigurePiece_list";
 	}
