@@ -42,7 +42,7 @@ public class ThemeController {
 	
 	public static void createThemeMap() {
 		// This is the uri to all Lego themes in the Rebrickable API
-		String themes_uri = rebrickable_uri + "themes/?ordering=name&key=" + rebrickable_api_key;
+		String themes_uri = rebrickable_uri + "themes/?key=" + rebrickable_api_key;
 
 		RestTemplate restTemplate = new RestTemplate();
 		
@@ -111,10 +111,10 @@ public class ThemeController {
         	JsonNode nextNode = theme_pageNode.path("next");
         	String next = nextNode.textValue();
 			
-        	// This provides the root of the JSON element where the JSON array of Lego pieces is stored
+        	// This provides the root of the JSON element where the JSON array of Lego themes is stored
         	theme_pageNode = theme_pageNode.path("results");
         	
-        	// This iterates through the JSON array of Lego pieces
+        	// This iterates through the JSON array of Lego themes
             for (JsonNode themeNode : theme_pageNode) {
             	
 	        	// The following search search for a path on the themeNode Tree and return the node that matches this
@@ -134,8 +134,7 @@ public class ThemeController {
 				themes.put(id, theme);
         	}
     		
-            // If their is another page of pieces that needed to be collected from the api here this page will be called recursively using this class
-            // and the piece list will be sent each time so when it is then returned it will contain all these pieces
+            // If their is another page of themes that needed to be collected from the api, then here this page will be called recursively using this class
             if (next != null) {
             	theme_page_uri = next + "&key=" + rebrickable_api_key;
             	getThemesPage(theme_page_uri, restTemplate);

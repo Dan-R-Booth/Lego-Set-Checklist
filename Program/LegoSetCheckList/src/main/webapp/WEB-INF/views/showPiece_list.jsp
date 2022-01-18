@@ -204,6 +204,9 @@
 						<p class="h6" onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Theme">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
+						<p class="h6">Piece Category Type:</p>
+					</div>
+					<div class="col">
 						<p class="h6">Quantity:</p>
 					</div>
 					<div class="col">
@@ -231,6 +234,9 @@
 				    </div>
 				    <div class="col">
 				    	${piece.colour_name}
+				    </div>
+				    <div class="col">
+				    	${piece.pieceCategory}
 				    </div>
 				    <div class="col">
 				       ${piece.quantity}

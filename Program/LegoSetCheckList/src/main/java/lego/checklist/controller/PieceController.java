@@ -184,6 +184,7 @@ public class PieceController {
 	        	JsonNode partNode = pieceNode.path("part");
 	        	JsonNode numNode = partNode.path("part_num");
 	        	JsonNode nameNode = partNode.path("name");
+	        	JsonNode pieceCategoryIdNode = partNode.path("part_cat_id");
 	        	JsonNode img_urlNode = partNode.path("part_img_url");
 	        	
 	        	// As the colour name is stored as an element of color, I first have to get the color node to retrieve this
@@ -196,6 +197,8 @@ public class PieceController {
 	        	// These return the data stored in the JsonNodes
 	        	String num = numNode.textValue();
 	        	String name = nameNode.textValue();
+	        	int pieceCategoryId = pieceCategoryIdNode.asInt();
+	        	String pieceCategory = PieceCategoryController.pieceCategories.get(pieceCategoryId);
 	        	String img_url = img_urlNode.textValue();
 	        	String colour_name = colour_nameNode.textValue();
 	    		int quantity = quantityNode.intValue();
@@ -204,7 +207,7 @@ public class PieceController {
 	        	// This is set to 0 as the user may not have checked any of these pieces yet
 				int quantity_checked = 0;
 				
-				Piece piece = new Piece(num, name, img_url, colour_name, quantity, quantity_checked, spare);
+				Piece piece = new Piece(num, name, pieceCategory, img_url, colour_name, quantity, quantity_checked, spare);
 				
 				pieces.add(piece);
         	}
