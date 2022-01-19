@@ -33,7 +33,13 @@
 				document.getElementById("text_search").value = "${searchText}";
 				
 				// If their is a sort this sets the correct column to the correct sort symbol
-				if ("${sort}" == "name") {
+				if ("${sort}" == "set_num") {
+					document.getElementById("numSortIcon").setAttribute("class","fa fa-sort-numeric-asc");
+				}
+				else if ("${sort}" == "-set_num") {
+					document.getElementById("numSortIcon").setAttribute("class","fa fa-sort-numeric-desc");
+				}
+				else if ("${sort}" == "name") {
 					document.getElementById("nameSortIcon").setAttribute("class","fa fa-sort-alpha-asc");
 				}
 				else if ("${sort}" == "-name") {
@@ -98,6 +104,18 @@
 				}
 				else {					
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
+				}
+			}
+
+			// This calls the the controller setting the sort parameter as name
+			function numSort() {
+				var iconClass = document.getElementById("numSortIcon").className;
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
+					window.location = "/search/text=${searchText}/sort=set_num/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+				}
+				else if (iconClass == "fa fa-sort-numeric-asc") {
+					window.location = "/search/text=${searchText}/sort=-set_num/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -278,7 +296,7 @@
 						<p class="h6">Set Image:</p>
 					</div>
 					<div class="col">
-						<p class="h6">Set Number: <i class="fa fa-sort"></i></p>
+						<p class="h6" onclick="numSort()" data-bs-toggle="tooltip" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
 						<p class="h6" onclick="nameSort()" data-bs-toggle="tooltip" title="Sort by Name">Set Name: <i id="nameSortIcon" class="fa fa-sort"></i></p>
