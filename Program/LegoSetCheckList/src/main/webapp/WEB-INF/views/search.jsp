@@ -45,6 +45,12 @@
 				else if ("${sort}" == "-year") {
 					document.getElementById("yearSortIcon").setAttribute("class","fa fa-sort-numeric-desc");
 				}
+				else if ("${sort}" == "numPieces") {
+					document.getElementById("numPiecesSortIcon").setAttribute("class","fa fa-sort-amount-asc");
+				}
+				else if ("${sort}" == "-numPieces") {
+					document.getElementById("numPiecesSortIcon").setAttribute("class","fa fa-sort-amount-desc");
+				}
 				
 				// These add the current min year and max year filters to their number boxes
 				document.getElementById("minYearBox").value = "${minYear}";
@@ -85,6 +91,18 @@
 				}
 			}
 			
+			// This calls the the controller setting the sort parameter as theme_id
+			function themeSort() {
+				var iconClass = document.getElementById("themeSortIcon").className;
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
+					window.location = "/search/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+				}
+				else if (iconClass == "fa fa-sort-down") {
+					window.location = "/search/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+				}
+			}
+			
 			// This calls the the controller setting the sort parameter as year
 			function yearSort() {
 				var iconClass = document.getElementById("yearSortIcon").className;
@@ -97,15 +115,15 @@
 				}
 			}
 			
-			// This calls the the controller setting the sort parameter as theme_id
-			function themeSort() {
-				var iconClass = document.getElementById("themeSortIcon").className;
+			// This calls the the controller setting the sort parameter as num_pieces
+			function numPiecesSort() {
+				var iconClass = document.getElementById("numPiecesSortIcon").className;
 				
-				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					window.location = "/search/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-up") {
+					window.location = "/search/text=${searchText}/sort=num_parts/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
 				}
-				else if (iconClass == "fa fa-sort-down") {
-					window.location = "/search/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+				else if (iconClass == "fa fa-sort-amount-down") {
+					window.location = "/search/text=${searchText}/sort=-num_parts/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -248,7 +266,7 @@
 						<p class="h6" onclick="themeSort()" data-bs-toggle="tooltip" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6">Number of pieces: <i class="fa fa-sort"></i></p>
+						<p class="h6" onclick="numPiecesSort()" data-bs-toggle="tooltip" title="Sort by Number of Pieces">Number of Pieces: <i id="numPiecesSortIcon" class="fa fa-sort"></i></p>
 					</div>
 				</div>
 			</div>
