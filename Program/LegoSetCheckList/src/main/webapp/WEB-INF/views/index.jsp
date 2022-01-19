@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
 	</head>
 	<body class="m-2">
-		<a href="/search/text=/sort=/minYear=/maxYear=/theme_id=/uri/">Search</a>
+		<a href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/">Search</a>
 		<br>
 		<a href="/import">Import Checklist</a>
 	</body>

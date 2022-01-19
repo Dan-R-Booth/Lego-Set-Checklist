@@ -70,8 +70,8 @@ public class SetController {
 		return "showSet";
 	}
 	
-	@GetMapping("/search/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/theme_id={theme_id}/uri/**")
-	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
+	@GetMapping("/search/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
+	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString();
@@ -97,9 +97,21 @@ public class SetController {
 		}
 		
 		// If there is a max year the user would like to filter by this is added to the uri and the model
-		if (minYear != "") {
+		if (maxYear != "") {
 			set_list_uri += "&max_year=" + maxYear;
 			model.addAttribute("maxYear", maxYear);
+		}
+		
+		// If there is a minimum number of pieces the user would like to filter by this is added to the uri and the model
+		if (minPieces != "") {
+			set_list_uri += "&min_parts=" + minPieces;
+			model.addAttribute("minPieces", minPieces);
+		}
+		
+		// If there is a maximum number of pieces the user would like to filter by this is added to the uri and the model
+		if (maxPieces != "") {
+			set_list_uri += "&max_parts=" + maxPieces;
+			model.addAttribute("maxPieces", maxPieces);
 		}
 		
 		// If there is a theme_id the user would like to filter by this is added to the uri and the model

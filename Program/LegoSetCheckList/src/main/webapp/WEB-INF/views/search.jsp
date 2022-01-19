@@ -45,16 +45,20 @@
 				else if ("${sort}" == "-year") {
 					document.getElementById("yearSortIcon").setAttribute("class","fa fa-sort-numeric-desc");
 				}
-				else if ("${sort}" == "numPieces") {
+				else if ("${sort}" == "num_parts") {
 					document.getElementById("numPiecesSortIcon").setAttribute("class","fa fa-sort-amount-asc");
 				}
-				else if ("${sort}" == "-numPieces") {
+				else if ("${sort}" == "-num_parts") {
 					document.getElementById("numPiecesSortIcon").setAttribute("class","fa fa-sort-amount-desc");
 				}
 				
 				// These add the current min year and max year filters to their number boxes
 				document.getElementById("minYearBox").value = "${minYear}";
 				document.getElementById("maxYearBox").value = "${maxYear}";
+				
+				// These add the current min pieces and max pieces filters to their number boxes
+				document.getElementById("minPiecesBox").value = "${minPieces}";
+				document.getElementById("maxPiecesBox").value = "${maxPieces}";
 				
 				// This selects the correct theme_id radio button for the current theme being filtered, or selects all themes if none are being filtered
 				if ("${theme_id}" == "") {
@@ -69,13 +73,13 @@
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/search/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/" + previous;
+				window.location = "/search/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/search/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/" + next;
+				window.location = "/search/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
 			}
 
 			function findSet() {
@@ -96,10 +100,10 @@
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					window.location = "/search/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+					window.location = "/search/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 				}
 				else if (iconClass == "fa fa-sort-down") {
-					window.location = "/search/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+					window.location = "/search/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -108,10 +112,10 @@
 				var iconClass = document.getElementById("yearSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					window.location = "/search/text=${searchText}/sort=year/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+					window.location = "/search/text=${searchText}/sort=year/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					window.location = "/search/text=${searchText}/sort=-year/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+					window.location = "/search/text=${searchText}/sort=-year/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -119,11 +123,11 @@
 			function numPiecesSort() {
 				var iconClass = document.getElementById("numPiecesSortIcon").className;
 				
-				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-up") {
-					window.location = "/search/text=${searchText}/sort=num_parts/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
+					window.location = "/search/text=${searchText}/sort=num_parts/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 				}
-				else if (iconClass == "fa fa-sort-amount-down") {
-					window.location = "/search/text=${searchText}/sort=-num_parts/minYear=${minYear}/maxYear=${maxYear}/theme_id=${theme_id}/uri/";
+				else if (iconClass == "fa fa-sort-amount-asc") {
+					window.location = "/search/text=${searchText}/sort=-num_parts/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 				}
 			}
 			
@@ -132,6 +136,8 @@
 				var text = document.getElementById("text_search").value;
 				var minYear = document.getElementById("minYearBox").value;
 				var maxYear = document.getElementById("maxYearBox").value;
+				var minPieces = document.getElementById("minPiecesBox").value;
+				var maxPieces = document.getElementById("maxPiecesBox").value;
 				
 				var themeFilter = document.querySelector('input[name="themeFilter"]:checked');
 				var theme_id = "";
@@ -139,7 +145,7 @@
 					theme_id = themeFilter.id;
 				}
 				
-				window.location = "/search/text=" + text + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/theme_id=" + theme_id + "/uri/";
+				window.location = "/search/text=" + text + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/minPieces=" + minPieces + "/maxPieces=" + maxPieces + "/theme_id=" + theme_id + "/uri/";
 			}
 			
 		</script>
@@ -231,12 +237,12 @@
 								<input id="maxYearBox" class="form-control col-xs-1" name="maxYearBox" type="number" min=0 max="9999"/>
 							</div>
 							<div class="col-auto">
-								<label class="text-white" for="minPieceBox"> Minimum Pieces: </label>
-								<input id="minPieceBox" class="form-control col-xs-1" name="minPieceBox" type="number" min=0 max="9999"/>
+								<label class="text-white" for="minPiecesBox"> Minimum Pieces: </label>
+								<input id="minPiecesBox" class="form-control col-xs-1" name="minPiecesBox" type="number" min=0 max="9999"/>
 							</div>
 							<div class="col-auto">
-								<label class="text-white" for="maxPieceBox"> Maximum Pieces: </label>
-								<input id="maxPieceBox" class="form-control" name="maxPieceBox" type="number" min=0 max="9999"/>
+								<label class="text-white" for="maxPiecesBox"> Maximum Pieces: </label>
+								<input id="maxPiecesBox" class="form-control" name="maxPiecesBox" type="number" min=0 max="9999"/>
 							</div>
 							<div class="col-auto">
 								<button class="btn btn-primary mt-3" type="button" onclick="filter()"> <i class="fa fa-filter"></i> Filter </button>
