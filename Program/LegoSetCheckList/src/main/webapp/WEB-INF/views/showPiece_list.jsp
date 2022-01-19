@@ -40,6 +40,12 @@
 				else if ("${sort}" == "-colour") {
 					document.getElementById("colourSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
 				}
+				else if ("${sort}" == "type") {
+					document.getElementById("typeSortIcon").setAttribute("class","fa fa-sort-alpha-asc");
+				}
+				else if ("${sort}" == "-type") {
+					document.getElementById("typeSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
+				}
 			}
 			
 			// This decreases the quantity of a piece found
@@ -117,7 +123,7 @@
 			function saveProgress() {
 				var array = getQuantityChecked();
 				
-				window.location = "/set/${set.num}/pieces/save/?quantityChecked=" + array;
+				window.location = "/set/${set.num}/pieces/?quantityChecked=" + array;
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -133,10 +139,23 @@
 				var iconClass = document.getElementById("colourSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=colour";
+					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-colour";
+					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array;
+				}
+			}
+			
+			// This calls the the controller setting the sort parameter as pieceCategory alphabetically
+			function typeSort() {
+				var array = getQuantityChecked();
+				var iconClass = document.getElementById("typeSortIcon").className;
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
+					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array;
+				}
+				else if (iconClass == "fa fa-sort-alpha-asc") {
+					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array;
 				}
 			}
 		</script>
@@ -204,7 +223,7 @@
 						<p class="h6" onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Theme">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6">Piece Category Type:</p>
+						<p class="h6" onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Category Type">Piece Category Type: <i id="typeSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
 						<p class="h6">Quantity:</p>

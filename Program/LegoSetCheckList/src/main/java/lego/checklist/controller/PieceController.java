@@ -55,7 +55,7 @@ public class PieceController {
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort) {
+	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked) {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
@@ -75,8 +75,33 @@ public class PieceController {
 	    			Collections.reverse(piece_list);
 	    		}
 	    	}
+	    	else if (sort.equals("type") || sort.equals("-type")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Piece Category Type
+	    		Collections.sort(piece_list, new Comparator<Piece>() {
+	    			@Override
+	    			public int compare(Piece piece1, Piece piece2) {
+	    				return piece1.getPieceCategory().compareTo(piece2.getPieceCategory());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-type")) {
+	    			Collections.reverse(piece_list);
+	    		}
+	    	}
 	    	
 	    	model.addAttribute("sort", sort);
+		}
+		
+		// quantityChecked List holds the quantities of all the current quantities for each piece
+		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter
+		if (quantityChecked != null) {
+	    	// This updates the quantity checked for each piece in the Lego set
+	    	for (int i = 0; i < piece_list.size(); i++) {
+	    		Piece piece = piece_list.get(i);
+	    		piece.setQuantity_checked(quantityChecked.get(i));
+	    	}
+	    	
+	    	set.setPiece_list(piece_list);
 		}
     	
     	model.addAttribute("set_number", set.getNum());
@@ -252,28 +277,6 @@ public class PieceController {
 		pieces.addAll(minifigure_pieces);
 		
 		return pieces;
-	}
-	
-	// This saves all changes made by the user to pieces checked to the Set class
-	@GetMapping("/set/{set_number}/pieces/save")
-	public String save(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) {
-		
-		
-		// This gets all the pieces in a Lego Set
-		List<Piece> piece_list = set.getPiece_list();
-    	
-    	// This updates the quantity checked for each piece in the Lego set
-    	for (int i = 0; i < piece_list.size(); i++) {
-    		Piece piece = piece_list.get(i);
-    		piece.setQuantity_checked(quantityChecked.get(i));
-    	}
-    	
-    	set.setPiece_list(piece_list);
-    	
-    	// This then returns the updated Lego set to the view displaying the quantity the user has checked for each piece
-    	model.addAttribute("set_number", set.getNum());
-    	model.addAttribute("num_items", piece_list.size());
-		return "showPiece_list";
 	}
 	
 	/*
