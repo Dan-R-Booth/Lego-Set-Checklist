@@ -86,8 +86,18 @@ public class SetController {
 		
 		// If there is a attribute the user would like to sort by this is added to the uri and the model
 		if (sort != "") {
+			String[] sorts = sort.split(",");
+			
 			set_list_uri += "&ordering=" + sort;
-			model.addAttribute("sort", sort);
+			
+			model.addAttribute("sort1", sorts[0]);
+			if (sorts.length >= 2) {
+				model.addAttribute("sort2", sorts[1]);
+			}
+			
+			if (sorts.length == 3) {
+				model.addAttribute("sort3", sorts[2]);
+			}
 		}
 		
 		// If there is a min year the user would like to filter by this is added to the uri and the model

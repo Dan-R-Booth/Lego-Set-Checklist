@@ -80,7 +80,7 @@ public class ThemeController {
 		// If it is not null getTheme() recursively calls itself with the parent_id until there are no more parents,
 		// and returns each of these parent theme names in front of child theme name 
 		if (theme.getParent_id() != 0) {
-			theme_name += getTheme(theme.getParent_id()) + ", " +  theme.getName();
+			theme_name += getTheme(theme.getParent_id()) + " > " +  theme.getName();
 		}
 		else {
 			// This return the name of the theme stored in the theme object
