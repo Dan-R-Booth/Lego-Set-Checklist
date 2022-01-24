@@ -163,7 +163,13 @@
 				
 				var colourFilter = getColourFilter();
 				
-				window.location = "/set/${set.num}/pieces/?quantityChecked=" + array + colourFilter;
+				var sort = "";
+				
+				if ("${sort}" != "") {
+					sort = "sort=${sort}&"
+				}
+				
+				window.location = "/set/${set.num}/pieces/?" + sort + "quantityChecked=" + array + colourFilter;
 			}
 			
 			// This calls a controller to export the checklist as a csv file
