@@ -103,7 +103,20 @@ public class PieceController {
 	    	
 	    	set.setPiece_list(piece_list);
 		}
-    	
+		
+		List<String> colours = new ArrayList<>();
+		
+		for (Piece piece : set.getPiece_list()) {
+			String colour = piece.getColour_name();
+			
+			if (!colours.contains(colour)) {
+				colours.add(colour);
+			}
+		}
+		
+		Collections.sort(colours);
+		
+		model.addAttribute("colours", colours);
     	model.addAttribute("set_number", set.getNum());
     	model.addAttribute("num_items", piece_list.size());
 		return "showPiece_list";

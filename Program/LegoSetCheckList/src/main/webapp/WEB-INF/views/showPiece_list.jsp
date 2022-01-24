@@ -8,6 +8,12 @@
 		<!--Bootstrap style sheet, used for page styling, as well as helping to resize page for different screen sizes -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
 		
+		<!-- jQuery library, needed for Bootstrap JavaScript -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+		<!-- Bootstrap JavaScript for page styling -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
@@ -184,6 +190,50 @@
 								<a class="nav-link" onclick="exportList()"> <i class="fa fa-download"></i> Export</a>
 							</li>
 						</ul>
+					</div>
+				</div>
+			</nav>
+			
+			<nav class="navbar navbar-expand-md navbar-dark bg-secondary" id="filterNavBar" style="display: block;">
+				<div class="container-fluid">
+					<label class="navbar-brand"> <i class="fa fa-filter"></i> Filter: </label>
+	
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#filterBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+	
+					<div class="collapse navbar-collapse" id="filterBar">
+						<!-- This creates a form where users can enter details on how they would like to filter the list of pieces and a button to display those that match this search -->
+						<form class="container-fluid d-flex row">
+							<div class="col-auto mt-2">
+								<ul class="navbar-nav">
+									<li class="nav-item dropdown">
+										<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+											<i class="fa fa-filter"></i> Filter by Piece Colours
+										</a>
+										<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+											<li class="dropdown-item form-check">
+												<input type="radio" name="colourFilter" id="All">
+												<label class="form-check-label" for="All"> All Colours </label>
+											</li>
+											<li><hr class="dropdown-divider"></li>
+											<div style="max-height: 50vh; overflow-y: auto;">
+												<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
+												<c:forEach items="${colours}" var="colour">
+													<li class="dropdown-item form-check">
+														<input type="checkbox" name="colourFilter" id="${colour}">
+														<label class="form-check-label" for="${colour}"> ${colour} </label>
+													</li>
+												</c:forEach>
+											</div>
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<div class="col-auto">
+								<button class="btn btn-primary mt-3" type="button" onclick="filter()"> <i class="fa fa-filter"></i> Filter </button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</nav>

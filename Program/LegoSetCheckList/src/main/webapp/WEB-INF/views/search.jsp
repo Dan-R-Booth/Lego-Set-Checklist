@@ -530,7 +530,7 @@
 										<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 											<li class="dropdown-item form-check">
 												<input type="radio" name="themeFilter" id="All">
-												<label class="form-check-label" for="0"> All Themes </label>
+												<label class="form-check-label" for="All"> All Themes </label>
 											</li>
 											<li><hr class="dropdown-divider"></li>
 											<div style="max-height: 50vh; overflow-y: auto;">
