@@ -55,11 +55,12 @@ public class PieceController {
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked) {
+	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked,  @RequestParam(required = false) String colourFilter) {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
 		
+		// If their is a sort to be applied to the checklist (sorts not null), then the fellowing is ran to apply this sort
 		if (sort != null) {
 			
 	    	if (sort.equals("colour") || sort.equals("-colour")) {
@@ -90,6 +91,18 @@ public class PieceController {
 	    	}
 	    	
 	    	model.addAttribute("sort", sort);
+		}
+		
+		// If there is a colour filters being parsed this will add an array of these to the model
+		// Otherwise it will just add the string All_Colours
+		if (colourFilter != null) {
+
+			String[] colourFilterArray = colourFilter.split(",");
+			
+			model.addAttribute("colourFilter", colourFilterArray);
+		}
+		else {
+			model.addAttribute("colourFilter", "All_Colours");
 		}
 		
 		// quantityChecked List holds the quantities of all the current quantities for each piece

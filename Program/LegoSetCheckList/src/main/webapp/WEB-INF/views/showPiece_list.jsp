@@ -20,11 +20,9 @@
 		
 			// This does setup for the page when it is first loaded
 			function setup() {
-				const num_items = "${num_items}";
-				
 				// This sets the quantity checked buttons for each piece to be disabled if can't decresse quantity further or increased any further
 				var element = "piece_quantity_checked_";
-				for (let id = 0; id < num_items; id++) {
+				for (let id = 0; id < "${num_items}"; id++) {
 					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					if (quantityChecked == 0) {
@@ -51,6 +49,41 @@
 				}
 				else if ("${sort}" == "-type") {
 					document.getElementById("typeSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
+				}
+				
+				var coloursFiltered = [];
+
+				// The following is used to set the current filter applied to the list if the page is reloaded
+				// This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name
+				<c:forEach items="${colourFilter}" var="colourName">
+					for (let i = 0; i < "${num_items}"; i++) {
+						document.getElementById("${colourName}").checked = true;
+						coloursFiltered.push("${colourName}");
+					}
+				</c:forEach>
+				
+				if ("${colourFilter}" != "All_Colours") {
+					
+					for (let id = 0; id < "${num_items}"; id++) {
+						var pieceColour = document.getElementById("colour_" + id).innerHTML;
+						
+						if (coloursFiltered.indexOf(pieceColour) > -1) {
+							document.getElementById("piece_" + id).style.display = "block";
+						}
+						else {
+							document.getElementById("piece_" + id).style.display = "none";
+						}
+					}
+				}
+				else {
+					var colourCheckboxes = document.getElementsByName("colourFilter");
+					for (let i = 0; i < colourCheckboxes.length; i++) {
+	                    	colourCheckboxes[i].checked = true;
+					}
+					
+					for (let id = 0; id < "${num_items}"; id++) {
+						document.getElementById("piece_" + id).style.display = "block";
+					}
 				}
 			}
 			
@@ -88,10 +121,9 @@
 			// This calculates add displays the total quanity of a piece found
 			function piecesFound() {
 				var total = 0;
-				const num_items = "${num_items}";
 				
 				var element = "piece_quantity_checked_";
-				for (let id = 0; id < num_items; id++) {
+				for (let id = 0; id < "${num_items}"; id++) {
 					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					
@@ -129,7 +161,14 @@
 			function saveProgress() {
 				var array = getQuantityChecked();
 				
-				window.location = "/set/${set.num}/pieces/?quantityChecked=" + array;
+				var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
+				if (colourFilter.id != "All_Colours") {
+					
+					window.location = "/set/${set.num}/pieces/?quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
+				}
+				else {
+					window.location = "/set/${set.num}/pieces/?quantityChecked=" + array;
+				}
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -145,10 +184,32 @@
 				var iconClass = document.getElementById("colourSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array;
+					var colourFilter = "";
+					
+					if (document.getElementById("All_Colours").checked == false) {
+						colourFilter = "&colourFilter=";
+						
+						// This goes through all the colour checkboxes and adds those checkbox ids that are the colour names
+						// are added to the colourFilter string to be sent to the controller so that the filters are not forgot
+						// when the page is reloaded
+		                var colourCheckboxes = document.getElementsByName("colourFilter");
+		                for (let i = 0; i < colourCheckboxes.length; i++) {
+							if (colourCheckboxes[i].checked) {
+								colourFilter += colourCheckboxes[i].id + ",";
+		                   }
+		                }
+					}
+					
+					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array + colourFilter;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array;
+					var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
+					if (colourFilter.id != "All_Colours") {
+						window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
+					}
+					else {
+						window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array;
+					}
 				}
 			}
 			
@@ -158,12 +219,87 @@
 				var iconClass = document.getElementById("typeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array;
+					var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
+					if (colourFilter.id != "All_Colours") {
+						window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
+					}
+					else {
+						window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array;
+					}
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array;
+					var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
+					if (colourFilter.id != "All_Colours") {
+						window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
+					}
+					else {
+						window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array;
+					}
 				}
 			}
+			
+			// This filters the list by colours the user would like to view
+			function filterByColour(boxClicked) {
+                
+				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
+				// that is then used to know which colours to filter the list by
+                var colourCheckboxes = document.getElementsByName("colourFilter");
+                var coloursFiltered = [];
+                for (let i = 0; i < colourCheckboxes.length; i++) {
+					if (colourCheckboxes[i].checked) {
+						coloursFiltered.push(colourCheckboxes[i].id);
+                   }
+                }
+                
+                // This checks if the All Colours checkbox has been checked
+                if (boxClicked.id != "All_Colours") {
+                	// This runs if all the colours are checked and All Colours is not, and it checks All Colours and displays all pieces
+                	if (colourCheckboxes.length == coloursFiltered.length) {
+    					document.getElementById("All_Colours").checked = true;
+    					
+    					for (let id = 0; id < "${num_items}"; id++) {
+    						document.getElementById("piece_" + id).style.display = "block";
+    					}
+    				}
+                	// This runs displaying only the pieces that match the colours selected, and unchecks the All Colours checkbox
+                	else {
+						document.getElementById("All_Colours").checked = false;
+						
+						for (let id = 0; id < "${num_items}"; id++) {
+							var pieceColour = document.getElementById("colour_" + id).innerHTML;
+							
+							if (coloursFiltered.indexOf(pieceColour) > -1) {
+								document.getElementById("piece_" + id).style.display = "block";
+							}
+							else {
+								document.getElementById("piece_" + id).style.display = "none";
+							}
+						}
+                	}
+				}
+                // This runs if the All Colours checkbox has been clicked
+				else {
+					// This goes through all the colour checkboxes and checks or unchecks them all, depending on if the All Colours checkbox is checked or not
+	                for (let i = 0; i < colourCheckboxes.length; i++) {
+	                	if (document.getElementById("All_Colours").checked == true) {
+	                    	colourCheckboxes[i].checked = true;
+	                    	
+	                    	display = "block";
+	                	}
+	                	else {
+	                    	colourCheckboxes[i].checked = false;
+	                    	
+	                    	var display = "none";
+	                	}
+	                }
+					
+	                // This either displays or hides all the pieces, depending on if the All Colours checkbox is checked or not
+					for (let id = 0; id < "${num_items}"; id++) {
+						document.getElementById("piece_" + id).style.display = display;
+					}
+				}
+			}
+				
 		</script>
 		
 	</head>
@@ -203,37 +339,32 @@
 					</button>
 	
 					<div class="collapse navbar-collapse" id="filterBar">
-						<!-- This creates a form where users can enter details on how they would like to filter the list of pieces and a button to display those that match this search -->
-						<form class="container-fluid d-flex row">
-							<div class="col-auto mt-2">
-								<ul class="navbar-nav">
-									<li class="nav-item dropdown">
-										<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-											<i class="fa fa-filter"></i> Filter by Piece Colours
-										</a>
-										<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-											<li class="dropdown-item form-check">
-												<input type="radio" name="colourFilter" id="All">
-												<label class="form-check-label" for="All"> All Colours </label>
-											</li>
-											<li><hr class="dropdown-divider"></li>
-											<div style="max-height: 50vh; overflow-y: auto;">
-												<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
-												<c:forEach items="${colours}" var="colour">
-													<li class="dropdown-item form-check">
-														<input type="checkbox" name="colourFilter" id="${colour}">
-														<label class="form-check-label" for="${colour}"> ${colour} </label>
-													</li>
-												</c:forEach>
-											</div>
-										</ul>
-									</li>
-								</ul>
-							</div>
-							<div class="col-auto">
-								<button class="btn btn-primary mt-3" type="button" onclick="filter()"> <i class="fa fa-filter"></i> Filter </button>
-							</div>
-						</form>
+						<!-- This creates a dropdown where users can enter details on how they would like to filter the list of pieces -->
+						<div class="col-auto">
+							<ul class="navbar-nav">
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa-filter"></i> Filter by Piece Colours
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+										<li class="dropdown-item form-check">
+											<input type="checkbox" name="colourFilterAll" id="All_Colours" onclick="filterByColour(this)">
+											<label class="form-check-label" for="All_Colours"> All Colours </label>
+										</li>
+										<li><hr class="dropdown-divider"></li>
+										<div style="max-height: 50vh; overflow-y: auto;">
+											<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
+											<c:forEach items="${colours}" var="colour">
+												<li class="dropdown-item form-check">
+													<input type="checkbox" name="colourFilter" id="${colour}" onclick="filterByColour(this)">
+													<label class="form-check-label" for="${colour}"> ${colour} </label>
+												</li>
+											</c:forEach>
+										</div>
+									</ul>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</nav>
@@ -302,7 +433,7 @@
 				     	${piece.name}
 				    </div>
 				    <div class="col">
-				    	${piece.colour_name}
+				    	<label id="colour_${loop.index}">${piece.colour_name}</label>
 				    </div>
 				    <div class="col">
 				    	${piece.pieceCategory}
