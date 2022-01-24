@@ -161,14 +161,9 @@
 			function saveProgress() {
 				var array = getQuantityChecked();
 				
-				var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
-				if (colourFilter.id != "All_Colours") {
-					
-					window.location = "/set/${set.num}/pieces/?quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
-				}
-				else {
-					window.location = "/set/${set.num}/pieces/?quantityChecked=" + array;
-				}
+				var colourFilter = getColourFilter();
+				
+				window.location = "/set/${set.num}/pieces/?quantityChecked=" + array + colourFilter;
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -184,32 +179,14 @@
 				var iconClass = document.getElementById("colourSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					var colourFilter = "";
-					
-					if (document.getElementById("All_Colours").checked == false) {
-						colourFilter = "&colourFilter=";
-						
-						// This goes through all the colour checkboxes and adds those checkbox ids that are the colour names
-						// are added to the colourFilter string to be sent to the controller so that the filters are not forgot
-						// when the page is reloaded
-		                var colourCheckboxes = document.getElementsByName("colourFilter");
-		                for (let i = 0; i < colourCheckboxes.length; i++) {
-							if (colourCheckboxes[i].checked) {
-								colourFilter += colourCheckboxes[i].id + ",";
-		                   }
-		                }
-					}
+					var colourFilter = getColourFilter();
 					
 					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array + colourFilter;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
-					if (colourFilter.id != "All_Colours") {
-						window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
-					}
-					else {
-						window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array;
-					}
+					var colourFilter = getColourFilter();
+					
+					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + colourFilter;
 				}
 			}
 			
@@ -219,22 +196,14 @@
 				var iconClass = document.getElementById("typeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
-					if (colourFilter.id != "All_Colours") {
-						window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
-					}
-					else {
-						window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array;
-					}
+					var colourFilter = getColourFilter();
+					
+					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + colourFilter;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					var colourFilter = document.querySelector('input[name="colourFilter"]:checked');
-					if (colourFilter.id != "All_Colours") {
-						window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + "&colourFilter=" + colourFilter.id;
-					}
-					else {
-						window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array;
-					}
+					var colourFilter = getColourFilter();
+					
+					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + colourFilter;
 				}
 			}
 			
@@ -298,6 +267,28 @@
 						document.getElementById("piece_" + id).style.display = display;
 					}
 				}
+			}
+			
+			// This returns a colour filter if there is one currently active, this is used when getting this information
+			// to return to the controller
+			function getColourFilter() {
+				var colourFilter = "";
+				
+				if (document.getElementById("All_Colours").checked == false) {
+					colourFilter = "&colourFilter=";
+					
+					// This goes through all the colour checkboxes and adds those checkbox ids that are the colour names
+					// are added to the colourFilter string to be sent to the controller so that the filters are not forgot
+					// when the page is reloaded
+	                var colourCheckboxes = document.getElementsByName("colourFilter");
+	                for (let i = 0; i < colourCheckboxes.length; i++) {
+						if (colourCheckboxes[i].checked) {
+							colourFilter += colourCheckboxes[i].id + ",";
+	                   }
+	                }
+				}
+				
+				return colourFilter;
 			}
 				
 		</script>
