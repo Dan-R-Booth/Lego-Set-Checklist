@@ -17,9 +17,12 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
+
+				var sparePieceList = [];
 		
 			// This does setup for the page when it is first loaded
 			function setup() {
+
 				// This sets the quantity checked buttons for each piece to be disabled if can't decresse quantity further or increased any further
 				var element = "piece_quantity_checked_";
 				for (let id = 0; id < "${num_items}"; id++) {
@@ -50,39 +53,53 @@
 				else if ("${sort}" == "-type") {
 					document.getElementById("typeSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
 				}
-				
-				var coloursFiltered = [];
 
-				// The following is used to set the current filter applied to the list if the page is reloaded
-				// This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name
-				<c:forEach items="${colourFilter}" var="colourName">
-					for (let i = 0; i < "${num_items}"; i++) {
-						document.getElementById("${colourName}").checked = true;
-						coloursFiltered.push("${colourName}");
+				if ("${colourFilter}" == "none") {
+					var colourCheckboxes = document.getElementsByName("colourFilter");
+					
+					for (let i = 0; i < colourCheckboxes.length; i++) {
+	                    	colourCheckboxes[i].checked = false;
 					}
-				</c:forEach>
-				
-				if ("${colourFilter}" != "All_Colours") {
 					
 					for (let id = 0; id < "${num_items}"; id++) {
-						var pieceColour = document.getElementById("colour_" + id).innerHTML;
-						
-						if (coloursFiltered.indexOf(pieceColour) > -1) {
-							document.getElementById("piece_" + id).style.display = "block";
-						}
-						else {
-							document.getElementById("piece_" + id).style.display = "none";
-						}
+						document.getElementById("piece_" + id).style.display = "none";
 					}
 				}
 				else {
-					var colourCheckboxes = document.getElementsByName("colourFilter");
-					for (let i = 0; i < colourCheckboxes.length; i++) {
-	                    	colourCheckboxes[i].checked = true;
-					}
+					var coloursFiltered = [];
+	
+					// The following is used to set the current filter applied to the list if the page is reloaded
+					// This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name
+					<c:forEach items="${colourFilter}" var="colourName">
+						for (let i = 0; i < "${num_items}"; i++) {
+							document.getElementById("${colourName}").checked = true;
+							coloursFiltered.push("${colourName}");
+						}
+					</c:forEach>
 					
-					for (let id = 0; id < "${num_items}"; id++) {
-						document.getElementById("piece_" + id).style.display = "block";
+					if ("${colourFilter}" != "All_Colours") {
+						
+						for (let id = 0; id < "${num_items}"; id++) {
+							var pieceColour = document.getElementById("colour_" + id).innerHTML;
+							
+							if (coloursFiltered.indexOf(pieceColour) > -1) {
+								document.getElementById("piece_" + id).style.display = "block";
+							}
+							else {
+								document.getElementById("piece_" + id).style.display = "none";
+							}
+						}
+					}
+					else {
+						var colourCheckboxes = document.getElementsByName("colourFilter");
+						
+						for (let i = 0; i < colourCheckboxes.length; i++) {
+		                    	colourCheckboxes[i].checked = true;
+						}
+						
+						for (let id = 0; id < "${num_items}"; id++) {
+							document.getElementById("piece_" + id).style.display = "block";
+						}
 					}
 				}
 			}
@@ -138,10 +155,14 @@
 			// This hides spare pieces any pieces that are classed as spare pieces for the Lego set and are therefore not needed to build the set
 		    // And hides from the total number of pieces needed
 			function sparePiece(loopIndex) {
+				sparePieceList.push(loopIndex);
+				
 				document.getElementById("piece_" + loopIndex).style.display = "none";
 				var piecesNeededTotal = document.getElementById("piecesNeededTotal").innerText;
 				piecesNeededTotal --;
 				document.getElementById("piecesNeededTotal").innerText = piecesNeededTotal;
+				
+				return sparePieceList;
 			}
 			
 			// This gets the total quantity of all pieces checked (only counting pieces where the total quantity has been found)
@@ -153,8 +174,6 @@
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					array[id] = quantityChecked;
 				}
-				
-				return array;
 			}
 			
 			// This saves all the changes to Piece quantity found to the class
@@ -241,13 +260,16 @@
 						document.getElementById("All_Colours").checked = false;
 						
 						for (let id = 0; id < "${num_items}"; id++) {
-							var pieceColour = document.getElementById("colour_" + id).innerHTML;
+							if (sparePieceList.indexOf(id) <= -1) {
 							
-							if (coloursFiltered.indexOf(pieceColour) > -1) {
-								document.getElementById("piece_" + id).style.display = "block";
-							}
-							else {
-								document.getElementById("piece_" + id).style.display = "none";
+								var pieceColour = document.getElementById("colour_" + id).innerHTML;
+								
+								if (coloursFiltered.indexOf(pieceColour) > -1) {
+									document.getElementById("piece_" + id).style.display = "block";
+								}
+								else {
+									document.getElementById("piece_" + id).style.display = "none";
+								}
 							}
 						}
                 	}
@@ -283,14 +305,25 @@
 				if (document.getElementById("All_Colours").checked == false) {
 					colourFilter = "&colourFilter=";
 					
-					// This goes through all the colour checkboxes and adds those checkbox ids that are the colour names
-					// are added to the colourFilter string to be sent to the controller so that the filters are not forgot
-					// when the page is reloaded
+	                // This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
+	                // if it has no length the colourFilter string is set to equal none. Overwise the values are then added to the
+	                // colourFilter string This string is to be sent to the controller so that the filters are not forgot when the
+	                // page is reloaded
 	                var colourCheckboxes = document.getElementsByName("colourFilter");
+	                var coloursFiltered = [];
 	                for (let i = 0; i < colourCheckboxes.length; i++) {
 						if (colourCheckboxes[i].checked) {
-							colourFilter += colourCheckboxes[i].id + ",";
+							coloursFiltered.push(colourCheckboxes[i].id);
 	                   }
+	                }
+	                
+	                if (coloursFiltered.length == 0) {
+	                	colourFilter += "none";
+	                }
+	                else {
+	                	for (let i = 0; i < coloursFiltered.length; i++) {
+                			colourFilter += coloursFiltered[i] + ",";
+		                }
 	                }
 				}
 				

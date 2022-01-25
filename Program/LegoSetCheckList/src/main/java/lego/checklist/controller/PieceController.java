@@ -96,10 +96,14 @@ public class PieceController {
 		// If there is a colour filters being parsed this will add an array of these to the model
 		// Otherwise it will just add the string All_Colours
 		if (colourFilter != null) {
-
-			String[] colourFilterArray = colourFilter.split(",");
-			
-			model.addAttribute("colourFilter", colourFilterArray);
+			if (colourFilter.equals("none")) {
+				model.addAttribute("colourFilter", "none");
+			}
+			else {
+				String[] colourFilterArray = colourFilter.split(",");
+				
+				model.addAttribute("colourFilter", colourFilterArray);
+			}
 		}
 		else {
 			model.addAttribute("colourFilter", "All_Colours");
