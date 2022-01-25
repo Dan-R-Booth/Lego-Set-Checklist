@@ -18,7 +18,11 @@
 		
 		<script type="text/javascript">
 
-				var sparePieceList = [];
+			// Global boolean used to show if the list is displaying by spares or not
+			var showSpares = false;
+		
+			// This is a global array used to store the dvi id of all pieces that are spares so they can be identified when filtering a list
+			var sparePieceList = [];
 		
 			// This does setup for the page when it is first loaded
 			function setup() {
@@ -54,6 +58,8 @@
 					document.getElementById("typeSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
 				}
 
+				// This sets the theme filter to none if no colours are being shown, displaying no pieces
+				// Or displays the pieces in the list that match the colour it is being filtered by
 				if ("${colourFilter}" == "none") {
 					var colourCheckboxes = document.getElementsByName("colourFilter");
 					
@@ -65,32 +71,41 @@
 						document.getElementById("piece_" + id).style.display = "none";
 					}
 				}
+				// The following is used to set the current colour filter applied to the list if the page is reloaded
 				else {
-					var coloursFiltered = [];
-	
-					// The following is used to set the current filter applied to the list if the page is reloaded
-					// This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name
-					<c:forEach items="${colourFilter}" var="colourName">
-						for (let i = 0; i < "${num_items}"; i++) {
-							document.getElementById("${colourName}").checked = true;
-							coloursFiltered.push("${colourName}");
-						}
-					</c:forEach>
-					
+					// If not all colours are being filtered this will run, checking the checkboxes of those colours filtered,
+					// and display those colours that match this.
 					if ("${colourFilter}" != "All_Colours") {
+						var coloursFiltered = [];
+		
+						// This checks every checkbox colour that the list is being filtered by
+						<c:forEach items="${colourFilter}" var="colourName">
+							for (let i = 0; i < "${num_items}"; i++) {
+								document.getElementById("${colourName}").checked = true;
+								coloursFiltered.push("${colourName}");
+							}
+						</c:forEach>
 						
 						for (let id = 0; id < "${num_items}"; id++) {
-							var pieceColour = document.getElementById("colour_" + id).innerHTML;
 							
-							if (coloursFiltered.indexOf(pieceColour) > -1) {
-								document.getElementById("piece_" + id).style.display = "block";
-							}
-							else {
-								document.getElementById("piece_" + id).style.display = "none";
+							// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
+							if (sparePieceList.indexOf(id) <= -1) {
+								var pieceColour = document.getElementById("colour_" + id).innerHTML;
+								
+								if (coloursFiltered.indexOf(pieceColour) > -1) {
+									document.getElementById("piece_" + id).style.display = "block";
+								}
+								else {
+									document.getElementById("piece_" + id).style.display = "none";
+								}
 							}
 						}
 					}
+					// If the list is to be filtered by all colours this will check all the colour checkboxes
+					// and display all the pieces in the set
 					else {
+						document.getElementById("All_Colours").checked = true;
+						
 						var colourCheckboxes = document.getElementsByName("colourFilter");
 						
 						for (let i = 0; i < colourCheckboxes.length; i++) {
@@ -98,7 +113,10 @@
 						}
 						
 						for (let id = 0; id < "${num_items}"; id++) {
-							document.getElementById("piece_" + id).style.display = "block";
+							// This shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
+							if (sparePieceList.indexOf(id) <= -1) {
+								document.getElementById("piece_" + id).style.display = "block";
+							}
 						}
 					}
 				}
@@ -155,14 +173,13 @@
 			// This hides spare pieces any pieces that are classed as spare pieces for the Lego set and are therefore not needed to build the set
 		    // And hides from the total number of pieces needed
 			function sparePiece(loopIndex) {
+				// This adds the id of spare pieces to a list so that they can be identifed in other functions
 				sparePieceList.push(loopIndex);
 				
 				document.getElementById("piece_" + loopIndex).style.display = "none";
 				var piecesNeededTotal = document.getElementById("piecesNeededTotal").innerText;
 				piecesNeededTotal --;
 				document.getElementById("piecesNeededTotal").innerText = piecesNeededTotal;
-				
-				return sparePieceList;
 			}
 			
 			// This gets the total quantity of all pieces checked (only counting pieces where the total quantity has been found)
@@ -174,6 +191,8 @@
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					array[id] = quantityChecked;
 				}
+				
+				return array;
 			}
 			
 			// This saves all the changes to Piece quantity found to the class
@@ -260,6 +279,7 @@
 						document.getElementById("All_Colours").checked = false;
 						
 						for (let id = 0; id < "${num_items}"; id++) {
+							// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
 							if (sparePieceList.indexOf(id) <= -1) {
 							
 								var pieceColour = document.getElementById("colour_" + id).innerHTML;
@@ -290,9 +310,12 @@
 	                	}
 	                }
 					
-	                // This either displays or hides all the pieces, depending on if the All Colours checkbox is checked or not
+		            // This either displays or hides all the pieces, depending on if the All Colours checkbox is checked or not
 					for (let id = 0; id < "${num_items}"; id++) {
-						document.getElementById("piece_" + id).style.display = display;
+		             	// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
+						if (sparePieceList.indexOf(id) <= -1) {
+							document.getElementById("piece_" + id).style.display = display;
+						}
 					}
 				}
 			}

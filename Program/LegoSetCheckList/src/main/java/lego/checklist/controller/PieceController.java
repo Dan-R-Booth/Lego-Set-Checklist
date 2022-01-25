@@ -123,6 +123,7 @@ public class PieceController {
 		
 		List<String> colours = new ArrayList<>();
 		
+		// This adds all the colours to a list that is used to display options to filter the list by colour
 		for (Piece piece : set.getPiece_list()) {
 			String colour = piece.getColour_name();
 			
