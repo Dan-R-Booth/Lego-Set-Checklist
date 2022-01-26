@@ -100,7 +100,7 @@ public class PieceController {
 				model.addAttribute("colourFilter", "none");
 			}
 			else {
-				String[] colourFilterArray = colourFilter.split(",");
+				String[] colourFilterArray = colourFilter.split(">");
 				
 				model.addAttribute("colourFilter", colourFilterArray);
 			}
@@ -116,7 +116,7 @@ public class PieceController {
 				model.addAttribute("pieceTypeFilter", "none");
 			}
 			else {
-				String[] pieceTypeFilterArray = pieceTypeFilter.split(",");
+				String[] pieceTypeFilterArray = pieceTypeFilter.split(">");
 				
 				model.addAttribute("pieceTypeFilter", pieceTypeFilterArray);
 			}

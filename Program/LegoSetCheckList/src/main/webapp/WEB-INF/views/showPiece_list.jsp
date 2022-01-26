@@ -58,81 +58,77 @@
 					document.getElementById("typeSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
 				}
 
-				// This sets the theme filter to none if no colours are being shown, displaying no pieces
+				var coloursFiltered = [];
+				var pieceTypesFiltered = [];
+				
+				var colourCheckboxes = document.getElementsByName("colourFilter");
+				var pieceTypeCheckboxes = document.getElementsByName("pieceTypeFilter");
+				
+				// This sets the colour filter to none if no colours are being shown, displaying no pieces
 				// Or displays the pieces in the list that match the colour it is being filtered by
 				if ("${colourFilter}" == "none") {
-					var colourCheckboxes = document.getElementsByName("colourFilter");
-					
 					for (let i = 0; i < colourCheckboxes.length; i++) {
 	                    	colourCheckboxes[i].checked = false;
 					}
-					
-					for (let id = 0; id < "${num_items}"; id++) {
-						document.getElementById("piece_" + id).style.display = "none";
-					}
 				}
-				
-				// This sets the theme filter to none if no piece types are being shown, displaying no pieces
-				// Or displays the pieces in the list that match the colour it is being filtered by
-				if ("${pieceTypeFilter}" == "none") {
-					var colourCheckboxes = document.getElementsByName("pieceTypeFilter");
+				// If all colours are being filtered this will run, checking the checkboxes of those colours filtered
+				else if ("${colourFilter}" == "All_Colours") {
+					document.getElementById("All_Colours").checked = true;
 					
 					for (let i = 0; i < colourCheckboxes.length; i++) {
-	                    	colourCheckboxes[i].checked = false;
-					}
-					
-					for (let id = 0; id < "${num_items}"; id++) {
-						document.getElementById("piece_" + id).style.display = "none";
+                    	colourCheckboxes[i].checked = true;
+						coloursFiltered.push(colourCheckboxes[i].id);
 					}
 				}
-				
-				// The following is used to set the current colour filter applied to the list if the page is reloaded
+				// If not none or all colour checkboxes should be checked, this checks every checkbox colour that the should list be filtered by
 				else {
-					// If not all colours are being filtered this will run, checking the checkboxes of those colours filtered,
-					// and display those colours that match this.
-					if ("${colourFilter}" != "All_Colours") {
-						var coloursFiltered = [];
-		
-						// This checks every checkbox colour that the list is being filtered by
-						<c:forEach items="${colourFilter}" var="colourName">
-							for (let i = 0; i < "${num_items}"; i++) {
-								document.getElementById("${colourName}").checked = true;
-								coloursFiltered.push("${colourName}");
-							}
-						</c:forEach>
-						
-						for (let id = 0; id < "${num_items}"; id++) {
-							
-							// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
-							if (sparePieceList.indexOf(id) <= -1) {
-								var pieceColour = document.getElementById("colour_" + id).innerHTML;
-								
-								if (coloursFiltered.indexOf(pieceColour) > -1) {
-									document.getElementById("piece_" + id).style.display = "block";
-								}
-								else {
-									document.getElementById("piece_" + id).style.display = "none";
-								}
-							}
+					<c:forEach items="${colourFilter}" var="colourName">
+						for (let i = 0; i < "${num_items}"; i++) {
+							document.getElementById("${colourName}").checked = true;
+							coloursFiltered.push("${colourName}");
 						}
+					</c:forEach>
+				}
+				
+				// This sets the piece type filter to none if no piece types are being shown, displaying no pieces
+				// Or displays the pieces in the list that match the piece type it is being filtered by
+				if ("${pieceTypeFilter}" == "none") {
+					for (let i = 0; i < pieceTypeCheckboxes.length; i++) {
+						pieceTypeCheckboxes[i].checked = false;
 					}
-					// If the list is to be filtered by all colours this will check all the colour checkboxes
-					// and display all the pieces in the set
+				}
+				// If all piece type are being filtered this will run, checking the checkboxes of those piece colours filtered
+				else if ("${pieceTypeFilter}" == "All_PieceTypes") {
+					document.getElementById("All_PieceTypes").checked = true;
+
+					for (let i = 0; i < pieceTypeCheckboxes.length; i++) {
+						pieceTypeCheckboxes[i].checked = true;
+						pieceTypesFiltered.push(pieceTypeCheckboxes[i].id);
+					}
+				}
+				// If not none or all piece types checkboxes should be checked, this checks every checkbox piece type that the should list be filtered by
+				else {
+					// This checks every checkbox piece type that the list is being filtered by
+					<c:forEach items="${pieceTypeFilter}" var="pieceType">
+						for (let i = 0; i < "${num_items}"; i++) {
+							document.getElementById("${pieceType}").checked = true;
+							pieceTypesFiltered.push("${pieceType}");
+						}
+					</c:forEach>
+				}
+				
+				// This runs displaying only the pieces that match the piece types and colours selected
+				for (let id = 0; id < "${num_items}"; id++) {
+					var pieceColour = document.getElementById("colour_" + id).innerHTML;
+					var pieceType = document.getElementById("pieceType_" + id).innerHTML;
+					
+					// This shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
+					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
+					if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
+							document.getElementById("piece_" + id).style.display = "block";
+					}
 					else {
-						document.getElementById("All_Colours").checked = true;
-						
-						var colourCheckboxes = document.getElementsByName("colourFilter");
-						
-						for (let i = 0; i < colourCheckboxes.length; i++) {
-		                    	colourCheckboxes[i].checked = true;
-						}
-						
-						for (let id = 0; id < "${num_items}"; id++) {
-							// This shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
-							if (sparePieceList.indexOf(id) <= -1) {
-								document.getElementById("piece_" + id).style.display = "block";
-							}
-						}
+							document.getElementById("piece_" + id).style.display = "none";
 					}
 				}
 			}
@@ -215,6 +211,7 @@
 				var array = getQuantityChecked();
 				
 				var colourFilter = getColourFilter();
+				var pieceTypeFilter = getPieceTypeFilter();
 				
 				var sort = "";
 				
@@ -222,7 +219,7 @@
 					sort = "sort=${sort}&"
 				}
 				
-				window.location = "/set/${set.num}/pieces/?" + sort + "quantityChecked=" + array + colourFilter;
+				window.location = "/set/${set.num}/pieces/?" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter;
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -235,34 +232,34 @@
 			// This calls the the controller setting the sort parameter as colourName
 			function colourSort() {
 				var array = getQuantityChecked();
+				
 				var iconClass = document.getElementById("colourSortIcon").className;
 				
+				var colourFilter = getColourFilter();
+				var pieceTypeFilter = getPieceTypeFilter();
+				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					var colourFilter = getColourFilter();
-					
-					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array + colourFilter;
+					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array + colourFilter + pieceTypeFilter;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					var colourFilter = getColourFilter();
-					
-					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + colourFilter;
+					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + colourFilter + pieceTypeFilter;
 				}
 			}
 			
 			// This calls the the controller setting the sort parameter as pieceCategory alphabetically
 			function typeSort() {
 				var array = getQuantityChecked();
+				
 				var iconClass = document.getElementById("typeSortIcon").className;
 				
+				var colourFilter = getColourFilter();
+				var pieceTypeFilter = getPieceTypeFilter();
+				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					var colourFilter = getColourFilter();
-					
-					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + colourFilter;
+					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + colourFilter + pieceTypeFilter;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					var colourFilter = getColourFilter();
-					
-					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + colourFilter;
+					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + colourFilter + pieceTypeFilter;
 				}
 			}
 			
@@ -381,7 +378,7 @@
 	                }
 	                else {
 	                	for (let i = 0; i < coloursFiltered.length; i++) {
-                			colourFilter += coloursFiltered[i] + ",";
+                			colourFilter += coloursFiltered[i] + ">";
 		                }
 	                }
 				}
@@ -394,7 +391,7 @@
 			function getPieceTypeFilter() {
 				var pieceTypeFilter = "";
 				
-				if (document.getElementById("All_PieceType").checked == false) {
+				if (document.getElementById("All_PieceTypes").checked == false) {
 					pieceTypeFilter = "&pieceTypeFilter=";
 					
 	                // This goes through all the piece type checkboxes and adds those checkbox ids of ones that are checked to a list
@@ -414,7 +411,7 @@
 	                }
 	                else {
 	                	for (let i = 0; i < pieceTypesFiltered.length; i++) {
-	                		pieceTypeFilter += pieceTypesFiltered[i] + ",";
+	                		pieceTypeFilter += pieceTypesFiltered[i] + ">";
 		                }
 	                }
 				}
