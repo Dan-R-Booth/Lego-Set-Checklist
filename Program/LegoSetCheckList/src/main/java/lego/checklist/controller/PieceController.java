@@ -60,6 +60,18 @@ public class PieceController {
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
 		
+		// quantityChecked List holds the quantities of all the current quantities for each piece
+		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter
+		if (quantityChecked != null) {
+			// This updates the quantity checked for each piece in the Lego set
+			for (int i = 0; i < piece_list.size(); i++) {
+				Piece piece = piece_list.get(i);
+				piece.setQuantity_checked(quantityChecked.get(i));
+			}
+			
+			set.setPiece_list(piece_list);
+		}
+		
 		// If their is a sort to be applied to the checklist (sorts not null), then the fellowing is ran to apply this sort
 		if (sort != null) {
 			
@@ -123,18 +135,6 @@ public class PieceController {
 		}
 		else {
 			model.addAttribute("pieceTypeFilter", "All_PieceTypes");
-		}
-		
-		// quantityChecked List holds the quantities of all the current quantities for each piece
-		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter
-		if (quantityChecked != null) {
-	    	// This updates the quantity checked for each piece in the Lego set
-	    	for (int i = 0; i < piece_list.size(); i++) {
-	    		Piece piece = piece_list.get(i);
-	    		piece.setQuantity_checked(quantityChecked.get(i));
-	    	}
-	    	
-	    	set.setPiece_list(piece_list);
 		}
 		
 		List<String> colours = new ArrayList<>();

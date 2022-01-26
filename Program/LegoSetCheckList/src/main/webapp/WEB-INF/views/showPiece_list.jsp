@@ -84,8 +84,14 @@
 				else {
 					<c:forEach items="${colourFilter}" var="colourName">
 						for (let i = 0; i < "${num_items}"; i++) {
-							document.getElementById("${colourName}").checked = true;
-							coloursFiltered.push("${colourName}");
+							if ("${colourName}" == "No Color Any Color") {
+								document.getElementById("[No Color/Any Color]").checked = true;
+								coloursFiltered.push("[No Color/Any Color]");
+							}
+							else {
+								document.getElementById("${colourName}").checked = true;
+								coloursFiltered.push("${colourName}");
+							}
 						}
 					</c:forEach>
 				}
@@ -369,7 +375,14 @@
 	                var coloursFiltered = [];
 	                for (let i = 0; i < colourCheckboxes.length; i++) {
 						if (colourCheckboxes[i].checked) {
-							coloursFiltered.push(colourCheckboxes[i].id);
+							
+							if (colourCheckboxes[i].id == "[No Color/Any Color]") {
+								
+								coloursFiltered.push("No Color Any Color");
+							}
+							else {	
+								coloursFiltered.push(colourCheckboxes[i].id);
+							}
 	                   }
 	                }
 	                
