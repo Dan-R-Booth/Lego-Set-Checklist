@@ -26,6 +26,6 @@ public class MainController {
 	@EventListener(ApplicationReadyEvent.class)
 	public void onStartUp() {
 		ThemeController.createThemeMap();
-		PieceCategoryController.createPieceCategoryMap();
+		PieceTypeController.createPieceTypeMap();
 	}
 }

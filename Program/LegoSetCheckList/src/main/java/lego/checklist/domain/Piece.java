@@ -4,17 +4,17 @@ public class Piece {
 	
 	private String num;
 	private String name;
-	private String pieceCategory;
+	private String pieceType;
 	private String img_url;
 	private String colour_name;
 	private int quantity;
 	private int quantity_checked;
 	private boolean spare;
 	
-	public Piece(String num, String name, String pieceCategory, String img_url, String colour_name, int quantity, int quantity_checked, boolean spare) {
+	public Piece(String num, String name, String pieceType, String img_url, String colour_name, int quantity, int quantity_checked, boolean spare) {
 		this.num = num;
 		this.name = name;
-		this.pieceCategory = pieceCategory;
+		this.pieceType = pieceType;
 		this.img_url = img_url;
 		this.colour_name = colour_name;
 		this.quantity = quantity;
@@ -30,8 +30,8 @@ public class Piece {
 		return name;
 	}
 	
-	public String getPieceCategory() {
-		return pieceCategory;
+	public String getPieceType() {
+		return pieceType;
 	}
 	
 	public String getImg_url() {

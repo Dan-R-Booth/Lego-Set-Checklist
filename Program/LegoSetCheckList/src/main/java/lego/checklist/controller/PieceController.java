@@ -77,11 +77,11 @@ public class PieceController {
 	    		}
 	    	}
 	    	else if (sort.equals("type") || sort.equals("-type")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Piece Category Type
+	    		// This sorts the list of pieces so they are in alphabetical order by Piece Type
 	    		Collections.sort(piece_list, new Comparator<Piece>() {
 	    			@Override
 	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getPieceCategory().compareTo(piece2.getPieceCategory());
+	    				return piece1.getPieceType().compareTo(piece2.getPieceType());
 	    			}
 	    		});
 	    		
@@ -122,19 +122,29 @@ public class PieceController {
 		}
 		
 		List<String> colours = new ArrayList<>();
+		List<String> pieceTypes = new ArrayList<>();
 		
-		// This adds all the colours to a list that is used to display options to filter the list by colour
+		// This adds all the colours to a list that is used to display options to filter the list by colours
+		// This also adds all the piece types to another list that is used to display options to filter the list by types of Lego pieces
 		for (Piece piece : set.getPiece_list()) {
 			String colour = piece.getColour_name();
 			
 			if (!colours.contains(colour)) {
 				colours.add(colour);
 			}
+			
+			String pieceType = piece.getPieceType();
+			
+			if (!pieceTypes.contains(pieceType)) {
+				pieceTypes.add(pieceType);
+			}
 		}
 		
 		Collections.sort(colours);
+		Collections.sort(pieceTypes);
 		
 		model.addAttribute("colours", colours);
+		model.addAttribute("pieceTypes", pieceTypes);
     	model.addAttribute("set_number", set.getNum());
     	model.addAttribute("num_items", piece_list.size());
 		return "showPiece_list";
@@ -240,7 +250,7 @@ public class PieceController {
 	        	JsonNode partNode = pieceNode.path("part");
 	        	JsonNode numNode = partNode.path("part_num");
 	        	JsonNode nameNode = partNode.path("name");
-	        	JsonNode pieceCategoryIdNode = partNode.path("part_cat_id");
+	        	JsonNode pieceTypeIdNode = partNode.path("part_cat_id");
 	        	JsonNode img_urlNode = partNode.path("part_img_url");
 	        	
 	        	// As the colour name is stored as an element of color, I first have to get the color node to retrieve this
@@ -253,8 +263,8 @@ public class PieceController {
 	        	// These return the data stored in the JsonNodes
 	        	String num = numNode.textValue();
 	        	String name = nameNode.textValue();
-	        	int pieceCategoryId = pieceCategoryIdNode.asInt();
-	        	String pieceCategory = PieceCategoryController.pieceCategories.get(pieceCategoryId);
+	        	int pieceTypeId = pieceTypeIdNode.asInt();
+	        	String pieceType = PieceTypeController.pieceCategories.get(pieceTypeId);
 	        	String img_url = img_urlNode.textValue();
 	        	String colour_name = colour_nameNode.textValue();
 	    		int quantity = quantityNode.intValue();
@@ -263,7 +273,7 @@ public class PieceController {
 	        	// This is set to 0 as the user may not have checked any of these pieces yet
 				int quantity_checked = 0;
 				
-				Piece piece = new Piece(num, name, pieceCategory, img_url, colour_name, quantity, quantity_checked, spare);
+				Piece piece = new Piece(num, name, pieceType, img_url, colour_name, quantity, quantity_checked, spare);
 				
 				pieces.add(piece);
         	}

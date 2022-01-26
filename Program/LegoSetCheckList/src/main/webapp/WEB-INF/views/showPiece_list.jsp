@@ -416,6 +416,27 @@
 										</div>
 									</ul>
 								</li>
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+										<i class="fa fa-filter"></i> Filter by Piece Types
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+										<li class="dropdown-item form-check">
+											<input type="checkbox" name="pieceTypeFilterAll" id="All_PieceTypes" onclick="filterByPieceType(this)">
+											<label class="form-check-label" for="All_PieceTypes"> All Piece Types </label>
+										</li>
+										<li><hr class="dropdown-divider"></li>
+										<div style="max-height: 50vh; overflow-y: auto;">
+											<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
+											<c:forEach items="${pieceTypes}" var="pieceType">
+												<li class="dropdown-item form-check">
+													<input type="checkbox" name="pieceTypesFilter" id="${pieceType}" onclick="filterByPieceType(this)">
+													<label class="form-check-label" for="${pieceType}"> ${pieceType} </label>
+												</li>
+											</c:forEach>
+										</div>
+									</ul>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -457,7 +478,7 @@
 						<p class="h6" onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Theme">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
-						<p class="h6" onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Category Type">Piece Category Type: <i id="typeSortIcon" class="fa fa-sort"></i></p>
+						<p class="h6" onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Type">Piece Type: <i id="typeSortIcon" class="fa fa-sort"></i></p>
 					</div>
 					<div class="col">
 						<p class="h6">Quantity:</p>
@@ -489,7 +510,7 @@
 				    	<label id="colour_${loop.index}">${piece.colour_name}</label>
 				    </div>
 				    <div class="col">
-				    	${piece.pieceCategory}
+				    	${piece.pieceType}
 				    </div>
 				    <div class="col">
 				       ${piece.quantity}
