@@ -55,7 +55,7 @@ public class PieceController {
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked,  @RequestParam(required = false) String colourFilter) {
+	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter) {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
@@ -107,6 +107,22 @@ public class PieceController {
 		}
 		else {
 			model.addAttribute("colourFilter", "All_Colours");
+		}
+		
+		// If there is a piece type filters being parsed this will add an array of these to the model
+		// Otherwise it will just add the string All_PieceTypes
+		if (pieceTypeFilter != null) {
+			if (pieceTypeFilter.equals("none")) {
+				model.addAttribute("pieceTypeFilter", "none");
+			}
+			else {
+				String[] pieceTypeFilterArray = pieceTypeFilter.split(",");
+				
+				model.addAttribute("pieceTypeFilter", pieceTypeFilterArray);
+			}
+		}
+		else {
+			model.addAttribute("pieceTypeFilter", "All_PieceTypes");
 		}
 		
 		// quantityChecked List holds the quantities of all the current quantities for each piece

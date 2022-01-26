@@ -71,6 +71,21 @@
 						document.getElementById("piece_" + id).style.display = "none";
 					}
 				}
+				
+				// This sets the theme filter to none if no piece types are being shown, displaying no pieces
+				// Or displays the pieces in the list that match the colour it is being filtered by
+				if ("${pieceTypeFilter}" == "none") {
+					var colourCheckboxes = document.getElementsByName("pieceTypeFilter");
+					
+					for (let i = 0; i < colourCheckboxes.length; i++) {
+	                    	colourCheckboxes[i].checked = false;
+					}
+					
+					for (let id = 0; id < "${num_items}"; id++) {
+						document.getElementById("piece_" + id).style.display = "none";
+					}
+				}
+				
 				// The following is used to set the current colour filter applied to the list if the page is reloaded
 				else {
 					// If not all colours are being filtered this will run, checking the checkboxes of those colours filtered,
@@ -251,40 +266,7 @@
 				}
 			}
 			
-			// This returns a colour filter if there is one currently active, this is used when getting this information
-			// to return to the controller
-			function getColourFilter() {
-				var colourFilter = "";
-				
-				if (document.getElementById("All_Colours").checked == false) {
-					colourFilter = "&colourFilter=";
-					
-	                // This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
-	                // if it has no length the colourFilter string is set to equal none. Overwise the values are then added to the
-	                // colourFilter string This string is to be sent to the controller so that the filters are not forgot when the
-	                // page is reloaded
-	                var colourCheckboxes = document.getElementsByName("colourFilter");
-	                var coloursFiltered = [];
-	                for (let i = 0; i < colourCheckboxes.length; i++) {
-						if (colourCheckboxes[i].checked) {
-							coloursFiltered.push(colourCheckboxes[i].id);
-	                   }
-	                }
-	                
-	                if (coloursFiltered.length == 0) {
-	                	colourFilter += "none";
-	                }
-	                else {
-	                	for (let i = 0; i < coloursFiltered.length; i++) {
-                			colourFilter += coloursFiltered[i] + ",";
-		                }
-	                }
-				}
-				
-				return colourFilter;
-			}
-			
-			// This filters the list by piece types the user would like to view
+			// This filters the list by piece types and colours the user would like to view
 			function filter(boxClicked) {
                 
 				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
@@ -340,28 +322,31 @@
                    }
                 }
                 
-             	// This runs if all the colours are checked and All Colours is not, and it checks All Colours and displays all pieces
+             	// This runs if all the colours are checked and All Colours is not, and it checks All Colours checkbox
             	if (colourCheckboxes.length == coloursFiltered.length) {
 					document.getElementById("All_Colours").checked = true;
 				}
+            	// This runs if all the colours are not checked, thic sets All Colours checkbox to unchecked
             	else {
 					document.getElementById("All_Colours").checked = false;
             	}
                 
-               	// This runs if all the piece types are checked and All Piece Types is not, and it checks All Piece Types and displays all pieces
+               	// This runs if all the piece types are checked and All Piece Types is not, and it checks All Piece Types checkbox
                	if (pieceTypeCheckboxes.length == pieceTypesFiltered.length) {
    					document.getElementById("All_PieceTypes").checked = true;
    				}
+               	// This runs if all the piece types are not checked, thic sets All Piece Types checkbox to unchecked
                	else {
 					document.getElementById("All_PieceTypes").checked = false;
                	}
                	
-               	// This runs displaying only the pieces that match the piece types selected
+               	// This runs displaying only the pieces that match the piece types and colours selected
 				for (let id = 0; id < "${num_items}"; id++) {
 					var pieceColour = document.getElementById("colour_" + id).innerHTML;
 					var pieceType = document.getElementById("pieceType_" + id).innerHTML;
 					
-					// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
+					// This shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
+					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
 					if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
 							document.getElementById("piece_" + id).style.display = "block";
 					}
@@ -370,7 +355,72 @@
 					}
 				}
 			}
+			
+			// This returns a colour filter if there is one currently active, this is used when getting this information
+			// to return to the controller
+			function getColourFilter() {
+				var colourFilter = "";
 				
+				if (document.getElementById("All_Colours").checked == false) {
+					colourFilter = "&colourFilter=";
+					
+	                // This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
+	                // if it has no length the colourFilter string is set to equal none. Overwise the values are then added to the
+	                // colourFilter string This string is to be sent to the controller so that the filters are not forgot when the
+	                // page is reloaded
+	                var colourCheckboxes = document.getElementsByName("colourFilter");
+	                var coloursFiltered = [];
+	                for (let i = 0; i < colourCheckboxes.length; i++) {
+						if (colourCheckboxes[i].checked) {
+							coloursFiltered.push(colourCheckboxes[i].id);
+	                   }
+	                }
+	                
+	                if (coloursFiltered.length == 0) {
+	                	colourFilter += "none";
+	                }
+	                else {
+	                	for (let i = 0; i < coloursFiltered.length; i++) {
+                			colourFilter += coloursFiltered[i] + ",";
+		                }
+	                }
+				}
+				
+				return colourFilter;
+			}
+			
+			// This returns a pieceType filter if there is one currently active, this is used when getting this information
+			// to return to the controller
+			function getPieceTypeFilter() {
+				var pieceTypeFilter = "";
+				
+				if (document.getElementById("All_PieceType").checked == false) {
+					pieceTypeFilter = "&pieceTypeFilter=";
+					
+	                // This goes through all the piece type checkboxes and adds those checkbox ids of ones that are checked to a list
+	                // if it has no length the pieceTypeFilter string is set to equal none. Overwise the values are then added to the
+	                // pieceTypeFilter string This string is to be sent to the controller so that the filters are not forgot when the
+	                // page is reloaded
+	                var pieceTypeCheckboxes = document.getElementsByName("pieceTypeFilter");
+	                var pieceTypesFiltered = [];
+	                for (let i = 0; i < pieceTypeCheckboxes.length; i++) {
+						if (pieceTypeCheckboxes[i].checked) {
+							pieceTypesFiltered.push(pieceTypeCheckboxes[i].id);
+	                   }
+	                }
+	                
+	                if (pieceTypesFiltered.length == 0) {
+	                	pieceTypeFilter += "none";
+	                }
+	                else {
+	                	for (let i = 0; i < pieceTypesFiltered.length; i++) {
+	                		pieceTypeFilter += pieceTypesFiltered[i] + ",";
+		                }
+	                }
+				}
+				
+				return pieceTypeFilter;
+			}
 		</script>
 		
 	</head>
