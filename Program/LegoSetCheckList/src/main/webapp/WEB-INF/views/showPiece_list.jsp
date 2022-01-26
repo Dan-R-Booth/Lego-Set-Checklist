@@ -251,75 +251,6 @@
 				}
 			}
 			
-			// This filters the list by colours the user would like to view
-			function filterByColour(boxClicked) {
-                
-				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
-				// that is then used to know which colours to filter the list by
-                var colourCheckboxes = document.getElementsByName("colourFilter");
-                var coloursFiltered = [];
-                for (let i = 0; i < colourCheckboxes.length; i++) {
-					if (colourCheckboxes[i].checked) {
-						coloursFiltered.push(colourCheckboxes[i].id);
-                   }
-                }
-                
-                // This checks if the All Colours checkbox has been checked
-                if (boxClicked.id != "All_Colours") {
-                	// This runs if all the colours are checked and All Colours is not, and it checks All Colours and displays all pieces
-                	if (colourCheckboxes.length == coloursFiltered.length) {
-    					document.getElementById("All_Colours").checked = true;
-    					
-    					for (let id = 0; id < "${num_items}"; id++) {
-    						document.getElementById("piece_" + id).style.display = "block";
-    					}
-    				}
-                	// This runs displaying only the pieces that match the colours selected, and unchecks the All Colours checkbox
-                	else {
-						document.getElementById("All_Colours").checked = false;
-						
-						for (let id = 0; id < "${num_items}"; id++) {
-							// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
-							if (sparePieceList.indexOf(id) <= -1) {
-							
-								var pieceColour = document.getElementById("colour_" + id).innerHTML;
-								
-								if (coloursFiltered.indexOf(pieceColour) > -1) {
-									document.getElementById("piece_" + id).style.display = "block";
-								}
-								else {
-									document.getElementById("piece_" + id).style.display = "none";
-								}
-							}
-						}
-                	}
-				}
-                // This runs if the All Colours checkbox has been clicked
-				else {
-					// This goes through all the colour checkboxes and checks or unchecks them all, depending on if the All Colours checkbox is checked or not
-	                for (let i = 0; i < colourCheckboxes.length; i++) {
-	                	if (document.getElementById("All_Colours").checked == true) {
-	                    	colourCheckboxes[i].checked = true;
-	                    	
-	                    	display = "block";
-	                	}
-	                	else {
-	                    	colourCheckboxes[i].checked = false;
-	                    	
-	                    	var display = "none";
-	                	}
-	                }
-					
-		            // This either displays or hides all the pieces, depending on if the All Colours checkbox is checked or not
-					for (let id = 0; id < "${num_items}"; id++) {
-		             	// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
-						if (sparePieceList.indexOf(id) <= -1) {
-							document.getElementById("piece_" + id).style.display = display;
-						}
-					}
-				}
-			}
-			
 			// This returns a colour filter if there is one currently active, this is used when getting this information
 			// to return to the controller
 			function getColourFilter() {
@@ -351,6 +282,93 @@
 				}
 				
 				return colourFilter;
+			}
+			
+			// This filters the list by piece types the user would like to view
+			function filter(boxClicked) {
+                
+				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
+				// that is then used to know which colours to filter the list by
+                var colourCheckboxes = document.getElementsByName("colourFilter");
+				
+             	// This goes through all the piece type checkboxes and adds those checkbox ids of ones that are checked to a list
+				// that is then used to know which piece types to filter the list by
+                var pieceTypeCheckboxes = document.getElementsByName("pieceTypeFilter");
+				
+             	// This runs if the All Colours checkbox has been clicked
+				if (boxClicked.id == "All_Colours") {
+					// This goes through all the colour checkboxes and checks or unchecks them all, depending on if the All Colours checkbox is checked or not
+	                for (let i = 0; i < colourCheckboxes.length; i++) {
+	                	if (document.getElementById("All_Colours").checked == true) {
+	                    	colourCheckboxes[i].checked = true;
+	                	}
+	                	else {
+	                    	colourCheckboxes[i].checked = false;
+	                	}
+	                }
+				}
+                // This checks if the All Piece Types checkbox has been checked
+                else if (boxClicked.id == "All_PieceTypes") {
+					// This goes through all the piece type checkboxes and checks or unchecks them all, depending on if the All Piece Types checkbox is checked or not
+	                for (let i = 0; i < pieceTypeCheckboxes.length; i++) {
+	                	if (document.getElementById("All_PieceTypes").checked == true) {
+	                    	pieceTypeCheckboxes[i].checked = true;
+	                	}
+	                	else {
+	                    	pieceTypeCheckboxes[i].checked = false;
+	                	}
+	                }
+				}
+                
+				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
+				// that is then used to know which colours to filter the list by
+                colourCheckboxes = document.getElementsByName("colourFilter");
+                var coloursFiltered = [];
+                for (let i = 0; i < colourCheckboxes.length; i++) {
+					if (colourCheckboxes[i].checked) {
+						coloursFiltered.push(colourCheckboxes[i].id);
+                   }
+                }
+				
+				// This goes through all the piece type checkboxes and adds those checkbox ids of ones that are checked to a list
+				// that is then used to know which piece types to filter the list by
+                pieceTypeCheckboxes = document.getElementsByName("pieceTypeFilter");
+                var pieceTypesFiltered = [];
+                for (let i = 0; i < pieceTypeCheckboxes.length; i++) {
+					if (pieceTypeCheckboxes[i].checked) {
+						pieceTypesFiltered.push(pieceTypeCheckboxes[i].id);
+                   }
+                }
+                
+             	// This runs if all the colours are checked and All Colours is not, and it checks All Colours and displays all pieces
+            	if (colourCheckboxes.length == coloursFiltered.length) {
+					document.getElementById("All_Colours").checked = true;
+				}
+            	else {
+					document.getElementById("All_Colours").checked = false;
+            	}
+                
+               	// This runs if all the piece types are checked and All Piece Types is not, and it checks All Piece Types and displays all pieces
+               	if (pieceTypeCheckboxes.length == pieceTypesFiltered.length) {
+   					document.getElementById("All_PieceTypes").checked = true;
+   				}
+               	else {
+					document.getElementById("All_PieceTypes").checked = false;
+               	}
+               	
+               	// This runs displaying only the pieces that match the piece types selected
+				for (let id = 0; id < "${num_items}"; id++) {
+					var pieceColour = document.getElementById("colour_" + id).innerHTML;
+					var pieceType = document.getElementById("pieceType_" + id).innerHTML;
+					
+					// This hides or shows all pieces as long as they are not a spare piece and therefore stored in the list of spare pieces
+					if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
+							document.getElementById("piece_" + id).style.display = "block";
+					}
+					else {
+							document.getElementById("piece_" + id).style.display = "none";
+					}
+				}
 			}
 				
 		</script>
@@ -401,7 +419,7 @@
 									</a>
 									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 										<li class="dropdown-item form-check">
-											<input type="checkbox" name="colourFilterAll" id="All_Colours" onclick="filterByColour(this)">
+											<input type="checkbox" name="colourFilterAll" id="All_Colours" onclick="filter(this)">
 											<label class="form-check-label" for="All_Colours"> All Colours </label>
 										</li>
 										<li><hr class="dropdown-divider"></li>
@@ -409,7 +427,7 @@
 											<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
 											<c:forEach items="${colours}" var="colour">
 												<li class="dropdown-item form-check">
-													<input type="checkbox" name="colourFilter" id="${colour}" onclick="filterByColour(this)">
+													<input type="checkbox" name="colourFilter" id="${colour}" onclick="filter(this)">
 													<label class="form-check-label" for="${colour}"> ${colour} </label>
 												</li>
 											</c:forEach>
@@ -422,7 +440,7 @@
 									</a>
 									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 										<li class="dropdown-item form-check">
-											<input type="checkbox" name="pieceTypeFilterAll" id="All_PieceTypes" onclick="filterByPieceType(this)">
+											<input type="checkbox" name="pieceTypeFilterAll" id="All_PieceTypes" onclick="filter(this)">
 											<label class="form-check-label" for="All_PieceTypes"> All Piece Types </label>
 										</li>
 										<li><hr class="dropdown-divider"></li>
@@ -430,7 +448,7 @@
 											<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
 											<c:forEach items="${pieceTypes}" var="pieceType">
 												<li class="dropdown-item form-check">
-													<input type="checkbox" name="pieceTypesFilter" id="${pieceType}" onclick="filterByPieceType(this)">
+													<input type="checkbox" name="pieceTypeFilter" id="${pieceType}" onclick="filter(this)">
 													<label class="form-check-label" for="${pieceType}"> ${pieceType} </label>
 												</li>
 											</c:forEach>
@@ -510,7 +528,7 @@
 				    	<label id="colour_${loop.index}">${piece.colour_name}</label>
 				    </div>
 				    <div class="col">
-				    	${piece.pieceType}
+				    	<label id="pieceType_${loop.index}">${piece.pieceType}</label>
 				    </div>
 				    <div class="col">
 				       ${piece.quantity}
