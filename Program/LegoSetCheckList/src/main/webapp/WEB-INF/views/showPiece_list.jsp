@@ -471,52 +471,54 @@
 	
 					<div class="collapse navbar-collapse" id="filterBar">
 						<!-- This creates a dropdown where users can enter details on how they would like to filter the list of pieces -->
-						<div class="col-auto">
-							<ul class="navbar-nav">
-								<li class="nav-item dropdown">
-									<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-										<i class="fa fa-filter"></i> Filter by Piece Colours
-									</a>
-									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-										<li class="dropdown-item form-check">
-											<input type="checkbox" name="colourFilterAll" id="All_Colours" onclick="filter(this)">
-											<label class="form-check-label" for="All_Colours"> All Colours </label>
-										</li>
-										<li><hr class="dropdown-divider"></li>
-										<div style="max-height: 50vh; overflow-y: auto;">
-											<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
-											<c:forEach items="${colours}" var="colour">
-												<li class="dropdown-item form-check">
-													<input type="checkbox" name="colourFilter" id="${colour}" onclick="filter(this)">
-													<label class="form-check-label" for="${colour}"> ${colour} </label>
-												</li>
-											</c:forEach>
-										</div>
-									</ul>
-								</li>
-								<li class="nav-item dropdown">
-									<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-										<i class="fa fa-filter"></i> Filter by Piece Types
-									</a>
-									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-										<li class="dropdown-item form-check">
-											<input type="checkbox" name="pieceTypeFilterAll" id="All_PieceTypes" onclick="filter(this)">
-											<label class="form-check-label" for="All_PieceTypes"> All Piece Types </label>
-										</li>
-										<li><hr class="dropdown-divider"></li>
-										<div style="max-height: 50vh; overflow-y: auto;">
-											<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
-											<c:forEach items="${pieceTypes}" var="pieceType">
-												<li class="dropdown-item form-check">
-													<input type="checkbox" name="pieceTypeFilter" id="${pieceType}" onclick="filter(this)">
-													<label class="form-check-label" for="${pieceType}"> ${pieceType} </label>
-												</li>
-											</c:forEach>
-										</div>
-									</ul>
-								</li>
-							</ul>
-						</div>
+						<ul class="navbar-nav">
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+									<i class="fa fa-filter"></i> Filter by Piece Colours
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li class="dropdown-item form-check">
+										<input type="checkbox" name="colourFilterAll" id="All_Colours" onclick="filter(this)">
+										<label class="form-check-label" for="All_Colours"> All Colours </label>
+									</li>
+									<li><hr class="dropdown-divider"></li>
+									<div style="max-height: 50vh; overflow-y: auto;">
+										<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
+										<c:forEach items="${colours}" var="colour">
+											<li class="dropdown-item form-check">
+												<input type="checkbox" name="colourFilter" id="${colour}" onclick="filter(this)">
+												<label class="form-check-label" for="${colour}"> ${colour} </label>
+											</li>
+										</c:forEach>
+									</div>
+								</ul>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+									<i class="fa fa-filter"></i> Filter by Piece Types
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li class="dropdown-item form-check">
+										<input type="checkbox" name="pieceTypeFilterAll" id="All_PieceTypes" onclick="filter(this)">
+										<label class="form-check-label" for="All_PieceTypes"> All Piece Types </label>
+									</li>
+									<li><hr class="dropdown-divider"></li>
+									<div style="max-height: 50vh; overflow-y: auto;">
+										<!-- This creates a dropdown item using bootstrap, for every piece colour and displays a check box and the colour name -->
+										<c:forEach items="${pieceTypes}" var="pieceType">
+											<li class="dropdown-item form-check">
+												<input type="checkbox" name="pieceTypeFilter" id="${pieceType}" onclick="filter(this)">
+												<label class="form-check-label" for="${pieceType}"> ${pieceType} </label>
+											</li>
+										</c:forEach>
+									</div>
+								</ul>
+							</li>
+							<li class="nav-item">
+								<input type="checkbox" name="themeFilter" id="hidePiecesFound"  onclick="hidePiecesFound()">
+								<label class="form-check-label text-white" for="hidePiecesFound"> Hide Pieces Found </label>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</nav>
