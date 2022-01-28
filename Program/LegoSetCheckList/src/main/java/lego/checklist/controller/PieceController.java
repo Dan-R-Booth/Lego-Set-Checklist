@@ -55,7 +55,7 @@ public class PieceController {
 	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter) {
+	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
@@ -135,6 +135,12 @@ public class PieceController {
 		}
 		else {
 			model.addAttribute("pieceTypeFilter", "All_PieceTypes");
+		}
+		
+		// If the boolean hidePiecesFound is parsed into the controller this adds it to the model
+		if (hidePiecesFound != null) {
+			System.out.println(hidePiecesFound);
+			model.addAttribute("hidePiecesFound", hidePiecesFound);
 		}
 		
 		List<String> colours = new ArrayList<>();

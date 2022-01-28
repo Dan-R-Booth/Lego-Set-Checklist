@@ -17,9 +17,6 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
-		
-			// Global boolean used to show if the list is displaying by pieces found or not
-			var hidePiecesFoundBool = false;
 
 			// Global boolean used to show if the list is displaying by spares or not
 			var showSpares = false;
@@ -126,18 +123,29 @@
 					</c:forEach>
 				}
 				
+				if ("${hidePiecesFound}" == "true") {
+					document.getElementById("hidePiecesFound").checked = true;
+				}
+				
 				// This runs displaying only the pieces that match the piece types and colours selected
 				for (let id = 0; id < "${num_items}"; id++) {
 					var pieceColour = document.getElementById("colour_" + id).innerHTML;
 					var pieceType = document.getElementById("pieceType_" + id).innerHTML;
 					
-					// This shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
+					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
+					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
+					
+					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox is clicked
+					// Otherwise this shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
 					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
-					if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
-							document.getElementById("piece_" + id).style.display = "block";
+					if (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity) {
+						document.getElementById("piece_" + id).style.display = "none";
+					}
+					else if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
+						document.getElementById("piece_" + id).style.display = "block";
 					}
 					else {
-							document.getElementById("piece_" + id).style.display = "none";
+						document.getElementById("piece_" + id).style.display = "none";
 					}
 				}
 			}
@@ -167,7 +175,7 @@
 				 if (quantityChecked == quantity) {
 					document.getElementById("increaseQuantityCheckedButton_" + id).disabled = true;
 					
-					if (hidePiecesFoundBool == true) {
+					if (document.getElementById("hidePiecesFound").checked == true) {
 						document.getElementById("piece_" + id).style.display = "none";
 					}
 				 }
@@ -232,7 +240,13 @@
 					sort = "sort=${sort}&"
 				}
 				
-				window.location = "/set/${set.num}/pieces/?" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter;
+				var hidePiecesFound = "";
+				
+				if (document.getElementById("hidePiecesFound").checked == true) {
+					hidePiecesFound = "&hidePiecesFound=true";
+				}
+				
+				window.location = "/set/${set.num}/pieces/?" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -251,11 +265,17 @@
 				var colourFilter = getColourFilter();
 				var pieceTypeFilter = getPieceTypeFilter();
 				
+				var hidePiecesFound = "";
+				
+				if (document.getElementById("hidePiecesFound").checked) {
+					hidePiecesFound = "&hidePiecesFound=true";
+				}
+				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array + colourFilter + pieceTypeFilter;
+					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + colourFilter + pieceTypeFilter;
+					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 				}
 			}
 			
@@ -268,11 +288,17 @@
 				var colourFilter = getColourFilter();
 				var pieceTypeFilter = getPieceTypeFilter();
 				
+				var hidePiecesFound = "";
+				
+				if (document.getElementById("hidePiecesFound").checked == true) {
+					hidePiecesFound = "&hidePiecesFound=true";
+				}
+				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + colourFilter + pieceTypeFilter;
+					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + colourFilter + pieceTypeFilter;
+					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 				}
 			}
 			
@@ -311,13 +337,6 @@
 	                	}
 	                }
 				}
-                
-                if (document.getElementById("hidePiecesFound").checked == true) {
-                	hidePiecesFoundBool = true;
-                }
-                else {
-                	hidePiecesFoundBool = false;
-                }
                 
 				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
 				// that is then used to know which colours to filter the list by
@@ -365,11 +384,12 @@
 					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					
-					if (hidePiecesFoundBool == true && quantityChecked == quantity) {
+					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox is clicked
+					// Otherwise this shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
+					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
+					if (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity) {
 						document.getElementById("piece_" + id).style.display = "none";
 					}
-					// This shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
-					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
 					else if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
 							document.getElementById("piece_" + id).style.display = "block";
 					}
