@@ -123,6 +123,7 @@
 					</c:forEach>
 				}
 				
+				// This checks the hide pieces checkbox if hidePiecesFound has been added to the model
 				if ("${hidePiecesFound}" == "true") {
 					document.getElementById("hidePiecesFound").checked = true;
 				}
@@ -135,13 +136,14 @@
 					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					
-					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox is clicked
-					// Otherwise this shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
-					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
-					if (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity) {
+					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox
+					// is clicked, or if they are a spare piece (stored in the list of spare pieces) and spares are not being shown
+					// Otherwise this shows pieces depending on if their piece type and colour are in lists storing the filters the
+					// list is currently being sorted by
+					if ((showSpares == false && sparePieceList.indexOf(id) > -1) || (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity)) {
 						document.getElementById("piece_" + id).style.display = "none";
 					}
-					else if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
+					else if (pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
 						document.getElementById("piece_" + id).style.display = "block";
 					}
 					else {
@@ -303,6 +305,7 @@
 			}
 			
 			// This filters the list by piece types and colours the user would like to view
+			// and also hides spares and hides piece found (if pieces found checkbox is checked)
 			function filter(boxClicked) {
                 
 				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
@@ -384,13 +387,14 @@
 					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					
-					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox is clicked
-					// Otherwise this shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
-					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
-					if (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity) {
+					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox
+					// is clicked, or if they are a spare piece (stored in the list of spare pieces) and spares are not being shown
+					// Otherwise this shows pieces depending on if their piece type and colour are in lists storing the filters the
+					// list is currently being sorted by
+					if ((showSpares == false && sparePieceList.indexOf(id) > -1) || (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity)) {
 						document.getElementById("piece_" + id).style.display = "none";
 					}
-					else if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
+					else if (pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
 							document.getElementById("piece_" + id).style.display = "block";
 					}
 					else {
