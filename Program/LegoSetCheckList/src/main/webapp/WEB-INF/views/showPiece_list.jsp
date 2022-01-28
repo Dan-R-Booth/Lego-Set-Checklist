@@ -17,6 +17,9 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
+		
+			// Global boolean used to show if the list is displaying by pieces found or not
+			var hidePiecesFoundBool = false;
 
 			// Global boolean used to show if the list is displaying by spares or not
 			var showSpares = false;
@@ -163,6 +166,10 @@
 				 document.getElementById("decreaseQuantityCheckedButton_" + id).disabled = false;
 				 if (quantityChecked == quantity) {
 					document.getElementById("increaseQuantityCheckedButton_" + id).disabled = true;
+					
+					if (hidePiecesFoundBool == true) {
+						document.getElementById("piece_" + id).style.display = "none";
+					}
 				 }
 				 
 				 document.getElementById("piece_quantity_checked_" + id).value = quantityChecked;
@@ -305,6 +312,13 @@
 	                }
 				}
                 
+                if (document.getElementById("hidePiecesFound").checked == true) {
+                	hidePiecesFoundBool = true;
+                }
+                else {
+                	hidePiecesFoundBool = false;
+                }
+                
 				// This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
 				// that is then used to know which colours to filter the list by
                 colourCheckboxes = document.getElementsByName("colourFilter");
@@ -348,9 +362,15 @@
 					var pieceColour = document.getElementById("colour_" + id).innerHTML;
 					var pieceType = document.getElementById("pieceType_" + id).innerHTML;
 					
+					var quantity = document.getElementById("piece_quantity_checked_" + id).max;
+					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
+					
+					if (hidePiecesFoundBool == true && quantityChecked == quantity) {
+						document.getElementById("piece_" + id).style.display = "none";
+					}
 					// This shows pieces depending on if they are not a spare piece (stored in the list of spare pieces),
 					// and their piece type and colour are in lists storing the filters the list is currently being sorted by
-					if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
+					else if (sparePieceList.indexOf(id) <= -1 && pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
 							document.getElementById("piece_" + id).style.display = "block";
 					}
 					else {
@@ -377,7 +397,6 @@
 						if (colourCheckboxes[i].checked) {
 							
 							if (colourCheckboxes[i].id == "[No Color/Any Color]") {
-								
 								coloursFiltered.push("No Color Any Color");
 							}
 							else {	
@@ -515,7 +534,7 @@
 								</ul>
 							</li>
 							<li class="nav-item">
-								<input type="checkbox" name="themeFilter" id="hidePiecesFound"  onclick="hidePiecesFound()">
+								<input type="checkbox" name="themeFilter" id="hidePiecesFound"  onclick="filter(this)">
 								<label class="form-check-label text-white" for="hidePiecesFound"> Hide Pieces Found </label>
 							</li>
 						</ul>
