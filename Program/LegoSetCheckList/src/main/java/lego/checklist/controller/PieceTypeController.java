@@ -1,10 +1,6 @@
 package lego.checklist.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.web.client.RestTemplate;
 
@@ -12,8 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lego.checklist.domain.Theme;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
@@ -30,9 +24,6 @@ public class PieceTypeController {
 	// This creates a mapping so that I can get piece categories names without having to call the API each time
 	public static HashMap<Integer, String> pieceCategories = new HashMap<Integer, String>();
 	
-	// This list is used to store all the themes and is added to the model when searching for a Lego Set
-	public static List<Theme> themeList = new ArrayList<>();
-	
 	// This stores the basic uri to the Rebrickable API
 	public final static String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 		
@@ -47,14 +38,6 @@ public class PieceTypeController {
 		RestTemplate restTemplate = new RestTemplate();
 		
 		getPieceTypePage(pieceType_uri, restTemplate);
-		
-		// This sorts the list of themes so they are in alphabetical order by name
-		Collections.sort(themeList, new Comparator<Theme>() {
-			@Override
-			public int compare(Theme theme1, Theme theme2) {
-				return theme1.getName().compareTo(theme2.getName());
-			}
-		});
 	}
 	
 	// This gets all the Lego piece categories using the Lego piece category uri, starting with the first page of these piece categories,
