@@ -458,7 +458,7 @@
 		
 	</head>
 
-	<body class="m-2" onload="setup()">
+	<body onload="setup()">
 	
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
 		<div class="sticky-top" data-toggle="affix">
@@ -584,7 +584,7 @@
 							<div class="col-auto">
 								<label class="text-white mt-2"> Sort By: </label>
 							</div>
-							<div class="col-auto">
+							<div class="col-auto mt-1">
 								<select class="form-select" id="sortSelect1" onchange="sortSelectChange()">
 									<option selected> Set Number (asc) </option>
 									<option> Set Number (desc) </option>
@@ -601,7 +601,7 @@
 							<div class="col-auto">
 								<label class="text-white mt-2"> Then By: </label>
 							</div>
-							<div class="col-auto">
+							<div class="col-auto mt-1">
 								<select class="form-select" id="sortSelect2" onchange="sortSelectChange()">
 									<option selected> None </option>
 									<option> Set Number (asc) </option>
@@ -619,7 +619,7 @@
 							<div class="col-auto">
 								<label class="text-white mt-2"> Then By: </label>
 							</div>
-							<div class="col-auto">
+							<div class="col-auto mt-1">
 								<select class="form-select" id="sortSelect3" onchange="sortSelectChange()" disabled>
 									<option selected> None </option>
 									<option> Set Number (asc) </option>
@@ -635,7 +635,7 @@
 								</select>
 							</div>
 							<div class="col-auto">
-								<button class="btn btn-primary mt-3" type="button" onclick="sort()"> <i class="fa fa-sort"></i> Sort </button>
+								<button class="btn btn-primary mt-1" type="button" onclick="sort()"> <i class="fa fa-sort"></i> Sort </button>
 							</div>
 						</form>
 					</div>
@@ -697,8 +697,10 @@
 		    </div>
 		</c:forEach>
 
-		<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> Previous </button>
-		<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next </button>
+		<div class="mx-2 my-2">
+			<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> Previous </button>
+			<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next </button>
+		</div>
 	</body>
 	
 </html>

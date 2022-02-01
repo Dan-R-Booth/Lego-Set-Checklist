@@ -478,7 +478,7 @@
 		
 	</head>
 
-	<body class="m-2" onload="setup()">
+	<body onload="setup()">
 	
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
 		<div class="sticky-top" data-toggle="affix">
@@ -557,7 +557,7 @@
 									</div>
 								</ul>
 							</li>
-							<li class="nav-item">
+							<li class="nav-item mt-2">
 								<input type="checkbox" name="themeFilter" id="hidePiecesFound"  onclick="filter(this)">
 								<label class="form-check-label text-white" for="hidePiecesFound"> Hide Pieces Found </label>
 							</li>
@@ -654,7 +654,7 @@
 			</c:if>
 		</c:forEach>
 		
-		<div class="my-5">
+		<div class="mx-2 my-2">
 			<button type="button" id="save" onclick="saveProgress()" class="btn btn-primary"> <i class="fa fa-save"></i> Save CheckList</button>
 			<button type="button" id="export" onclick="exportList()" class="btn btn-secondary"> <i class="fa fa-download"></i> Export</button>
         </div>

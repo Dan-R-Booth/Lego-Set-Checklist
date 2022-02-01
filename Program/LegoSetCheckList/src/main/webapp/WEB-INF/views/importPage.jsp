@@ -21,7 +21,7 @@
 		</form>
          
          <c:if test="${error eq true}">
-			<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ${message}</div>
+			<div class="alert alert-danger mt-2"><i class="fa fa-exclamation-circle"></i> ${message}</div>
 		</c:if>
 	</body>
 </html>
