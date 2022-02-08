@@ -19,7 +19,7 @@ dependencies {
 	//runtimeOnly 'mysql:mysql-connector-java'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	
-	// Needed to create a CSV file
+	// Needed to read and write to CSV files [1]
 	implementation 'com.opencsv:opencsv:5.5.2'
 	
 	// Needed for JSPs used to render views
@@ -30,3 +30,9 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+/* References:
+* [1]	Atta, "Reading and writing CSV files using OpenCSV",
+* 		Atta-Ur-Rehman Shah, 2019. [Online].
+* 		Available: https://attacomsian.com/blog/read-write-csv-files-opencsv. [Accessed: 03- Jan- 2022]
+*/

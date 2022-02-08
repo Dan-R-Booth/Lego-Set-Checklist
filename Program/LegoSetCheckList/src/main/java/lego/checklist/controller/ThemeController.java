@@ -17,13 +17,18 @@ import lego.checklist.domain.Theme;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
-//The Jackson library is used for working with JSON [2]
+//The Jackson-core [2] and Jackson-databind [3] libraries is used for working with JSON
 
 /* References:
 * [1]	"RestTemplate (Spring Framework 5.3.14 API)",
 * 		Docs.spring.io, 2021. [Online].
 * 		Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
-* [2]
+* [2]	"jackson-core 2.13.1 javadoc (com.fasterxml.jackson.core)",
+*		Javadoc.io. [Online].
+*		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-core/latest/index.html. [Accessed: 05- Dec- 2021]
+* [3]	"jackson-databind 2.13.1 javadoc (com.fasterxml.jackson.core)",
+* 		Javadoc.io. [Online].
+* 		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/index.html. [Accessed: 05- Dec- 2021]
 */
 
 public class ThemeController {

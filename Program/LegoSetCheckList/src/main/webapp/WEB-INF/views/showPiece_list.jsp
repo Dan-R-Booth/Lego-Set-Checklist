@@ -1,5 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<!-- Bootstrap [1] is a CSS and JavaScript framework, used for page styling, and useful for creating interactive pages that resize for different screen sizes. -->
+<!-- Font awesome [2] contains free icons that I am using in my UI to help user recognition, when using the website. -->
+
+<!-- References:
+[1]		"https://getbootstrap.com/docs/5.0/getting-started/introduction/",
+		Getbootstrap.com. [Online].
+		Available: https://getbootstrap.com/docs/5.0/. [Accessed: 03- Feb- 2022]
+[2] 	"Font Awesome Intro",
+		W3schools.com. [Online].
+		Available: https://www.w3schools.com/icons/fontawesome_icons_intro.asp. [Accessed: 04- Feb- 2022]
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>

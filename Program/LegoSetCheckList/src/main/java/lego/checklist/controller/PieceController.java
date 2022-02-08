@@ -30,20 +30,25 @@ import lego.checklist.domain.Set;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
-//The Jackson library is used for working with JSON [2]
+//The Jackson-core [2] and Jackson-databind [5] libraries is used for working with JSON
 
 /* References:
- * [1]	"RestTemplate (Spring Framework 5.3.14 API)",
- * 		Docs.spring.io, 2021. [Online].
- * 		Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
- * [2]
- * [3]	Atta, "Export & Download Data as CSV File in Spring Boot",
- * 		Atta-Ur-Rehman Shah, 2019. [Online].
- * 		Available: https://attacomsian.com/blog/export-download-data-csv-file-spring-boot. [Accessed: 03- Jan- 2022]
- * [4]	Atta, "Reading and writing CSV files using OpenCSV",
- * 		Atta-Ur-Rehman Shah, 2019. [Online].
- * 		Available: https://attacomsian.com/blog/read-write-csv-files-opencsv. [Accessed: 03- Jan- 2022]
- */ 
+* [1]	"RestTemplate (Spring Framework 5.3.14 API)",
+* 		Docs.spring.io, 2021. [Online].
+* 		Available: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html.[Accessed: 02- Dec- 2021]
+* [2]	"jackson-core 2.13.1 javadoc (com.fasterxml.jackson.core)",
+*		Javadoc.io. [Online].
+*		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-core/latest/index.html. [Accessed: 05- Dec- 2021]
+* [3]	Atta, "Uploading and Parsing CSV File using Spring Boot",
+* 		Atta-Ur-Rehman Shah, 2020. [Online].
+* 		Available: https://attacomsian.com/blog/spring-boot-upload-parse-csv-file. [Accessed: 04- Jan- 2022]
+* [4]	Atta, "Reading and writing CSV files using OpenCSV",
+* 		Atta-Ur-Rehman Shah, 2019. [Online].
+* 		Available: https://attacomsian.com/blog/read-write-csv-files-opencsv. [Accessed: 03- Jan- 2022]
+* [5]	"jackson-databind 2.13.1 javadoc (com.fasterxml.jackson.core)",
+* 		Javadoc.io. [Online].
+* 		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/index.html. [Accessed: 05- Dec- 2021]
+*/
 
 @Controller
 @SessionAttributes("set")
@@ -324,8 +329,8 @@ public class PieceController {
 		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
 		List<Minifigure> minifigures = new ArrayList<>();
 		
-		// This calls the getMinifigurePieces class that gets all the pieces in the Lego Set
-		minifigures = MinifigureController.getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
+		// This calls the getMinifigurePieces function that gets all the pieces in the Lego Set
+		minifigures = getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
 		
 		// This creates an array list to store all the minfigure pieces needed to build all the minifigures in a Lego set
 		List<Piece> minifigure_pieces = new ArrayList<>();
@@ -340,6 +345,96 @@ public class PieceController {
 		pieces.addAll(minifigure_pieces);
 		
 		return pieces;
+	}
+	
+	// This gets all the minifigures in the Lego Set using the minifigure list uri, starting with the first page of these Lego minifigures,
+	// If there are other pages containing minifigures on the api, this class will then be called recursively to get all of these minifigures
+	public static List<Minifigure> getMinifigure_ListPage(String minifigure_list_uri, List<Minifigure> minifigures, RestTemplate restTemplate) {
+		// This uses restTemplate and the Lego set uri to call the API and then transforms the returned JSON into a String
+		String minifigure_JSON = restTemplate.getForObject(minifigure_list_uri, String.class);
+		
+		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
+        try {
+        	// This provides functionality for reading and writing JSON
+        	ObjectMapper mapper = new ObjectMapper();
+        	
+        	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
+        	JsonNode minifigure_listNode = mapper.readTree(minifigure_JSON);
+        	
+        	JsonNode nextNode = minifigure_listNode.path("next");
+        	String next = nextNode.textValue();
+			
+        	// This provides the root of the JSON element where the JSON array of Lego pieces is stored
+        	minifigure_listNode = minifigure_listNode.path("results");
+        	
+        	// This iterates through the JSON array of Lego pieces
+            for (JsonNode minifigureNode : minifigure_listNode) {
+    	        	
+            	JsonNode spare_partNode = minifigureNode.path("is_spare");
+    	        	
+            	// This removes any pieces that are classed as spare pieces for the Lego set and are therefore not needed to build it
+            	if (!spare_partNode.asBoolean()) {
+            	
+            		// These search for a path on the setNode Tree and return the node that matches this
+                	JsonNode numNode = minifigureNode.path("set_num");
+                	JsonNode nameNode = minifigureNode.path("set_name");
+                	JsonNode img_urlNode = minifigureNode.path("set_img_url");
+                	JsonNode quantityNode = minifigureNode.path("quantity");
+                	
+                	// These return the data stored in the JsonNodes
+                	String num = numNode.textValue();
+            		String name = nameNode.textValue();
+                	String img_url = img_urlNode.textValue();
+                	int quantity = quantityNode.intValue();
+                	
+                	// This is set to 0 as the user may not have checked any of these pieces yet
+    				int quantity_checked = 0;
+                	
+                	// This is the uri to the specific pieces in a set in the Rebrickable API
+            		String piece_list_uri = rebrickable_uri + "minifigs/" + num + "/parts/?key=" + rebrickable_api_key;
+                	
+            		// This creates an array list to store all the Lego pieces needed to build a Lego set
+            		// This is declared here in case the try catch statement, in the getPiece_listPage Class, fails
+            		List<Piece> piece_list = new ArrayList<>();
+            		
+            		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
+            		piece_list = PieceController.getPiece_listPage(piece_list_uri, piece_list, restTemplate);
+            		
+            		// This times all the pieces for a single minifigure so they are the total to make the total quantity of minifigures 
+            		for (Piece piece : piece_list) {				
+        				int piece_quantity = piece.getQuantity();
+        				int newPiece_quantity = piece_quantity*quantity;
+        				piece.setQuantity(newPiece_quantity);
+        				
+        				if (quantity_checked > newPiece_quantity) {
+        					// Checks the pieces to match number of minifigures checked
+        					piece.setQuantity_checked(quantity_checked);
+        				}
+        			}
+                	
+                	Minifigure minifigure = new Minifigure(num, name, img_url, quantity, quantity_checked, piece_list);
+    				
+    				minifigures.add(minifigure);
+            	}
+        	}
+    		
+            // If their is another page of pieces that needed to be collected from the api here this page will be called recursively using this class
+            // and the piece list will be sent each time so when it is then returned it will contain all these pieces
+            if (next != null) {
+            	minifigure_list_uri = next + "&key=" + rebrickable_api_key;
+            	minifigures = getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
+            }
+
+		}
+        catch (JsonMappingException e) {
+			e.printStackTrace();
+		}
+        catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return minifigures;
 	}
 	
 	/*
