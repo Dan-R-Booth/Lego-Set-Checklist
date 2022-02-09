@@ -16,9 +16,11 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" content="text/html; charset=UTF-8">
+
+		<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1">
 		
 		<!--Bootstrap style sheet, used for page styling, as well as helping to resize page for different screen sizes -->
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 		
 		<!-- jQuery library, needed for Bootstrap JavaScript -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -26,6 +28,7 @@
 		<!-- Bootstrap JavaScript for page styling -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		
+		<!-- This is font awesome used for icons for buttons and links -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
@@ -38,6 +41,9 @@
 		
 			// This does setup for the page when it is first loaded
 			function setup() {
+				if (screen.width < 650) {
+					document.getElementById("viewport").setAttribute("content","width=650, initial-scale=0.5");
+				}
 
 				// This sets the quantity checked buttons for each piece to be disabled if can't decresse quantity further or increased any further
 				var element = "piece_quantity_checked_";
@@ -495,8 +501,8 @@
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
 		<div class="sticky-top" data-toggle="affix">
 		
-			<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-				<div class="container">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+				<div class="container-fluid">
 					<label class="navbar-brand mr-5 pr-5">Lego: Set Checklist Creator</label>
 	
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -509,14 +515,17 @@
 								<a class="nav-link" onclick="saveProgress()"> <i class="fa fa-save"></i> Save CheckList</a>
 							</li>
 							<li class="nav-item mx-5">
-								<a class="nav-link" onclick="exportList()"> <i class="fa fa-download"></i> Export</a>
+								<a class="nav-link" onclick="exportList()"> <i class="fa fa-download"></i> Export Checklist</a>
+							</li>
+							<li class="nav-item mx-5">
+								<a class="nav-link" onclick="importList()"> <i class="fa fa-upload"></i> Import Checklist</a>
 							</li>
 						</ul>
 					</div>
 				</div>
 			</nav>
 			
-			<nav class="navbar navbar-expand-md navbar-dark bg-secondary" id="filterNavBar" style="display: block;">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" id="filterNavBar">
 				<div class="container-fluid">
 					<label class="navbar-brand"> <i class="fa fa-filter"></i> Filter: </label>
 	
@@ -527,7 +536,7 @@
 					<div class="collapse navbar-collapse" id="filterBar">
 						<!-- This creates a dropdown where users can enter details on how they would like to filter the list of pieces -->
 						<ul class="navbar-nav">
-							<li class="nav-item dropdown">
+							<li class="nav-item dropdown mx-5">
 								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
 									<i class="fa fa-filter"></i> Filter by Piece Colours
 								</a>
@@ -548,7 +557,7 @@
 									</div>
 								</ul>
 							</li>
-							<li class="nav-item dropdown">
+							<li class="nav-item dropdown mx-5">
 								<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
 									<i class="fa fa-filter"></i> Filter by Piece Types
 								</a>
@@ -569,7 +578,7 @@
 									</div>
 								</ul>
 							</li>
-							<li class="nav-item mt-2">
+							<li class="nav-item mx-5 mt-2">
 								<input type="checkbox" name="themeFilter" id="hidePiecesFound"  onclick="filter(this)">
 								<label class="form-check-label text-white" for="hidePiecesFound"> Hide Pieces Found </label>
 							</li>
@@ -581,17 +590,17 @@
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div class="container-fluid border  bg-white">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with column names -->
-				<div class="row align-items-center my-1 ">
+				<div class="row align-items-center my-1">
 					<div class="col">
 						<!-- The style width sets the percentage size the image will be on any screen -->
-						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%" class="m-2">
+						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%" class="img-fluid img-thumbnail rounded m-2">
 					</div>
 					<div class="col">
-						<p class="h4">${set.name}</p>
-						<p class="h5">${set.num}</p>
+						<h4>${set.name}</h4>
+						<h5>${set.num}</h5>
 					</div>
 					<div class="col">
-						<p class="h5">Pieces Found: <label id="piecesFound">0</label> / <label id="piecesNeededTotal">${num_items}</label></p>
+						<h5>Pieces Found: <label id="piecesFound">0</label> / <label id="piecesNeededTotal">${num_items}</label></h5>
 					</div>
 				</div>
 			</div>
@@ -601,76 +610,83 @@
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with column names -->
 				<div class="row align-items-center my-3">
 					<div class="col">
-						<p class="h6">Piece Image:</p>
+						<h6>Piece Image:</h6>
 					</div>
 					<div class="col">
-						<p class="h6">Piece Number:</p>
+						<h6>Piece Number:</h6>
 					</div>
 					<div class="col">
-						<p class="h6">Piece Name:</p>
+						<h6>Piece Name:</h6>
 					</div>
 					<div class="col">
-						<p class="h6" onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Theme">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></p>
+						<h6 onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Theme">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<p class="h6" onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Type">Piece Type: <i id="typeSortIcon" class="fa fa-sort"></i></p>
+						<h6 onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Type">Piece Type: <i id="typeSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<p class="h6">Quantity:</p>
+						<h6>Quantity:</h6>
 					</div>
 					<div class="col">
-						<p class="h6">Quantity Found:</p>
+						<h6>Quantity Found:</h6>
 					</div>
 				</div>
 			</div>
 		</div>
-	    
-		<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
-		<c:forEach items="${set.piece_list}" var="piece" varStatus="loop">
-			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
-			<div id="piece_${loop.index}" class="container-fluid border">
-				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
-				<div class="row align-items-center my-3">
-				    <div class="col">
-				        <!-- The style width sets the percentage size the image will be on any screen -->
-						<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 40%" class="m-2">
-				    </div>
-				    <div class="col">
-				    	${piece.num}
-				    </div>
-				    <div class="col">
-				     	${piece.name}
-				    </div>
-				    <div class="col">
-				    	<label id="colour_${loop.index}">${piece.colour_name}</label>
-				    </div>
-				    <div class="col">
-				    	<label id="pieceType_${loop.index}">${piece.pieceType}</label>
-				    </div>
-				    <div class="col">
-				       ${piece.quantity}
-				    </div>
-				    <div class="col">
-				    	<button id="decreaseQuantityCheckedButton_${loop.index}" name="${loop.index}" type="button" class="btn btn-primary btn-sm" onclick="decreaseQuantityChecked(this.name)"> <i class="fa fa-minus"></i></button>
-						<!-- Displays the quantity found and is disabled so the value can only be changed by the buttons -->
-					    <input id="piece_quantity_checked_${loop.index}" type="number" value="${piece.quantity_checked}" min=0 max="${piece.quantity}" disabled />
-				    	<button id="increaseQuantityCheckedButton_${loop.index}" name="${loop.index}" type="button" class="btn btn-primary btn-sm" onclick="increaseQuantityChecked(this.name)"> <i class="fa fa-plus"></i></button>
-				    </div>
-				</div>
-		    </div>
-			<!-- This calls a JavaSript function hides spare pieces -->
-			<c:if test="${piece.spare eq true}">
-				<script type="text/javascript">
-					sparePiece(${loop.index});
-				</script>
-			</c:if>
-		</c:forEach>
 		
-		<div class="mx-2 my-2">
-			<button type="button" id="save" onclick="saveProgress()" class="btn btn-primary"> <i class="fa fa-save"></i> Save CheckList</button>
-			<button type="button" id="export" onclick="exportList()" class="btn btn-secondary"> <i class="fa fa-download"></i> Export</button>
-        </div>
+	    <div class="mb-5">
+			<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
+			<c:forEach items="${set.piece_list}" var="piece" varStatus="loop">
+				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
+				<div id="piece_${loop.index}" class="container-fluid border">
+					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
+					<div class="row align-items-center my-3">
+						<div class="col">
+							<!-- The style width sets the percentage size the image will be on any screen -->
+							<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 40%" class="m-2">
+						</div>
+						<div class="col">
+							${piece.num}
+						</div>
+						<div class="col">
+							${piece.name}
+						</div>
+						<div class="col">
+							<label id="colour_${loop.index}">${piece.colour_name}</label>
+						</div>
+						<div class="col">
+							<label id="pieceType_${loop.index}">${piece.pieceType}</label>
+						</div>
+						<div class="col">
+						${piece.quantity}
+						</div>
+						<div class="col">
+							<button id="decreaseQuantityCheckedButton_${loop.index}" name="${loop.index}" type="button" class="btn btn-primary btn-sm" onclick="decreaseQuantityChecked(this.name)"> <i class="fa fa-minus"></i></button>
+							<!-- Displays the quantity found and is disabled so the value can only be changed by the buttons -->
+							<input id="piece_quantity_checked_${loop.index}" type="number" value="${piece.quantity_checked}" min=0 max="${piece.quantity}" disabled />
+							<button id="increaseQuantityCheckedButton_${loop.index}" name="${loop.index}" type="button" class="btn btn-primary btn-sm" onclick="increaseQuantityChecked(this.name)"> <i class="fa fa-plus"></i></button>
+						</div>
+					</div>
+				</div>
+				<!-- This calls a JavaSript function hides spare pieces -->
+				<c:if test="${piece.spare eq true}">
+					<script type="text/javascript">
+						sparePiece(${loop.index});
+					</script>
+				</c:if>
+			</c:forEach>
+		</div>
 
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
+			<div class="container-fluid">
+	            <ol class="breadcrumb bg-dark">
+	                <li class="breadcrumb-item"><a href="/">Home</a></li>
+	                <li class="breadcrumb-item"><a href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/">Search</a></li>
+	                <li class="breadcrumb-item"><a href="/set?set_number=${set.num}">Set</a></li>
+	                <li class="breadcrumb-item text-white" aria-current="page">Pieces</li>
+	            </ol>
+		    </div>
+        </nav>
 	</body>
 	
 </html>
