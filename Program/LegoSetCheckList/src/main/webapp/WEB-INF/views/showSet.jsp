@@ -75,6 +75,7 @@
 				document.getElementById("set_variant").value = set_numArray[1];
 			}
 		
+			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
 			function findSet() {
 				var set_number = document.getElementById("set_number").value;
 				var set_variant = document.getElementById("set_variant").value;
@@ -88,6 +89,8 @@
 				}
 			}
 
+			// This function will return the user to the search page with the same filters and sorts they last had active
+			// and if they haven't been to the search page, to the default unfilter and sorted page
 			function backToSearch() {
 				if ("${searchURL}" != "") {
 					window.location = "${searchURL}";
@@ -104,7 +107,7 @@
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
 			<div class="container-fluid">
-				<label class="navbar-brand"> Lego: Set Checklist Creator </label>
+				<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
 
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -140,15 +143,15 @@
 				<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 80%" class="row img-fluid img-thumbnail rounded" data-bs-toggle="modal" data-bs-target="#setModal">
 
 				<!-- Lego Set Modal Image Viewer -->
-				<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModal" aria-hidden="true">
+				<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="setModal">Lego Set: ${set.name}</h5>
+								<h5 class="modal-title" id="setModalLabel">Lego Set: ${set.name}</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" class="img-fluid">
+								<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 100%">
 							</div>
 						</div>
 					</div>

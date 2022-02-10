@@ -65,19 +65,9 @@ public class PieceController {
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
 		
-		// quantityChecked List holds the quantities of all the current quantities for each piece
-		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter
-		if (quantityChecked != null) {
-			// This updates the quantity checked for each piece in the Lego set
-			for (int i = 0; i < piece_list.size(); i++) {
-				Piece piece = piece_list.get(i);
-				piece.setQuantity_checked(quantityChecked.get(i));
-			}
-			
-			set.setPiece_list(piece_list);
-		}
+		updateQuantityChecked(set, quantityChecked, piece_list);
 		
-		// If their is a sort to be applied to the checklist (sorts not null), then the fellowing is ran to apply this sort
+		// If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
 		if (sort != null) {
 			
 	    	if (sort.equals("colour") || sort.equals("-colour")) {
@@ -110,6 +100,35 @@ public class PieceController {
 	    	model.addAttribute("sort", sort);
 		}
 		
+		// This calls a function that adds all the model attributes needed to apply the filters that have been parsed in
+		addListFilters(model, quantityChecked, colourFilter, pieceTypeFilter, hidePiecesFound);
+		
+		// This calls a function that adds all the colours to a list that is used to display options to filter the list by colours
+		// This function also adds all the piece types to another list that is used to display options to filter the list by types
+		// of Lego pieces
+		getColoursAndPieceTypes(model, set);
+		
+    	model.addAttribute("set_number", set.getNum());
+    	model.addAttribute("num_items", piece_list.size());
+		return "showPiece_list";
+	}
+	
+	public static void updateQuantityChecked(Set set, List<Integer> quantityChecked, List<Piece> piece_list) {
+		// quantityChecked List holds the quantities of all the current quantities for each piece
+		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter
+		if (quantityChecked != null) {
+			// This updates the quantity checked for each piece in the Lego set
+			for (int i = 0; i < piece_list.size(); i++) {
+				Piece piece = piece_list.get(i);
+				piece.setQuantity_checked(quantityChecked.get(i));
+			}
+			
+			set.setPiece_list(piece_list);
+		}
+	}
+	
+	// This function adds all the model attributes needed to apply the filters that have been parsed in
+	public static void addListFilters(Model model, List<Integer> quantityChecked, String colourFilter,  String pieceTypeFilter, Boolean hidePiecesFound) {
 		// If there is a colour filters being parsed this will add an array of these to the model
 		// Otherwise it will just add the string All_Colours
 		if (colourFilter != null) {
@@ -147,12 +166,14 @@ public class PieceController {
 			System.out.println(hidePiecesFound);
 			model.addAttribute("hidePiecesFound", hidePiecesFound);
 		}
-		
+	}
+	
+	// This adds all the colours to a list that is used to display options to filter the list by colours
+	// This also adds all the piece types to another list that is used to display options to filter the list by types of Lego pieces
+	public static void getColoursAndPieceTypes(Model model, Set set) {
 		List<String> colours = new ArrayList<>();
 		List<String> pieceTypes = new ArrayList<>();
 		
-		// This adds all the colours to a list that is used to display options to filter the list by colours
-		// This also adds all the piece types to another list that is used to display options to filter the list by types of Lego pieces
 		for (Piece piece : set.getPiece_list()) {
 			String colour = piece.getColour_name();
 			
@@ -172,9 +193,6 @@ public class PieceController {
 		
 		model.addAttribute("colours", colours);
 		model.addAttribute("pieceTypes", pieceTypes);
-    	model.addAttribute("set_number", set.getNum());
-    	model.addAttribute("num_items", piece_list.size());
-		return "showPiece_list";
 	}
 	
 	public static List<Piece> getPieces(Model model, @PathVariable String set_number, RestTemplate restTemplate) {

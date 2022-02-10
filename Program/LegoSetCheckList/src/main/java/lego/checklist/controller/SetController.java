@@ -1,16 +1,21 @@
 package lego.checklist.controller;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -290,16 +295,16 @@ public class SetController {
 	 * Here I have combined code from two websites [3] and [4] to import and read a CSV file
 	 * for a Lego Set checklist on a clients machine, as this was not vital to the main function of the program
 	 */
-	@PostMapping("/openImport/url/**")
-	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, HttpServletRequest request) {
+	@PostMapping("/openImport/previousPage={previousPage}")
+	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @ModelAttribute("set") Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
-		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
-		String previous_page_url = url.split("/url/")[1];
+//		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
+//		String previous_page_url = url.split("/url/")[1];
 		
 		// validate file
         if (importFile.isEmpty()) {
-            model.addAttribute("message", "Please select a CSV file to upload.");
+            model.addAttribute("message", "CSV file is empty, please select a valid CSV file.");
             model.addAttribute("error", true);
         } else {
             // parse CSV file to create a list of `User` objects
@@ -339,12 +344,36 @@ public class SetController {
                 
                 model.addAttribute("set", set);
         		return "showSet";
-            } catch (Exception ex) {
-                model.addAttribute("message", "An error occurred while processing the file.");
+            }
+            catch (Exception ex) {
+                model.addAttribute("message", "An error occurred while processing the file: " + importFile.getOriginalFilename());
                 model.addAttribute("error", true);
             }
         }
+        System.out.println("previous_page_url:" + previousPage);
+        
+        if (previousPage.equals("showPiece_list")) {
+        	// This calls the function updateQuantityChecked in the PieceController class, that
+        	PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
+        	
+	        // If their is a sort to be applied to the checklist (sorts not null), then the fellowing is ran to apply this sort
+	 		if (sort != null) {
+	 	    	model.addAttribute("sort", sort);
+	 		}
+	        
+	 		// This calls the function addListFilters in the PieceController class, that adds all the model attributes
+	 		// needed to apply the filters that have been parsed in
+			PieceController.addListFilters(model, quantityChecked, colourFilter, pieceTypeFilter, hidePiecesFound);
+	 		
+			// This calls a function in getColoursAndPieceTypes the PieceController class, that adds all the colours to a list that
+			// is used to display options to filter the list by colours. This function also adds all the piece types to another list
+			// that is used to display options to filter the list by types of Lego pieces
+			PieceController.getColoursAndPieceTypes(model, previousSet);
+			
+			model.addAttribute("set_number", previousSet.getNum());
+	    	model.addAttribute("num_items", previousSet.getPiece_list().size());
+        }
 		
-        return previous_page_url;
+        return previousPage;
 	}
 }

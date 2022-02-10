@@ -44,8 +44,16 @@
 				if (screen.width < 350) {
 					document.getElementById("viewport").setAttribute("content","width=350");
 				}
+				
+				if ("${error}" == "true") {
+					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
+					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
+					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
+					importModal.show();
+				}
 			}
 
+			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
 			function findSet() {
 				var set_number = document.getElementById("set_number").value;
 				var set_variant = document.getElementById("set_variant").value;
@@ -59,89 +67,103 @@
 				}
 			}
 			
+			// This will check if the import file input box has a value, if it does have a value this will return the
+			// file to the controller so that it can be imported.
+			// and if it does not contain a file an error will be displayed
 			function importCSVFile() {
-				var formActionURL = "/openImport/url/index"/* + document.URL*/;
+				if (document.getElementById("importFile").value.length > 0) {
+					var formActionURL = "/openImport/previousPage=index";
 
-				document.getElementById("importForm").setAttribute("action", formActionURL);
-				document.getElementById("importForm").submit();
-			}
-
-			document.getElementById("importFile").addEventListener("change", function () {
-				if (this.value.length > 0) {
-					document.getElementById("importFileButton").disabled = false;
-				} else {
-					document.getElementById("importFileButton").button.disabled = true;
+					document.getElementById("importForm").setAttribute("action", formActionURL);
+					document.getElementById("importForm").submit();
 				}
-			});
+				else {
+					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
+        			document.getElementById("importFileNoneHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("importFileErrorHelp").setAttribute("class", "d-none");
+				}
+			}
 			
 		</script>
 
 	</head>
 	<body onload="setup()">
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-			<div class="container-fluid">
-				<label class="navbar-brand"> Lego: Set Checklist Creator </label>
+		<div class="sticky-top" data-toggle="affix">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
 
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 
-				<div class="collapse navbar-collapse" id="navbar">
-					<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
-					<form class="d-flex row">
-						<div class="col-auto">
-							<label class="text-white mt-2"> Set Number: </label>
-						</div>
-						<div class="col-auto">
-							<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
-						</div>
-						<div class="col-auto">
-							<label class="text-white mt-2">-</label>
-						</div>
-						<div class="col-auto">
-							<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
-						</div>
-						<div class="col-auto">
-							<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
-						</div>
-					</form>
+					<div class="collapse navbar-collapse" id="navbar">
+						<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
+						<form class="d-flex row">
+							<div class="col-auto">
+								<label class="text-white mt-2"> Set Number: </label>
+							</div>
+							<div class="col-auto">
+								<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
+							</div>
+							<div class="col-auto">
+								<label class="text-white mt-2">-</label>
+							</div>
+							<div class="col-auto">
+								<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
+							</div>
+							<div class="col-auto">
+								<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
+							</div>
+						</form>
+					</div>
 				</div>
-			</div>
-		</nav>
+			</nav>
+
+			<nav class="navbar navbar-expand-md navbar-dark bg-secondary" id="optionsBar">
+				<div class="container-fluid">
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#optionsBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+
+					<div class="collapse navbar-collapse" id="optionsBar">
+						<ul class="navbar-nav">
+							<li class="nav-item mx-5">
+								<a class="nav-link active" href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/"> <i class="fa fa-search"></i> Search for a Lego Set</a>
+							</li>
+							<li class="nav-item mx-5">
+								<a class="nav-link active" href="#" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
 		
 		<div class="container-fluid mb-5">
-			<a href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/">Search</a>
-			<br>
-			<a href="/import">Import Checklist</a>
-
-			<!-- Button trigger modal -->
-			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
-				Import
-			</button>
 			
-			<!-- Modal -->
-			<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModal" aria-hidden="true">
+			<!-- Modal to Import a Lego Checklist -->
+			<div class="modal fade" id="importModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="importModal">Import Lego Set Checklist</h5>
+							<h5 class="modal-title" id="importModalLabel">Import Lego Set Checklist</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<form method="POST" id="importForm" action="/openImport" enctype="multipart/form-data">
 							<div class="modal-body">
 								<div class="mb-3">
-									<label for="formFile" class="form-label">Choose a CSV file containing a saved checklist to import</label>
-									<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv">
+									<label for="importFile" class="form-label">Choose a CSV file containing a saved checklist to import</label>
+									<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv" required>
 								</div>
 
-								<c:if test="${error eq true}">
-									<div class="alert alert-danger mt-2"><i class="fa fa-exclamation-circle"></i> ${message}</div>
-								</c:if>
+								<div id="importFileNoneHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Please select a CSV file to upload.</div>
+								<div id="importFileErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${message}</div>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-								<button type="button" id="importFileButton" class="btn btn-primary" onclick="importCSVFile()" disabled> <i class="fa fa-upload"></i> Import </button>
+								<button type="button" id="importFileButton" class="btn btn-primary" onclick="importCSVFile()"> <i class="fa fa-upload"></i> Import </button>
 							</div>
 						</form>
 					</div>

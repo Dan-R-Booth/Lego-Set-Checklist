@@ -15,6 +15,8 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<title>Lego: Set Checklist Creator - Set: ${set.num} - ${set.name} - Pieces</title>
+
 		<meta charset="UTF-8" content="text/html; charset=UTF-8">
 
 		<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1">
@@ -47,6 +49,13 @@
 				// as going any smaller would affect elements in the page
 				if (screen.width < 650) {
 					document.getElementById("viewport").setAttribute("content","width=650, initial-scale=0.5");
+				}
+
+				if ("${error}" == "true") {
+					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
+					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
+					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
+					importModal.show();
 				}
 
 				// This sets the quantity checked buttons for each piece to be disabled if can't decresse quantity further or increased any further
@@ -497,12 +506,49 @@
 				return pieceTypeFilter;
 			}
 
+			// This function will return the user to the search page with the same filters and sorts they last had active
+			// and if they haven't been to the search page, to the default unfilter and sorted page
 			function backToSearch() {
 				if ("${searchURL}" != "") {
 					window.location = "${searchURL}";
 				}
 				else {
 					window.location = "/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
+				}
+			}
+
+			// This will check if the import file input box has a value, if it does have a value this will return the
+			// file to the controller so that it can be imported.
+			// and if it does not contain a file an error will be displayed
+			function importCSVFile() {
+				if (document.getElementById("importFile").value.length > 0) {
+
+					var array = getQuantityChecked();
+				
+					var colourFilter = getColourFilter();
+					var pieceTypeFilter = getPieceTypeFilter();
+					
+					var sort = "";
+					
+					if ("${sort}" != "") {
+						sort = "sort=${sort}&"
+					}
+					
+					var hidePiecesFound = "";
+					
+					if (document.getElementById("hidePiecesFound").checked == true) {
+						hidePiecesFound = "&hidePiecesFound=true";
+					}
+
+					var formActionURL = "/openImport/previousPage=showPiece_list/?previous_set_number=${set.num}" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+
+					document.getElementById("importForm").setAttribute("action", formActionURL);
+					document.getElementById("importForm").submit();
+				}
+				else {
+					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
+        			document.getElementById("importFileNoneHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("importFileErrorHelp").setAttribute("class", "d-none");
 				}
 			}
 
@@ -517,7 +563,7 @@
 		
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<label class="navbar-brand mr-5 pr-5">Lego: Set Checklist Creator</label>
+					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
 	
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
@@ -532,7 +578,7 @@
 								<a class="nav-link" onclick="exportList()"> <i class="fa fa-download"></i> Export Checklist</a>
 							</li>
 							<li class="nav-item mx-5">
-								<a class="nav-link" onclick="importList()"> <i class="fa fa-upload"></i> Import Checklist</a>
+								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
 							</li>
 						</ul>
 					</div>
@@ -650,20 +696,47 @@
 		</div>
 
 		<!-- Lego Set Modal Image Viewer -->
-		<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModal" aria-hidden="true">
+		<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="setModal">Lego Set: ${set.name}</h5>
+						<h5 class="modal-title" id="setModalLabel">Lego Set: ${set.name}</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" class="img-fluid">
+						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 100%">
 					</div>
 				</div>
 			</div>
 		</div>
 		
+		<!-- Modal to Import a Lego Checklist -->
+		<div class="modal fade" id="importModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="importModalLabel">Import Lego Set Checklist</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<form method="POST" id="importForm" action="/openImport" enctype="multipart/form-data">
+						<div class="modal-body">
+							<div class="mb-3">
+								<label for="importFile" class="form-label">Choose a CSV file containing a saved checklist to import</label>
+								<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv" required>
+							</div>
+
+							<div id="importFileNoneHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Please select a CSV file to upload.</div>
+							<div id="importFileErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${message}</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" id="importFileButton" class="btn btn-primary" onclick="importCSVFile()"> <i class="fa fa-upload"></i> Import </button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
 	    <div class="mb-5">
 			<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
 			<c:forEach items="${set.piece_list}" var="piece" varStatus="loop">
@@ -701,15 +774,15 @@
 				</div>
 
 				<!-- Piece Modal Image Viewer -->
-				<div class="modal fade" id="pieceModal_${piece.num}" tabindex="-1" aria-labelledby="pieceModal_${piece.num}" aria-hidden="true">
+				<div class="modal fade" id="pieceModal_${piece.num}" tabindex="-1" aria-labelledby="pieceModalLabel_${piece.num}" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="pieceModal_${piece.num}">Lego Piece: ${piece.name}</h5>
+								<h5 class="modal-title" id="pieceModalLabel_${piece.num}">Lego Piece: ${piece.name}</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" class="img-fluid">
+								<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 100%">
 							</div>
 						</div>
 					</div>
