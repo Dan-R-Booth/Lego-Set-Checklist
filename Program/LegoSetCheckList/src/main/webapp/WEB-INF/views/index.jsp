@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!-- Bootstrap [1] is a CSS and JavaScript framework, used for page styling, and useful for creating interactive pages that resize for different screen sizes. -->
 <!-- Font awesome [2] contains free icons that I am using in my UI to help user recognition, when using the website. -->
@@ -32,10 +33,14 @@
 		<!-- This is font awesome used for icons for buttons and links -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
 		<script type="text/javascript">
 		
 			// This does setup for the page when it is first loaded
 			function setup() {
+				// This sets a minimum size the page will adpat to until it will just zoom out,
+				// as going any smaller would affect elements in the page
 				if (screen.width < 350) {
 					document.getElementById("viewport").setAttribute("content","width=350");
 				}
@@ -53,6 +58,22 @@
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
 				}
 			}
+			
+			function importCSVFile() {
+				var formActionURL = "/openImport/url/index"/* + document.URL*/;
+
+				document.getElementById("importForm").setAttribute("action", formActionURL);
+				document.getElementById("importForm").submit();
+			}
+
+			document.getElementById("importFile").addEventListener("change", function () {
+				if (this.value.length > 0) {
+					document.getElementById("importFileButton").disabled = false;
+				} else {
+					document.getElementById("importFileButton").button.disabled = true;
+				}
+			});
+			
 		</script>
 
 	</head>
@@ -93,6 +114,39 @@
 			<a href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/">Search</a>
 			<br>
 			<a href="/import">Import Checklist</a>
+
+			<!-- Button trigger modal -->
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+				Import
+			</button>
+			
+			<!-- Modal -->
+			<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModal" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="importModal">Import Lego Set Checklist</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<form method="POST" id="importForm" action="/openImport" enctype="multipart/form-data">
+							<div class="modal-body">
+								<div class="mb-3">
+									<label for="formFile" class="form-label">Choose a CSV file containing a saved checklist to import</label>
+									<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv">
+								</div>
+
+								<c:if test="${error eq true}">
+									<div class="alert alert-danger mt-2"><i class="fa fa-exclamation-circle"></i> ${message}</div>
+								</c:if>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+								<button type="button" id="importFileButton" class="btn btn-primary" onclick="importCSVFile()" disabled> <i class="fa fa-upload"></i> Import </button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">

@@ -33,9 +33,13 @@
 		<!-- This is font awesome used for icons for buttons and links -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
 		<script type="text/javascript">
 			// This does setup for the page when it is first loaded
 			function setup() {
+				// This sets a minimum size the page will adpat to until it will just zoom out,
+				// as going any smaller would affect elements in the page
 				if (screen.width < 550) {
 					document.getElementById("viewport").setAttribute("content","width=550, initial-scale=0.5");
 				}
@@ -700,7 +704,8 @@
 					<div class="row align-items-center my-3">
 						<div class="col">
 							<!-- The style width sets the percentage size the image will be on any screen -->
-							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 100%" class="m-2">
+							<!-- When clicked this will display a Model with the image enlarged within -->
+							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
 						</div>
 						<div class="col">
 							<a href="/set?set_number=${set.num}">${set.num}</a>
@@ -719,6 +724,21 @@
 						</div>
 					</div>
 				</div>
+
+				<!-- Lego Set Modal Image Viewer -->
+				<div class="modal fade" id="setModal_${set.num}" tabindex="-1" aria-labelledby="setModal_${set.num}" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="setModal_${set.num}">Lego Set: ${set.name}</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" class="img-fluid">
+							</div>
+						</div>
+					</div>
+				</div>
 			</c:forEach>
 		</div>
 
@@ -729,8 +749,8 @@
 	                <li class="breadcrumb-item text-white" aria-current="page">Search</li>
 	            </ol>
 				<div class="mx-2 my-2">
-					<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> Previous </button>
-					<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next </button>
+					<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> <i class="fa fa-arrow-left"></i> Previous </button>
+					<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next <i class="fa fa-arrow-right"></i> </button>
 				</div>
 		    </div>
         </nav>

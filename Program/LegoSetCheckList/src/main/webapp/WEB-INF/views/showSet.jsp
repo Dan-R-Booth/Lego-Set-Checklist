@@ -29,14 +29,18 @@
 		<!-- Bootstrap JavaScript for page styling -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
 		<!-- This is font awesome used for icons for buttons and links -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
 
+			// This resizes the page so it fits different screen and window sizes
 			function resize() {
 				var width = $(window).width();
 
+				// This removes the columns and puts all the content in one line if the screen size is below a certain width
 				if (width <= 815) {
 					document.getElementById("imageDiv").setAttribute("class", "m-3");
 					document.getElementById("textDiv").setAttribute("class", "m-3");
@@ -46,19 +50,21 @@
 					document.getElementById("textDiv").setAttribute("class", "col-5 m-3");
 				}
 
+				// This sets a minimum size the page will adpat to until it will just zoom out,
+				// as going any smaller would affect elements in the page
 				if (width < 350) {
 					document.getElementById("viewport").setAttribute("content","width=350");
 				}
 			}
 
+			// This resizes the page when the screen or window size is changed
 			window.onresize = function() {
-				if (document.readyState == "complete") {
-					resize();
-				}
+				resize();
 			}
 
 			// This does setup for the page when it is first loaded
 			function setup() {
+				// This sets the page to the correct size when the page is first loaded
 				resize();
 
 				var set_num = "${set.num}";
@@ -79,6 +85,15 @@
 				}
 				else {					
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
+				}
+			}
+
+			function backToSearch() {
+				if ("${searchURL}" != "") {
+					window.location = "${searchURL}";
+				}
+				else {
+					window.location = "/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
 				}
 			}
 			
@@ -114,12 +129,6 @@
 							<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
 						</div>
 					</form>
-					
-					<ul class="navbar-nav">
-						<li class="nav-item mx-5">
-							<button class="btn btn-outline-info btn-dark text-white" type="button" onclick="history.back()"> BACK TO SEARCH RESULTS </button>
-						</li>
-					</ul>
 				</div>
 			</div>
 		</nav>
@@ -127,11 +136,29 @@
 		<div class="container-fluid row mb-5">
 			<div id="imageDiv" class="col-6 m-3">
 				<!-- The style width sets the percentage size the image will be on any screen -->
-				<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" class="img-fluid img-thumbnail rounded">
+				<!-- When clicked this will display a Model with the image enlarged within -->
+				<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 80%" class="row img-fluid img-thumbnail rounded" data-bs-toggle="modal" data-bs-target="#setModal">
+
+				<!-- Lego Set Modal Image Viewer -->
+				<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModal" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="setModal">Lego Set: ${set.name}</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" class="img-fluid">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<button class="row btn btn-outline-secondary btn-dark text-white" type="button" onclick="backToSearch()" style="width: 80%;"> BACK TO SEARCH </button>
 			</div>
 			<div id="textDiv" class="col-5 m-3">
-				<h1>Set Name: ${set.name}</h1>
-				<h3>Set Number: ${set.num}<h3>
+				<h1>${set.name}</h1>
+				<h3>${set.num}<h3>
 				<br>
 				<dl class="row">
 					<dt class="col-sm-6">Year Released:</dt>
@@ -153,7 +180,7 @@
 			<div class="container-fluid">
 	            <ol class="breadcrumb bg-dark">
 	                <li class="breadcrumb-item"><a href="/">Home</a></li>
-	                <li class="breadcrumb-item"><a href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/">Search</a></li>
+	                <li class="breadcrumb-item"><a href="#" onclick="backToSearch()">Search</a></li>
 	                <li class="breadcrumb-item text-white" aria-current="page">Set</li>
 	            </ol>
 		    </div>

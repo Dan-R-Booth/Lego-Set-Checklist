@@ -28,6 +28,8 @@
 		<!-- Bootstrap JavaScript for page styling -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
 		<!-- This is font awesome used for icons for buttons and links -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
@@ -41,6 +43,8 @@
 		
 			// This does setup for the page when it is first loaded
 			function setup() {
+				// This sets a minimum size the page will adpat to until it will just zoom out,
+				// as going any smaller would affect elements in the page
 				if (screen.width < 650) {
 					document.getElementById("viewport").setAttribute("content","width=650, initial-scale=0.5");
 				}
@@ -492,6 +496,16 @@
 				
 				return pieceTypeFilter;
 			}
+
+			function backToSearch() {
+				if ("${searchURL}" != "") {
+					window.location = "${searchURL}";
+				}
+				else {
+					window.location = "/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
+				}
+			}
+
 		</script>
 		
 	</head>
@@ -588,12 +602,13 @@
 			</nav>
 
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
-			<div class="container-fluid border  bg-white">
+			<div class="container-fluid border bg-white">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with column names -->
 				<div class="row align-items-center my-1">
 					<div class="col">
 						<!-- The style width sets the percentage size the image will be on any screen -->
-						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%" class="img-fluid img-thumbnail rounded m-2">
+						<!-- When clicked this will display a Model with the image enlarged within -->
+						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%" class="img-thumbnail rounded m-2" data-bs-toggle="modal" data-bs-target="#setModal">
 					</div>
 					<div class="col">
 						<h4>${set.name}</h4>
@@ -604,7 +619,7 @@
 					</div>
 				</div>
 			</div>
-		
+
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div class="container-fluid border  bg-white">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with column names -->
@@ -633,6 +648,21 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- Lego Set Modal Image Viewer -->
+		<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="setModal">Lego Set: ${set.name}</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" class="img-fluid">
+					</div>
+				</div>
+			</div>
+		</div>
 		
 	    <div class="mb-5">
 			<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
@@ -643,7 +673,8 @@
 					<div class="row align-items-center my-3">
 						<div class="col">
 							<!-- The style width sets the percentage size the image will be on any screen -->
-							<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 40%" class="m-2">
+							<!-- When clicked this will display a Model with the image enlarged within -->
+							<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%" class="m-2" data-bs-toggle="modal" data-bs-target="#pieceModal_${piece.num}">
 						</div>
 						<div class="col">
 							${piece.num}
@@ -668,6 +699,22 @@
 						</div>
 					</div>
 				</div>
+
+				<!-- Piece Modal Image Viewer -->
+				<div class="modal fade" id="pieceModal_${piece.num}" tabindex="-1" aria-labelledby="pieceModal_${piece.num}" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="pieceModal_${piece.num}">Lego Piece: ${piece.name}</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" class="img-fluid">
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<!-- This calls a JavaSript function hides spare pieces -->
 				<c:if test="${piece.spare eq true}">
 					<script type="text/javascript">
@@ -681,7 +728,7 @@
 			<div class="container-fluid">
 	            <ol class="breadcrumb bg-dark">
 	                <li class="breadcrumb-item"><a href="/">Home</a></li>
-	                <li class="breadcrumb-item"><a href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/">Search</a></li>
+	                <li class="breadcrumb-item"><a href="#" onclick="backToSearch()">Search</a></li>
 	                <li class="breadcrumb-item"><a href="/set?set_number=${set.num}">Set</a></li>
 	                <li class="breadcrumb-item text-white" aria-current="page">Pieces</li>
 	            </ol>

@@ -51,7 +51,7 @@ import lego.checklist.domain.Theme;
 */
 
 @Controller
-@SessionAttributes("set")
+@SessionAttributes({"set", "searchURL"})
 public class SetController {
 	// This stores the basic uri to the Rebrickable API
 	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
@@ -79,10 +79,10 @@ public class SetController {
 	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
-		String url = request.getRequestURI().toString();
-		String query = request.getQueryString();
-		url += "?" + query;
+		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
 		String set_list_uri = url.split("/uri/")[1];
+		
+		model.addAttribute("searchURL", url);
 		
 		if (set_list_uri.equals("?null")) {
 			// This is the uri to a gets sets in the Rebrickable API that match the text search
@@ -290,8 +290,12 @@ public class SetController {
 	 * Here I have combined code from two websites [3] and [4] to import and read a CSV file
 	 * for a Lego Set checklist on a clients machine, as this was not vital to the main function of the program
 	 */
-	@PostMapping("/openImport")
-	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate) {
+	@PostMapping("/openImport/url/**")
+	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, HttpServletRequest request) {
+		
+		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
+		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
+		String previous_page_url = url.split("/url/")[1];
 		
 		// validate file
         if (importFile.isEmpty()) {
@@ -336,11 +340,11 @@ public class SetController {
                 model.addAttribute("set", set);
         		return "showSet";
             } catch (Exception ex) {
-                model.addAttribute("message", "An error occurred while processing the CSV file.");
+                model.addAttribute("message", "An error occurred while processing the file.");
                 model.addAttribute("error", true);
             }
         }
 		
-        return "importPage";
+        return previous_page_url;
 	}
 }
