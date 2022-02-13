@@ -295,10 +295,6 @@ public class SetController {
 	@PostMapping("/openImport/previousPage={previousPage}")
 	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @ModelAttribute("set") Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
 		
-		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
-//		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
-//		String previous_page_url = url.split("/url/")[1];
-		
 		// validate file
         if (importFile.isEmpty()) {
             model.addAttribute("message", "CSV file is empty, please select a valid CSV file.");
@@ -347,7 +343,6 @@ public class SetController {
                 model.addAttribute("error", true);
             }
         }
-        System.out.println("previous_page_url:" + previousPage);
         
         // If the import was called from the showPiece_list page this adds the values inputed from that page so that the user is returned
         // to the exact same page
@@ -355,7 +350,9 @@ public class SetController {
         	// This calls the function updateQuantityChecked in the PieceController class, that
         	PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
         	
-	        // If their is a sort to be applied to the checklist (sorts not null), then the fellowing is ran to apply this sort
+        	System.out.println(sort + ":sort");
+        	
+	        // If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
 	 		if (sort != null) {
 	 	    	model.addAttribute("sort", sort);
 	 		}
