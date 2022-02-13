@@ -518,7 +518,8 @@
 			}
 
 			// This will check if the import file input box has a value, if it does have a value this will return the
-			// file to the controller so that it can be imported.
+			// file to the controller so that it can be imported. This also send the current pieces checked along with
+			// the sort and filters active, so that if the import fails the user is returned to the exact same page.
 			// and if it does not contain a file an error will be displayed
 			function importCSVFile() {
 				if (document.getElementById("importFile").value.length > 0) {
