@@ -70,8 +70,34 @@ public class PieceController {
 		// If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
 		if (sort != null) {
 			
-	    	if (sort.equals("colour") || sort.equals("-colour")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by colour
+			if (sort.equals("pieceNumber") || sort.equals("-pieceNumber")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Piece Number
+	    		Collections.sort(piece_list, new Comparator<Piece>() {
+	    			@Override
+	    			public int compare(Piece piece1, Piece piece2) {
+	    				return piece1.getNum().compareTo(piece2.getNum());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-pieceNumber")) {
+	    			Collections.reverse(piece_list);
+	    		}
+	    	}
+			else if (sort.equals("pieceName") || sort.equals("-pieceName")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Piece Name
+	    		Collections.sort(piece_list, new Comparator<Piece>() {
+	    			@Override
+	    			public int compare(Piece piece1, Piece piece2) {
+	    				return piece1.getName().compareTo(piece2.getName());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-pieceName")) {
+	    			Collections.reverse(piece_list);
+	    		}
+	    	}
+			else if (sort.equals("colour") || sort.equals("-colour")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Colour
 	    		Collections.sort(piece_list, new Comparator<Piece>() {
 	    			@Override
 	    			public int compare(Piece piece1, Piece piece2) {
@@ -96,6 +122,32 @@ public class PieceController {
 	    			Collections.reverse(piece_list);
 	    		}
 	    	}
+	    	else if (sort.equals("quantity") || sort.equals("-quantity")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Quantity
+	    		Collections.sort(piece_list, new Comparator<Piece>() {
+	    			@Override
+	    			public int compare(Piece piece1, Piece piece2) {
+	    				return piece1.getQuantity() - piece2.getQuantity();
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-quantity")) {
+	    			Collections.reverse(piece_list);
+	    		}
+	    	}
+	    	else if (sort.equals("quantityFound") || sort.equals("-quantityFound")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Quantity Found
+	    		Collections.sort(piece_list, new Comparator<Piece>() {
+	    			@Override
+	    			public int compare(Piece piece1, Piece piece2) {
+	    				return piece1.getQuantity_checked() - (piece2.getQuantity_checked());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-quantityFound")) {
+	    			Collections.reverse(piece_list);
+	    		}
+	    	}
 	    	
 	    	model.addAttribute("sort", sort);
 		}
@@ -113,6 +165,7 @@ public class PieceController {
 		return "showPiece_list";
 	}
 	
+	// Updates the quantity found for a Set object
 	public static void updateQuantityChecked(Set set, List<Integer> quantityChecked, List<Piece> piece_list) {
 		// quantityChecked List holds the quantities of all the current quantities for each piece
 		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter

@@ -681,10 +681,10 @@
 						<h6 onclick="numSort()" data-bs-toggle="tooltip" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="nameSort()" data-bs-toggle="tooltip" title="Sort by Name">Set Name: <i id="nameSortIcon" class="fa fa-sort"></i></h6>
+						<h6 onclick="nameSort()" data-bs-toggle="tooltip" title="Sort by Set Name">Set Name: <i id="nameSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="yearSort()" data-bs-toggle="tooltip" title="Sort by Year">Year Released: <i id="yearSortIcon" class="fa fa-sort"></i></h6>
+						<h6 onclick="yearSort()" data-bs-toggle="tooltip" title="Sort by Year Released">Year Released: <i id="yearSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
 						<h6 onclick="themeSort()" data-bs-toggle="tooltip" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></h6>

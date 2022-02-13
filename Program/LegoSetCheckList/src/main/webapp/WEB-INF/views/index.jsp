@@ -169,6 +169,7 @@
 					</div>
 				</div>
 			</div>
+
 		</div>
 		
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">

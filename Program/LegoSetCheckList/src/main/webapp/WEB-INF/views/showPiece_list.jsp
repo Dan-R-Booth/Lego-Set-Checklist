@@ -74,9 +74,21 @@
 				}
 				
 				piecesFound();
-				
+
 				// If their is a sort this sets the correct column to the correct sort symbol
-				if ("${sort}" == "colour") {
+				if ("${sort}" == "pieceNumber") {
+					document.getElementById("pieceNumberSortIcon").setAttribute("class","fa fa-sort-numeric-asc");
+				}
+				else if ("${sort}" == "-pieceNumber") {
+					document.getElementById("pieceNumberSortIcon").setAttribute("class","fa fa-sort-numeric-desc");
+				}
+				else if ("${sort}" == "pieceName") {
+					document.getElementById("pieceNameSortIcon").setAttribute("class","fa fa-sort-alpha-asc");
+				}
+				else if ("${sort}" == "-pieceName") {
+					document.getElementById("pieceNameSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
+				}
+				else if ("${sort}" == "colour") {
 					document.getElementById("colourSortIcon").setAttribute("class","fa fa-sort-alpha-asc");
 				}
 				else if ("${sort}" == "-colour") {
@@ -87,6 +99,18 @@
 				}
 				else if ("${sort}" == "-type") {
 					document.getElementById("typeSortIcon").setAttribute("class","fa fa-sort-alpha-desc");
+				}
+				else if ("${sort}" == "quantity") {
+					document.getElementById("quantitySortIcon").setAttribute("class","fa fa-sort-amount-asc");
+				}
+				else if ("${sort}" == "-quantity") {
+					document.getElementById("quantitySortIcon").setAttribute("class","fa fa-sort-amount-desc");
+				}
+				else if ("${sort}" == "quantityFound") {
+					document.getElementById("quantityFoundSortIcon").setAttribute("class","fa fa-sort-amount-asc");
+				}
+				else if ("${sort}" == "-quantityFound") {
+					document.getElementById("quantityFoundSortIcon").setAttribute("class","fa fa-sort-amount-desc");
 				}
 
 				var coloursFiltered = [];
@@ -218,7 +242,7 @@
 				 piecesFound();
 			}
 		
-			// This calculates add displays the total quanity of a piece found
+			// This calculates add displays the total quantity of a piece found
 			function piecesFound() {
 				var total = 0;
 				
@@ -289,6 +313,52 @@
 				window.location = "/set/${set.num}/pieces/export/?quantityChecked=" + array;
 			}
 			
+			// This calls the the controller setting the sort parameter as pieceNumber
+			function pieceNumberSort() {
+				var array = getQuantityChecked();
+				
+				var iconClass = document.getElementById("pieceNumberSortIcon").className;
+				
+				var colourFilter = getColourFilter();
+				var pieceTypeFilter = getPieceTypeFilter();
+				
+				var hidePiecesFound = "";
+				
+				if (document.getElementById("hidePiecesFound").checked) {
+					hidePiecesFound = "&hidePiecesFound=true";
+				}
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
+					window.location = "/set/${set_number}/pieces/?sort=pieceNumber&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+				else if (iconClass == "fa fa-sort-numeric-asc") {
+					window.location = "/set/${set_number}/pieces/?sort=-pieceNumber&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+			}
+
+			// This calls the the controller setting the sort parameter as pieceName
+			function pieceNameSort() {
+				var array = getQuantityChecked();
+				
+				var iconClass = document.getElementById("pieceNameSortIcon").className;
+				
+				var colourFilter = getColourFilter();
+				var pieceTypeFilter = getPieceTypeFilter();
+				
+				var hidePiecesFound = "";
+				
+				if (document.getElementById("hidePiecesFound").checked) {
+					hidePiecesFound = "&hidePiecesFound=true";
+				}
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
+					window.location = "/set/${set_number}/pieces/?sort=pieceName&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+				else if (iconClass == "fa fa-sort-alpha-asc") {
+					window.location = "/set/${set_number}/pieces/?sort=-pieceName&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+			}
+
 			// This calls the the controller setting the sort parameter as colourName
 			function colourSort() {
 				var array = getQuantityChecked();
@@ -311,7 +381,7 @@
 					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 				}
 			}
-			
+
 			// This calls the the controller setting the sort parameter as pieceCategory alphabetically
 			function typeSort() {
 				var array = getQuantityChecked();
@@ -335,6 +405,52 @@
 				}
 			}
 			
+			// This calls the the controller setting the sort parameter as quantity
+			function quantitySort() {
+				var array = getQuantityChecked();
+				
+				var iconClass = document.getElementById("quantitySortIcon").className;
+				
+				var colourFilter = getColourFilter();
+				var pieceTypeFilter = getPieceTypeFilter();
+				
+				var hidePiecesFound = "";
+				
+				if (document.getElementById("hidePiecesFound").checked) {
+					hidePiecesFound = "&hidePiecesFound=true";
+				}
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
+					window.location = "/set/${set_number}/pieces/?sort=quantity&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+				else if (iconClass == "fa fa-sort-amount-asc") {
+					window.location = "/set/${set_number}/pieces/?sort=-quantity&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+			}
+
+			// This calls the the controller setting the sort parameter as quantity
+			function quantityFoundSort() {
+				var array = getQuantityChecked();
+				
+				var iconClass = document.getElementById("quantityFoundSortIcon").className;
+				
+				var colourFilter = getColourFilter();
+				var pieceTypeFilter = getPieceTypeFilter();
+				
+				var hidePiecesFound = "";
+				
+				if (document.getElementById("hidePiecesFound").checked) {
+					hidePiecesFound = "&hidePiecesFound=true";
+				}
+				
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
+					window.location = "/set/${set_number}/pieces/?sort=quantityFound&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+				else if (iconClass == "fa fa-sort-amount-asc") {
+					window.location = "/set/${set_number}/pieces/?sort=-quantityFound&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				}
+			}
+
 			// This filters the list by piece types and colours the user would like to view
 			// and also hides spares and hides piece found (if pieces found checkbox is checked)
 			function filter(boxClicked) {
@@ -541,7 +657,7 @@
 						hidePiecesFound = "&hidePiecesFound=true";
 					}
 
-					var formActionURL = "/openImport/previousPage=showPiece_list/?previous_set_number=${set.num}" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					var formActionURL = "/openImport/previousPage=showPiece_list/?previous_set_number=${set.num}&" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 
 					document.getElementById("importForm").setAttribute("action", formActionURL);
 					document.getElementById("importForm").submit();
@@ -675,22 +791,22 @@
 						<h6>Piece Image:</h6>
 					</div>
 					<div class="col">
-						<h6>Piece Number:</h6>
+						<h6 onclick="pieceNumberSort()" data-bs-toggle="tooltip" title="Sort by Piece Number">Piece Number: <i id="pieceNumberSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6>Piece Name:</h6>
+						<h6 onclick="pieceNameSort()" data-bs-toggle="tooltip" title="Sort by Piece Name">Piece Name: <i id="pieceNameSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Theme">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></h6>
+						<h6 onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Piece Colour">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
 						<h6 onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Type">Piece Type: <i id="typeSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6>Quantity:</h6>
+						<h6 onclick="quantitySort()" data-bs-toggle="tooltip" title="Sort by Quantity">Quantity: <i id="quantitySortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6>Quantity Found:</h6>
+						<h6 onclick="quantityFoundSort()" data-bs-toggle="tooltip" title="Sort by Quantity Found">Quantity Found: <i id="quantityFoundSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 				</div>
 			</div>
