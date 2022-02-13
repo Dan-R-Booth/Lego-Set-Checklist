@@ -286,15 +286,12 @@ public class SetController {
 		return set;
 	}
 	
-	@GetMapping("/import")
-	public String importPage(Model model) {
-		return "importPage";
-	}
-	
 	/*
 	 * Here I have combined code from two websites [3] and [4] to import and read a CSV file
 	 * for a Lego Set checklist on a clients machine, as this was not vital to the main function of the program
 	 */
+	// This also takes values for filter and sort for the showPieceList page as if the import popup is on this page
+	// it needs these values to return to the exact some page if the import fails
 	@PostMapping("/openImport/previousPage={previousPage}")
 	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @ModelAttribute("set") Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
 		
@@ -352,6 +349,8 @@ public class SetController {
         }
         System.out.println("previous_page_url:" + previousPage);
         
+        // If the import was called from the showPiece_list page this adds the values inputed from that page so that the user is returned
+        // to the exact same page
         if (previousPage.equals("showPiece_list")) {
         	// This calls the function updateQuantityChecked in the PieceController class, that
         	PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
