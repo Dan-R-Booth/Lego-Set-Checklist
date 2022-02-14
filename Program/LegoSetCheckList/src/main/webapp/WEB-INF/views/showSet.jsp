@@ -96,7 +96,7 @@
 					window.location = "${searchURL}";
 				}
 				else {
-					window.location = "/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
+					window.location = "/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
 				}
 			}
 			

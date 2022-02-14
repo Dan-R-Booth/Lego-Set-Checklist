@@ -80,8 +80,8 @@ public class SetController {
 		return "showSet";
 	}
 	
-	@GetMapping("/search/text={text}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
-	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
+	@GetMapping("/search/text={text}/barOpen={barOpen}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
+	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
@@ -94,8 +94,12 @@ public class SetController {
 			set_list_uri = rebrickable_uri + "sets/?key=" + rebrickable_api_key + "&search=" + searchText;
 		}
 		
+		// This is used so that if the filter or sort bar was open or no bar was open on the search page
+		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+		model.addAttribute("barOpen", barOpen);
+		
 		// If there is a attribute the user would like to sort by this is added to the uri and the model
-		if (sort != "") {
+		if (!sort.equals("")) {
 			String[] sorts = sort.split(",");
 			
 			set_list_uri += "&ordering=" + sort;
@@ -111,31 +115,31 @@ public class SetController {
 		}
 		
 		// If there is a min year the user would like to filter by this is added to the uri and the model
-		if (minYear != "") {
+		if (!minYear.equals("")) {
 			set_list_uri += "&min_year=" + minYear;
 			model.addAttribute("minYear", minYear);
 		}
 		
 		// If there is a max year the user would like to filter by this is added to the uri and the model
-		if (maxYear != "") {
+		if (!maxYear.equals("")) {
 			set_list_uri += "&max_year=" + maxYear;
 			model.addAttribute("maxYear", maxYear);
 		}
 		
 		// If there is a minimum number of pieces the user would like to filter by this is added to the uri and the model
-		if (minPieces != "") {
+		if (!minPieces.equals("")) {
 			set_list_uri += "&min_parts=" + minPieces;
 			model.addAttribute("minPieces", minPieces);
 		}
 		
 		// If there is a maximum number of pieces the user would like to filter by this is added to the uri and the model
-		if (maxPieces != "") {
+		if (!maxPieces.equals("")) {
 			set_list_uri += "&max_parts=" + maxPieces;
 			model.addAttribute("maxPieces", maxPieces);
 		}
 		
 		// If there is a theme_id the user would like to filter by this is added to the uri and the model
-		if (filteredTheme_id != "") {
+		if (!filteredTheme_id.equals("")) {
 			set_list_uri += "&theme_id=" + filteredTheme_id;
 			model.addAttribute("theme_id", filteredTheme_id);
 		}

@@ -315,124 +315,79 @@
 			
 			// This calls the the controller setting the sort parameter as pieceNumber
 			function pieceNumberSort() {
-				var array = getQuantityChecked();
-				
 				var iconClass = document.getElementById("pieceNumberSortIcon").className;
 				
-				var colourFilter = getColourFilter();
-				var pieceTypeFilter = getPieceTypeFilter();
-				
-				var hidePiecesFound = "";
-				
-				if (document.getElementById("hidePiecesFound").checked) {
-					hidePiecesFound = "&hidePiecesFound=true";
-				}
-				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=pieceNumber&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("pieceNumber");
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-pieceNumber&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("-pieceNumber");
 				}
 			}
 
 			// This calls the the controller setting the sort parameter as pieceName
 			function pieceNameSort() {
-				var array = getQuantityChecked();
-				
 				var iconClass = document.getElementById("pieceNameSortIcon").className;
 				
-				var colourFilter = getColourFilter();
-				var pieceTypeFilter = getPieceTypeFilter();
-				
-				var hidePiecesFound = "";
-				
-				if (document.getElementById("hidePiecesFound").checked) {
-					hidePiecesFound = "&hidePiecesFound=true";
-				}
-				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=pieceName&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("pieceName");
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-pieceName&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("-pieceName");
 				}
 			}
 
 			// This calls the the controller setting the sort parameter as colourName
 			function colourSort() {
-				var array = getQuantityChecked();
-				
 				var iconClass = document.getElementById("colourSortIcon").className;
 				
-				var colourFilter = getColourFilter();
-				var pieceTypeFilter = getPieceTypeFilter();
-				
-				var hidePiecesFound = "";
-				
-				if (document.getElementById("hidePiecesFound").checked) {
-					hidePiecesFound = "&hidePiecesFound=true";
-				}
-				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=colour&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("colour");
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-colour&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("-colour");
 				}
 			}
 
 			// This calls the the controller setting the sort parameter as pieceCategory alphabetically
 			function typeSort() {
-				var array = getQuantityChecked();
-				
 				var iconClass = document.getElementById("typeSortIcon").className;
 				
-				var colourFilter = getColourFilter();
-				var pieceTypeFilter = getPieceTypeFilter();
-				
-				var hidePiecesFound = "";
-				
-				if (document.getElementById("hidePiecesFound").checked == true) {
-					hidePiecesFound = "&hidePiecesFound=true";
-				}
-				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=type&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("type");
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-type&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("-type");
 				}
 			}
 			
 			// This calls the the controller setting the sort parameter as quantity
 			function quantitySort() {
-				var array = getQuantityChecked();
-				
 				var iconClass = document.getElementById("quantitySortIcon").className;
 				
-				var colourFilter = getColourFilter();
-				var pieceTypeFilter = getPieceTypeFilter();
-				
-				var hidePiecesFound = "";
-				
-				if (document.getElementById("hidePiecesFound").checked) {
-					hidePiecesFound = "&hidePiecesFound=true";
-				}
-				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=quantity&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("quantity");
 				}
 				else if (iconClass == "fa fa-sort-amount-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-quantity&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					sortBy("-quantity");
 				}
 			}
 
 			// This calls the the controller setting the sort parameter as quantity
 			function quantityFoundSort() {
-				var array = getQuantityChecked();
-				
 				var iconClass = document.getElementById("quantityFoundSortIcon").className;
+
+				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
+					sortBy("quantityFound");
+				}
+				else if (iconClass == "fa fa-sort-amount-asc") {
+					sortBy("-quantityFound");
+				}
+			}
+
+			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
+			function sortBy(sort) {
+				var array = getQuantityChecked();
 				
 				var colourFilter = getColourFilter();
 				var pieceTypeFilter = getPieceTypeFilter();
@@ -442,13 +397,8 @@
 				if (document.getElementById("hidePiecesFound").checked) {
 					hidePiecesFound = "&hidePiecesFound=true";
 				}
-				
-				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
-					window.location = "/set/${set_number}/pieces/?sort=quantityFound&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
-				}
-				else if (iconClass == "fa fa-sort-amount-asc") {
-					window.location = "/set/${set_number}/pieces/?sort=-quantityFound&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
-				}
+
+				window.location = "/set/${set_number}/pieces/?sort=" + sort + "&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 			}
 
 			// This filters the list by piece types and colours the user would like to view
@@ -629,7 +579,7 @@
 					window.location = "${searchURL}";
 				}
 				else {
-					window.location = "/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
+					window.location = "/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
 				}
 			}
 

@@ -57,6 +57,19 @@
 				// This adds the previously adds the text search previously entered to the search box
 				document.getElementById("text_search").value = "${searchText}";
 				
+				// This sets the filter or sort bar open or leaves both hidden, so they are the same as they where on
+				// the previous page. Otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+				if ("${barOpen}" == "" || "${barOpen}" == "filter") {
+					document.getElementById("filterBarDropdownLink").className = "nav-link dropdown-toggle active";
+
+					document.getElementById("filterBar").style.display = "block";
+				}
+				else if ("${barOpen}" == "sort") {
+					document.getElementById("sortBarDropdownLink").className = "nav-link dropdown-toggle active";
+
+					document.getElementById("sortBar").style.display = "block";
+				}
+
 				// If their is a sort this sets the correct column to the correct sort symbol,
 				// and if their isn't a sort or it's set number, it sorts it by set number 
 				if ("${sort1}" == "name") {
@@ -201,13 +214,13 @@
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/search/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
+				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/search/text=${searchText}/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
+				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
 			}
 
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
@@ -229,10 +242,10 @@
 				var iconClass = document.getElementById("numSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					window.location = "/search/text=${searchText}/sort=set_num/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("set_num");
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					window.location = "/search/text=${searchText}/sort=-set_num/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("-set_num");
 				}
 			}
 			
@@ -241,10 +254,10 @@
 				var iconClass = document.getElementById("nameSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					window.location = "/search/text=${searchText}/sort=name/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("name");
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					window.location = "/search/text=${searchText}/sort=-name/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("-name");
 				}
 			}
 			
@@ -253,10 +266,10 @@
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					window.location = "/search/text=${searchText}/sort=theme_id/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("theme_id");
 				}
 				else if (iconClass == "fa fa-sort-down") {
-					window.location = "/search/text=${searchText}/sort=-theme_id/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("-theme_id");
 				}
 			}
 			
@@ -265,10 +278,10 @@
 				var iconClass = document.getElementById("yearSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					window.location = "/search/text=${searchText}/sort=year/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("year");
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					window.location = "/search/text=${searchText}/sort=-year/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("-year");
 				}
 			}
 			
@@ -277,11 +290,16 @@
 				var iconClass = document.getElementById("numPiecesSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
-					window.location = "/search/text=${searchText}/sort=num_parts/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("num_parts");
 				}
 				else if (iconClass == "fa fa-sort-amount-asc") {
-					window.location = "/search/text=${searchText}/sort=-num_parts/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+					sortBy("-num_parts");
 				}
+			}
+
+			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
+			function sortBy(sort) {
+				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
@@ -300,7 +318,7 @@
 					sort += "," + sortValue(sort3);
 				}
 				
-				window.location = "/search/text=${searchText}/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 			}
 
 			// This gets the value needed to be added to the Rebrickable API uri request, to sort a list of Lego Sets, depending on the value selected
@@ -441,14 +459,14 @@
 					theme_id = themeFilter.id;
 				}
 				
-				window.location = "/search/text=" + text + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/minPieces=" + minPieces + "/maxPieces=" + maxPieces + "/theme_id=" + theme_id + "/uri/";
+				window.location = "/search/text=" + text + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/minPieces=" + minPieces + "/maxPieces=" + maxPieces + "/theme_id=" + theme_id + "/uri/";
 			}
 			
 			// This will minimise or maximise the filter bar, and if the sort bar is maximised this will also minimise it
 			function minimiseFilterBar() {
-				var navbar = document.getElementById("filterBar").style.display;
+				var filterBar = document.getElementById("filterBar").style.display;
 
-				if (navbar == "none") {
+				if (filterBar == "none") {
 					document.getElementById("filterBarDropdownLink").className = "nav-link dropdown-toggle active";
 					document.getElementById("sortBarDropdownLink").className = "nav-link dropdown-toggle";
 
@@ -464,9 +482,9 @@
 
 			// This will minimise or maximise the sort bar, and if the filter bar is maximised this will also minimise it
 			function minimiseSortBar() {
-				var navbar = document.getElementById("sortBar").style.display;
+				var sortBar = document.getElementById("sortBar").style.display;
 
-				if (navbar == "none") {
+				if (sortBar == "none") {
 					document.getElementById("sortBarDropdownLink").className = "nav-link dropdown-toggle active";
 					document.getElementById("filterBarDropdownLink").className = "nav-link dropdown-toggle";
 
@@ -477,6 +495,21 @@
 					document.getElementById("sortBarDropdownLink").className = "nav-link dropdown-toggle";
 
 					document.getElementById("sortBar").style.display = "none";
+				}
+			}
+
+			function getBarOpen() {
+				var filterBar = document.getElementById("filterBar").style.display;
+				var sortBar = document.getElementById("sortBar").style.display;
+
+				if (filterBar != "none") {
+					return "filter";
+				}
+				else if (sortBar != "none") {
+					return "sort";
+				}
+				else {
+					return "none";
 				}
 			}
 			

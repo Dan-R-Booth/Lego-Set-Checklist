@@ -130,7 +130,7 @@
 					<div class="collapse navbar-collapse" id="optionsBar">
 						<ul class="navbar-nav">
 							<li class="nav-item mx-5">
-								<a class="nav-link active" href="/search/text=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/"> <i class="fa fa-search"></i> Search for a Lego Set</a>
+								<a class="nav-link active" href="/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/"> <i class="fa fa-search"></i> Search for a Lego Set</a>
 							</li>
 							<li class="nav-item mx-5">
 								<a class="nav-link active" href="#" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
