@@ -30,10 +30,11 @@
 		<!-- Bootstrap JavaScript for page styling -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		
+		<!-- Bootstrap js bundle -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+		
 		<!-- This is font awesome used for icons for buttons and links -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 		<script type="text/javascript">
 			// This does setup for the page when it is first loaded
@@ -200,14 +201,6 @@
 				// These add the current min pieces and max pieces filters to their number boxes
 				document.getElementById("minPiecesBox").value = "${minPieces}";
 				document.getElementById("maxPiecesBox").value = "${maxPieces}";
-				
-				// This selects the correct theme_id radio button for the current theme being filtered, or selects all themes if none are being filtered
-				if ("${theme_id}" == "") {
-					document.getElementById("All").checked = true;
-				}
-				else {
-					document.getElementById("${theme_id}").checked = true;
-				}
 			}
 			
 			// The following two functions call the api with the either the previous or next page uri
@@ -453,11 +446,7 @@
 				var minPieces = document.getElementById("minPiecesBox").value;
 				var maxPieces = document.getElementById("maxPiecesBox").value;
 				
-				var themeFilter = document.querySelector('input[name="themeFilter"]:checked');
-				var theme_id = "";
-				if (themeFilter.id != "All") {
-					theme_id = themeFilter.id;
-				}
+				var theme_id = document.getElementById("themeFilter").value;
 				
 				window.location = "/search/text=" + text + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/minPieces=" + minPieces + "/maxPieces=" + maxPieces + "/theme_id=" + theme_id + "/uri/";
 			}
@@ -567,7 +556,7 @@
 				</div>
 			</nav>
 			
-			<nav class="navbar navbar-expand-md navbar-dark bg-secondary" id="filterBar" style="display: none">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" id="filterBar" style="display: none">
 				<div class="container-fluid">
 					<label class="navbar-brand"> <i class="fa fa-filter"></i> Filter: </label>
 	
@@ -578,34 +567,25 @@
 					<div class="collapse navbar-collapse" id="filterBar">
 						<!-- This creates a form where users can enter details on how they would like to filter the list of Lego sets and a button to display those that match this search -->
 						<form class="container-fluid d-flex row">
-							<div class="col-auto form-floating">
+							<div class="col-auto form-floating mt-1">
 								<input id="text_search" class="form-control" name="text_search" type="text" placeholder="Search for Lego Set"/>
 								<label class="text-secondary" for="text_search"> Search Text </label>
 							</div>
-							<div class="col-auto mt-2">
-								<ul class="navbar-nav">
-									<li class="nav-item dropdown">
-										<a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-											<i class="fa fa-filter"></i> Filter by Theme
-										</a>
-										<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-											<li class="dropdown-item form-check">
-												<input type="radio" name="themeFilter" id="All">
-												<label class="form-check-label" for="All"> All Themes </label>
-											</li>
-											<li><hr class="dropdown-divider"></li>
-											<div style="max-height: 50vh; overflow-y: auto;">
-												<!-- This creates a dropdown item using bootstrap, for every Lego theme and displays a radio button and the theme name -->
-												<c:forEach items="${themeList}" var="theme">
-													<li class="dropdown-item form-check">
-														<input type="radio" name="themeFilter" id="${theme.id}">
-														<label class="form-check-label" for="${theme.id}"> ${theme.name} </label>
-													</li>
-												</c:forEach>
-											</div>
-										</ul>
-									</li>
-								</ul>
+							<div class="col-auto">
+								<label class="text-white" for="themeSelect"> <i class="fa fa-filter"></i> Filter by Theme: </label>
+								<!-- This creates a select box using bootstrap, for every Lego theme -->
+								<select class="form-select" id="themeFilter" style="max-height: 50vh; overflow-y: auto;">
+									<c:forEach items="${themeList}" var="theme">
+										<c:choose>
+											<c:when test="${theme.id == theme_id}">
+												<option class="form-check-label" value="${theme.id}" data-tokens="${theme.name}" selected> ${theme.name} </option>
+											</c:when>
+											<c:otherwise>
+												<option class="form-check-label" value="${theme.id}" data-tokens="${theme.name}"> ${theme.name} </option>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</select>
 							</div>
 							<div class="col-auto">
 								<label class="text-white" for="minYearBox">	Minimum Year: </label>
@@ -624,7 +604,7 @@
 								<input id="maxPiecesBox" class="form-control" name="maxPiecesBox" type="number" min=0 max="9999"/>
 							</div>
 							<div class="col-auto">
-								<button class="btn btn-primary mt-3" type="button" onclick="filter()"> <i class="fa fa-filter"></i> Filter </button>
+								<button class="btn btn-primary mt-4" type="button" onclick="filter()"> <i class="fa fa-filter"></i> Filter </button>
 							</div>
 						</form>
 					</div>
@@ -729,7 +709,7 @@
 			</div>
 		</div>
 	    
-		<div class="mb-5">
+		<div class="mb-5" id="sets">
 			<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
 			<c:forEach items="${sets}" var="set" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->

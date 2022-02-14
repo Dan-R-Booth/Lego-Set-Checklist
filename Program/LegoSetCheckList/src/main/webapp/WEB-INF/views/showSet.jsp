@@ -29,6 +29,7 @@
 		<!-- Bootstrap JavaScript for page styling -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		
+		<!-- Bootstrap js bundle -->
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 		<!-- This is font awesome used for icons for buttons and links -->

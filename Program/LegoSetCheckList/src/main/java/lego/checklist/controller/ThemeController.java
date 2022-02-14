@@ -74,6 +74,18 @@ public class ThemeController {
 				return theme1.getName().compareTo(theme2.getName());
 			}
 		});
+		
+		// This reverses the alphabetically sorted list adds a new theme to the end
+		// and then reverse back, so this theme is at the start of the list.
+		// This theme is a theme called "All Themes" that will be used when a user is
+		// filtering by theme on the search page, and is give an id of -1 so that it
+		// does not clash with any of the other theme ids which are all positive
+		
+		Collections.reverse(themeList);
+		Theme allThemes = new Theme(-1, "All Themes");
+		themeList.add(allThemes);
+		
+		Collections.reverse(themeList);
 	}
 	
 	public static String getTheme(int theme_id) {

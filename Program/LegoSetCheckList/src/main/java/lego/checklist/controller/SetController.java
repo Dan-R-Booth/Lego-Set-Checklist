@@ -139,7 +139,7 @@ public class SetController {
 		}
 		
 		// If there is a theme_id the user would like to filter by this is added to the uri and the model
-		if (!filteredTheme_id.equals("")) {
+		if (!filteredTheme_id.equals("-1")) {
 			set_list_uri += "&theme_id=" + filteredTheme_id;
 			model.addAttribute("theme_id", filteredTheme_id);
 		}
