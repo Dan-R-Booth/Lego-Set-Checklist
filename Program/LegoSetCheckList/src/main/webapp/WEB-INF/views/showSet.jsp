@@ -176,6 +176,8 @@
 				</dl>
 				<br>
 				<a href="/set/${set.num}/pieces">View Piece Checklist</a>
+				<br>
+				<a href="/set/${set.num}/instructions">Instructions</a>
 			</div>
 			
 		</div>

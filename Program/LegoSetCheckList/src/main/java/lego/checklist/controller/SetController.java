@@ -376,4 +376,56 @@ public class SetController {
 		
         return previousPage;
 	}
+	
+	@GetMapping("set/{set_number}/instructions")
+	public String getInstructions(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
+		// The api key used to access the Rebrickable api
+		String brickset_api_key = "3-nRBM-AJHe-tAcxx";
+		
+		// This is the uri to a specific set in the Rebrickable API
+		String setInstructions_uri = "https://brickset.com/api/v3.asmx/getInstructions2?apiKey=" + brickset_api_key + "&setNumber=" + set_number;
+
+		// The rest template created above is used to fetch the Lego set every time the website is loaded
+		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
+		String setInstructions_JSON = restTemplate.getForObject(setInstructions_uri, String.class);
+		
+		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
+        try {
+        	// This provides functionality for reading and writing JSON
+        	ObjectMapper mapper = new ObjectMapper();
+        	
+        	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
+        	JsonNode setInstructionBooksNode = mapper.readTree(setInstructions_JSON);
+			
+        	// This provides the root of the JSON element where the JSON array of Lego pieces is stored
+        	setInstructionBooksNode = setInstructionBooksNode.path("instructions");
+        	
+        	List<String> instructions = new ArrayList<>();
+        	
+        	// This iterates through the JSON array of Lego pieces
+            for (JsonNode setInsructionBookNode : setInstructionBooksNode) {
+            	
+	        	// The following search searches for a path on the setInsructionBookNode Tree and return the node that matches this
+	        	JsonNode urlNode = setInsructionBookNode.path("URL");
+	        	JsonNode descriptionNode = setInsructionBookNode.path("description");
+	        	
+	        	// These return the data stored in the JsonNodes
+	        	String url = urlNode.textValue();
+	        	String description = descriptionNode.textValue();
+	        	
+	        	
+
+	        	instructions.add(url);
+        	}
+            model.addAttribute("instructions", instructions);
+		}
+        catch (JsonMappingException e) {
+			e.printStackTrace();
+		}
+        catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		return "instructions";
+	}
 }
