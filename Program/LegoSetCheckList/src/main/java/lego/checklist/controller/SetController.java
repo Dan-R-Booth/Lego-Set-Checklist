@@ -1,16 +1,12 @@
 package lego.checklist.controller;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,6 +71,9 @@ public class SetController {
 		}
 		
 		Set set = getSet(model, set_number, restTemplate);
+		
+		List<String[]> instructions = getInstructions(set_number, restTemplate);
+		model.addAttribute("instructions", instructions);
 		
 		model.addAttribute("set", set);
 		return "showSet";
@@ -378,16 +377,18 @@ public class SetController {
 	}
 	
 	@GetMapping("set/{set_number}/instructions")
-	public String getInstructions(Model model, @PathVariable String set_number, RestTemplate restTemplate) {
+	public List<String[]> /*String*/ getInstructions(@PathVariable String set_number, RestTemplate restTemplate) {
 		// The api key used to access the Rebrickable api
 		String brickset_api_key = "3-nRBM-AJHe-tAcxx";
 		
 		// This is the uri to a specific set in the Rebrickable API
 		String setInstructions_uri = "https://brickset.com/api/v3.asmx/getInstructions2?apiKey=" + brickset_api_key + "&setNumber=" + set_number;
 
-		// The rest template created above is used to fetch the Lego set every time the website is loaded
-		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
+		// The rest template created above is used to fetch the Lego set instructions every time the website is loaded
+		// and here it uses the Lego set instructions uri to call the Bricklink API and then transforms the returned JSON into a String
 		String setInstructions_JSON = restTemplate.getForObject(setInstructions_uri, String.class);
+		
+		List<String[]> instructions = new ArrayList<>();
 		
 		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
         try {
@@ -400,8 +401,6 @@ public class SetController {
         	// This provides the root of the JSON element where the JSON array of Lego pieces is stored
         	setInstructionBooksNode = setInstructionBooksNode.path("instructions");
         	
-        	List<String> instructions = new ArrayList<>();
-        	
         	// This iterates through the JSON array of Lego pieces
             for (JsonNode setInsructionBookNode : setInstructionBooksNode) {
             	
@@ -413,11 +412,11 @@ public class SetController {
 	        	String url = urlNode.textValue();
 	        	String description = descriptionNode.textValue();
 	        	
+	        	String[] instruction = {url, description};
 	        	
-
-	        	instructions.add(url);
+	        	instructions.add(instruction);
         	}
-            model.addAttribute("instructions", instructions);
+//            model.addAttribute("instructions", instructions);
 		}
         catch (JsonMappingException e) {
 			e.printStackTrace();
@@ -425,7 +424,8 @@ public class SetController {
         catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		
-		return "instructions";
+		System.out.println("im here matey");
+        return instructions;
+//		return "instructions";
 	}
 }

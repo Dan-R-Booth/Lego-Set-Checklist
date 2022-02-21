@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!-- Bootstrap [1] is a CSS and JavaScript framework, used for page styling, and useful for creating interactive pages that resize for different screen sizes. -->
 <!-- Font awesome [2] contains free icons that I am using in my UI to help user recognition, when using the website. -->
@@ -162,8 +163,9 @@
 			</div>
 			<div id="textDiv" class="col-5 m-3">
 				<h1>${set.name}</h1>
-				<h3>${set.num}<h3>
+				<h3>${set.num}</h3>
 				<br>
+				<h4>
 				<dl class="row">
 					<dt class="col-sm-6">Year Released:</dt>
 					<dd class="col-sm-5">${set.year}</dd>
@@ -177,7 +179,16 @@
 				<br>
 				<a href="/set/${set.num}/pieces">View Piece Checklist</a>
 				<br>
-				<a href="/set/${set.num}/instructions">Instructions</a>
+				<br>
+				</h4>
+				<h3>Lego Set Instructions:</h3>
+				<h4>
+					<div class="list-group">
+						<c:forEach items="${instructions}" var="instructionBook">
+							<a href="${instructionBook[0]}" target="_blank" class="list-group-item list-group-item-action">${instructionBook[1]}</a>
+						</c:forEach>
+					</div>
+				</h4>
 			</div>
 			
 		</div>
