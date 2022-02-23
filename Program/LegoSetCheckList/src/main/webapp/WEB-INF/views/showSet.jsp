@@ -69,24 +69,50 @@
 				// This sets the page to the correct size when the page is first loaded
 				resize();
 
-				var set_num = "${set.num}";
+				var set_num = "${set_number}";
 				
 				const set_numArray = set_num.split("-");
 				
 				document.getElementById("set_number").value = set_numArray[0];
 				document.getElementById("set_variant").value = set_numArray[1];
+
+				// If the API does not returns a 404 error not found, the container to inform the user of this is hidden
+				// Otherwise the container containing details of the Lego Set is hidden and an alert is shown
+				if (${notFound} == false) {
+					document.getElementById("setNotFound_Container").style.display = "none";
+				}
+				else {
+					document.getElementById("setFound_Container").style.display = "none";
+				}
 			}
 		
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
+			// Or will inform them if the set number or set variant box is empty
 			function findSet() {
 				var set_number = document.getElementById("set_number").value;
 				var set_variant = document.getElementById("set_variant").value;
 				
 				if (set_number.length == 0) {
-					document.getElementById("set_number").setAttribute("class", "form-control col-md-3 is-invalid");
+					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-invalid");
+					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
+					alert("Set Number Cannot be Empty");
+				}
+				else {
+					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-valid");
 					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
 				}
-				else {					
+				
+				if (set_variant.length == 0) {
+					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-invalid");
+					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+					alert("Set Variant Cannot be Empty");
+				}
+				else {
+					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-valid");
+					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+				}
+				
+				if ((set_number.length != 0) && (set_variant.length != 0)) {					
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
 				}
 			}
@@ -138,7 +164,7 @@
 			</div>
 		</nav>
 	
-		<div class="container-fluid row mb-5">
+		<div class="container-fluid row mb-5" id="setFound_Container">
 			<div id="imageDiv" class="col-6 m-3">
 				<!-- The style width sets the percentage size the image will be on any screen -->
 				<!-- When clicked this will display a Model with the image enlarged within -->
@@ -159,7 +185,7 @@
 					</div>
 				</div>
 
-				<button class="row btn btn-outline-secondary btn-dark text-white" type="button" onclick="backToSearch()" style="width: 80%;"> BACK TO SEARCH </button>
+				<button class="row btn btn-outline-secondary btn-dark text-white" type="button" onclick="backToSearch()" style="width: 80%"> BACK TO SEARCH </button>
 			</div>
 			<div id="textDiv" class="col-5 m-3">
 				<h1>${set.name}</h1>
@@ -192,6 +218,14 @@
 				</h4>
 			</div>
 			
+		</div>
+		
+		<!-- If there was an error finding a Lego Set using the Set Number entered it is shown here -->
+		<div class="container-fluid" id="setNotFound_Container">
+			<div class="col-8 m-5">
+				<h3 class="text-danger"><i class="fa fa-exclamation-circle"></i> Lego Set with Set Number: '<i class="text-dark">${set_number}</i>' Not Found</h3>
+				<button class="btn btn-outline-secondary btn-dark text-white" type="button" onclick="backToSearch()" style="width: 70%"> BACK TO SEARCH </button>
+			</div>
 		</div>
 		
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">

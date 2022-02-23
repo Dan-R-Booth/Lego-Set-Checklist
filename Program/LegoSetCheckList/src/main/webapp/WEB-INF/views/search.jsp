@@ -217,15 +217,32 @@
 			}
 
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
+			// Or will inform them if the set number or set variant box is empty
 			function findSet() {
 				var set_number = document.getElementById("set_number").value;
 				var set_variant = document.getElementById("set_variant").value;
 				
 				if (set_number.length == 0) {
-					document.getElementById("set_number").setAttribute("class", "form-control col-md-3 is-invalid");
+					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-invalid");
+					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
+					alert("Set Number Cannot be Empty");
+				}
+				else {
+					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-valid");
 					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
 				}
-				else {					
+				
+				if (set_variant.length == 0) {
+					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-invalid");
+					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+					alert("Set Variant Cannot be Empty");
+				}
+				else {
+					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-valid");
+					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+				}
+				
+				if ((set_number.length != 0) && (set_variant.length != 0)) {					
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
 				}
 			}

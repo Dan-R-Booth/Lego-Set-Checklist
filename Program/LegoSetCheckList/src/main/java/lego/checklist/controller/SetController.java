@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,13 +71,28 @@ public class SetController {
 			set_number += "-" + set_variant;
 		}
 		
-		Set set = getSet(model, set_number, restTemplate);
+		// This calls a function to get the Lego Set and if this fails it is caught here and then displayed to the user,
+		// so the user knows that a Set with that particular set number could not be found
+		try {
+			Set set = getSet(model, set_number, restTemplate);
+			
+			// This gets a list of strings with each list containing a description and web link to an Lego instruction booklet for the Lego Set
+			List<String[]> instructions = getInstructions(set_number, restTemplate);
+			model.addAttribute("instructions", instructions);
+			
+			model.addAttribute("notFound", false);
+			
+			model.addAttribute("set", set);
+		}
+		catch (HttpClientErrorException e) {
+			System.out.println("Error: " + e);
+			
+			if (e.getMessage().contains("404 Not Found")) {
+				model.addAttribute("notFound", true);
+			}
+		}
+		model.addAttribute("set_number", set_number);
 		
-		// This gets a list of strings with each list containing a description and web link to an Lego instruction booklet for the Lego Set
-		List<String[]> instructions = getInstructions(set_number, restTemplate);
-		model.addAttribute("instructions", instructions);
-		
-		model.addAttribute("set", set);
 		return "showSet";
 	}
 	
