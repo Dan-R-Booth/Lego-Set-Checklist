@@ -72,6 +72,7 @@ public class SetController {
 		
 		Set set = getSet(model, set_number, restTemplate);
 		
+		// This gets a list of strings with each list containing a description and web link to an Lego instruction booklet for the Lego Set
 		List<String[]> instructions = getInstructions(set_number, restTemplate);
 		model.addAttribute("instructions", instructions);
 		
@@ -376,6 +377,7 @@ public class SetController {
         return previousPage;
 	}
 	
+	// This gets a list of strings with each list containing a description and web link to an Lego instruction booklet for the Lego Set
 	@GetMapping("set/{set_number}/instructions")
 	public List<String[]> /*String*/ getInstructions(@PathVariable String set_number, RestTemplate restTemplate) {
 		// The api key used to access the Rebrickable api
@@ -388,6 +390,7 @@ public class SetController {
 		// and here it uses the Lego set instructions uri to call the Bricklink API and then transforms the returned JSON into a String
 		String setInstructions_JSON = restTemplate.getForObject(setInstructions_uri, String.class);
 		
+		// This list holds all the instruction booklets returned by the API
 		List<String[]> instructions = new ArrayList<>();
 		
 		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
@@ -416,7 +419,6 @@ public class SetController {
 	        	
 	        	instructions.add(instruction);
         	}
-//            model.addAttribute("instructions", instructions);
 		}
         catch (JsonMappingException e) {
 			e.printStackTrace();
@@ -424,8 +426,7 @@ public class SetController {
         catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		System.out.println("im here matey");
+        
         return instructions;
-//		return "instructions";
 	}
 }

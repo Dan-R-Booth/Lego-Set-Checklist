@@ -166,23 +166,24 @@
 				<h3>${set.num}</h3>
 				<br>
 				<h4>
-				<dl class="row">
-					<dt class="col-sm-6">Year Released:</dt>
-					<dd class="col-sm-5">${set.year}</dd>
-					<hr>
-					<dt class="col-sm-6">Theme:</dt>
-					<dd class="col-sm-5">${set.theme}</dd>
-					<hr>
-					<dt class="col-sm-6">Number of pieces:</dt>
-					<dd class="col-sm-5">${set.num_pieces}</dd>
-				</dl>
-				<br>
-				<a href="/set/${set.num}/pieces">View Piece Checklist</a>
-				<br>
-				<br>
+					<dl class="row">
+						<dt class="col-sm-6">Year Released:</dt>
+						<dd class="col-sm-5">${set.year}</dd>
+						<hr>
+						<dt class="col-sm-6">Theme:</dt>
+						<dd class="col-sm-5">${set.theme}</dd>
+						<hr>
+						<dt class="col-sm-6">Number of pieces:</dt>
+						<dd class="col-sm-5">${set.num_pieces}</dd>
+					</dl>
+					<br>
+					<a href="/set/${set.num}/pieces">View Piece Checklist</a>
 				</h4>
+				<br>
+				<br>
 				<h3>Lego Set Instructions:</h3>
 				<h4>
+					<!-- This displays all instruction booklets for the Lego Set in Bootstrap list group, that when clicked on opens the instruction book in a new tab -->
 					<div class="list-group">
 						<c:forEach items="${instructions}" var="instructionBook">
 							<a href="${instructionBook[0]}" target="_blank" class="list-group-item list-group-item-action">${instructionBook[1]}</a>
