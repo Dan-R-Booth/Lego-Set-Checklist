@@ -344,12 +344,13 @@ public class PieceController {
             	
 	        	// The following search search for a path on the pieceNode Tree and return the node that matches this
         		
-        		// As the piece number, name and img url are stored as an element of part, I first have to get the part node to retrieve these
+        		// As the piece number, name, img url and piece url are stored as an element of part, I first have to get the part node to retrieve these
 	        	JsonNode partNode = pieceNode.path("part");
 	        	JsonNode numNode = partNode.path("part_num");
 	        	JsonNode nameNode = partNode.path("name");
 	        	JsonNode pieceTypeIdNode = partNode.path("part_cat_id");
 	        	JsonNode img_urlNode = partNode.path("part_img_url");
+	        	JsonNode piece_urlNode = partNode.path("part_url");
 	        	
 	        	// As the colour name is stored as an element of color, I first have to get the color node to retrieve this
 	        	JsonNode colourNode = pieceNode.path("color");
@@ -364,6 +365,7 @@ public class PieceController {
 	        	int pieceTypeId = pieceTypeIdNode.asInt();
 	        	String pieceType = PieceTypeController.pieceCategories.get(pieceTypeId);
 	        	String img_url = img_urlNode.textValue();
+	        	String piece_url = piece_urlNode.textValue();
 	        	String colour_name = colour_nameNode.textValue();
 	    		int quantity = quantityNode.intValue();
 	    		boolean spare = spare_partNode.asBoolean();
@@ -371,7 +373,7 @@ public class PieceController {
 	        	// This is set to 0 as the user may not have checked any of these pieces yet
 				int quantity_checked = 0;
 				
-				Piece piece = new Piece(num, name, pieceType, img_url, colour_name, quantity, quantity_checked, spare);
+				Piece piece = new Piece(num, name, pieceType, img_url, piece_url, colour_name, quantity, quantity_checked, spare);
 				
 				pieces.add(piece);
         	}

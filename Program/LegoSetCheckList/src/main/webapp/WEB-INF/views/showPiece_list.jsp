@@ -742,6 +742,8 @@
 						<h6>Piece Image:</h6>
 					</div>
 					<div class="col">
+					</div>
+					<div class="col">
 						<h6 onclick="pieceNumberSort()" data-bs-toggle="tooltip" title="Sort by Piece Number">Piece Number: <i id="pieceNumberSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
@@ -816,6 +818,10 @@
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
 							<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%" class="m-2" data-bs-toggle="modal" data-bs-target="#pieceModal_${piece.num}">
+						</div>
+						<div class="col">
+							<!-- This displays a Shoping cart icon that when clicked opens a new tab to the Rebrickable website for that specific piece so the user can buy any missing Lego pieces there. -->
+							<h2><a href="${piece.piece_url}/#buy_parts" target="_blank" data-bs-toggle="tooltip" title="Buy Missing Lego Piece"><i class="fa fa-shopping-cart"></i></a></h2>
 						</div>
 						<div class="col">
 							${piece.num}

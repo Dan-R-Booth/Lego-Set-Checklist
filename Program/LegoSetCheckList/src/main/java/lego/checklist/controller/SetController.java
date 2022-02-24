@@ -85,10 +85,12 @@ public class SetController {
 			model.addAttribute("set", set);
 		}
 		catch (HttpClientErrorException e) {
-			System.out.println("Error: " + e);
 			
 			if (e.getMessage().contains("404 Not Found")) {
 				model.addAttribute("notFound", true);
+			}
+			else {
+				System.out.println("Error: " + e);
 			}
 		}
 		model.addAttribute("set_number", set_number);
@@ -356,6 +358,10 @@ public class SetController {
                 set.setPiece_list(piece_list);
                 
                 model.addAttribute("set", set);
+                
+                model.addAttribute("notFound", false);
+                model.addAttribute("set_number", set_number);
+                
         		return "showSet";
             }
             catch (Exception ex) {
@@ -395,7 +401,7 @@ public class SetController {
 	
 	// This gets a list of strings with each list containing a description and web link to an Lego instruction booklet for the Lego Set
 	@GetMapping("set/{set_number}/instructions")
-	public List<String[]> /*String*/ getInstructions(@PathVariable String set_number, RestTemplate restTemplate) {
+	public List<String[]> getInstructions(@PathVariable String set_number, RestTemplate restTemplate) {
 		// The api key used to access the Rebrickable api
 		String brickset_api_key = "3-nRBM-AJHe-tAcxx";
 		
