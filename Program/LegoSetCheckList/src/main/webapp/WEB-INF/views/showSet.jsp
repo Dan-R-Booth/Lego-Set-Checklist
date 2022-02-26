@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <!-- Bootstrap [1] is a CSS and JavaScript framework, used for page styling, and useful for creating interactive pages that resize for different screen sizes. -->
 <!-- Font awesome [2] contains free icons that I am using in my UI to help user recognition, when using the website. -->
@@ -208,14 +209,22 @@
 				<br>
 				<br>
 				<h3>Lego Set Instructions:</h3>
-				<h4>
-					<!-- This displays all instruction booklets for the Lego Set in Bootstrap list group, that when clicked on opens the instruction book in a new tab -->
-					<div class="list-group">
-						<c:forEach items="${instructions}" var="instructionBook">
-							<a href="${instructionBook[0]}" target="_blank" class="list-group-item list-group-item-action">${instructionBook[1]}</a>
-						</c:forEach>
-					</div>
-				</h4>
+				<c:choose>
+				    <c:when test="${fn:length(instructions) != 0}">
+						<h4>
+							<!-- This displays all instruction booklets for the Lego Set in Bootstrap list group, that when clicked on opens the instruction book in a new tab -->
+							<div class="list-group">
+								<c:forEach items="${instructions}" var="instructionBook">
+									<a href="${instructionBook[0]}" target="_blank" class="list-group-item list-group-item-action">${instructionBook[1]}</a>
+								</c:forEach>
+							</div>
+						</h4>
+				    </c:when>    
+				    <c:otherwise>
+				        <h4 class="text-warning"><i class="fa fa-warning"></i> No Instructions Found</h4>
+				    </c:otherwise>
+				</c:choose>
+				
 			</div>
 			
 		</div>

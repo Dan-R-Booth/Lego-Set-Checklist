@@ -319,7 +319,7 @@ public class SetController {
 		
 		// validate file
         if (importFile.isEmpty()) {
-            model.addAttribute("message", "CSV file is empty, please select a valid CSV file.");
+            model.addAttribute("message", "The file '" + importFile.getOriginalFilename() + "' is empty, please select a valid CSV file.");
             model.addAttribute("error", true);
         } else {
             // parse CSV file to create a list of `User` objects
