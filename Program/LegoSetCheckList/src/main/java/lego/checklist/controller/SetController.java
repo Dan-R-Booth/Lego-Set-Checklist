@@ -376,8 +376,6 @@ public class SetController {
         	// This calls the function updateQuantityChecked in the PieceController class, that
         	PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
         	
-        	System.out.println(sort + ":sort");
-        	
 	        // If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
 	 		if (sort != null) {
 	 	    	model.addAttribute("sort", sort);
