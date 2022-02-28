@@ -112,10 +112,6 @@
 				<div class="container-fluid">
 					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
 
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-
 					<div class="collapse navbar-collapse" id="navbar">
 						<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
 						<form class="d-flex row">
@@ -136,14 +132,15 @@
 							</div>
 						</form>
 					</div>
+
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 				</div>
 			</nav>
 
-			<nav class="navbar navbar-expand-md navbar-dark bg-secondary" id="optionsBar">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" id="optionsNavBar">
 				<div class="container-fluid">
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#optionsBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
 
 					<div class="collapse navbar-collapse" id="optionsBar">
 						<ul class="navbar-nav">
@@ -155,6 +152,10 @@
 							</li>
 						</ul>
 					</div>
+
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#optionsBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 				</div>
 			</nav>
 		</div>

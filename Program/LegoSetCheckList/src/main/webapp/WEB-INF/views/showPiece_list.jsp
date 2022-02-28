@@ -633,10 +633,6 @@
 				<div class="container-fluid">
 					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
 	
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-	
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav">
 							<li class="nav-item mx-5">
@@ -650,16 +646,16 @@
 							</li>
 						</ul>
 					</div>
+
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 				</div>
 			</nav>
 			
 			<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" id="filterNavBar">
 				<div class="container-fluid">
 					<label class="navbar-brand"> <i class="fa fa-filter"></i> Filter: </label>
-	
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#filterBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
 	
 					<div class="collapse navbar-collapse" id="filterBar">
 						<!-- This creates a dropdown where users can enter details on how they would like to filter the list of pieces -->
@@ -712,6 +708,10 @@
 							</li>
 						</ul>
 					</div>
+
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#filterBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 				</div>
 			</nav>
 

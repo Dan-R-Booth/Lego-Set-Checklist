@@ -566,7 +566,6 @@
 						</form>
 					</div>
 					
-					
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
@@ -576,11 +575,7 @@
 			<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" id="filterBar" style="display: none">
 				<div class="container-fluid">
 					<label class="navbar-brand"> <i class="fa fa-filter"></i> Filter: </label>
-	
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#filterBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-	
+					
 					<div class="collapse navbar-collapse" id="filterBar">
 						<!-- This creates a form where users can enter details on how they would like to filter the list of Lego sets and a button to display those that match this search -->
 						<form class="container-fluid d-flex row">
@@ -625,16 +620,16 @@
 							</div>
 						</form>
 					</div>
+
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#filterBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 				</div>
 			</nav>
 
-			<nav class="navbar navbar-expand-md navbar-dark bg-secondary" id="sortBar" style="display: none">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" id="sortBar" style="display: none">
 				<div class="container-fluid">
 					<label class="navbar-brand"> <i class="fa fa-sort"></i> Sort: </label>
-	
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sortBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
 	
 					<div class="collapse navbar-collapse" id="sortBar">
 						<!-- This creates a form where users can enter details on how they would like to sort the list of Lego sets and a button to display that sort on the list -->
@@ -697,6 +692,10 @@
 							</div>
 						</form>
 					</div>
+
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sortBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 				</div>
 			</nav>
 		
