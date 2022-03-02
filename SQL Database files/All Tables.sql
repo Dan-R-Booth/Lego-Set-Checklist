@@ -7,7 +7,7 @@ create table Accounts (
 );
 
 create table SetsInProgress (
-	setsInProgressId int not null,
+	setInProgressId int not null,
     email varchar(320) not null,
     setNumber varchar(20) not null,
     foreign key (email) references Accounts (email),
