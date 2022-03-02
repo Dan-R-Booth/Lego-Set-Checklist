@@ -17,7 +17,7 @@ public class PieceFound {
 	private int pieceFoundId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "setsInProgressId", referencedColumnName = "setsInProgressId", nullable = false)
+	@JoinColumn(name = "setInProgressId", referencedColumnName = "setInProgressId", nullable = false)
 	private SetInProgress setInProgress;
 	
 	@Column(nullable = false)

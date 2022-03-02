@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import lego.checklist.domain.Set;
 
-public interface SetRepository extends CrudRepository<Set, Integer> {
-
+public interface SetInSetListRepository extends CrudRepository<Set, Integer> {
+	
 }

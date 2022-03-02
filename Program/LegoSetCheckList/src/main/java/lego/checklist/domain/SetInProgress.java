@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class SetInProgress {
 	@Id
 	@GeneratedValue
-	private int setsInProgressId;
+	private int setInProgressId;
 	
 	@ManyToOne
 	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
@@ -22,14 +22,14 @@ public class SetInProgress {
 	@Column(nullable = false)
 	private String setNumber;
 
-	public SetInProgress(int setsInProgressId, Account account, String setNumber) {
-		this.setsInProgressId = setsInProgressId;
+	public SetInProgress(int setInProgressId, Account account, String setNumber) {
+		this.setInProgressId = setInProgressId;
 		this.account = account;
 		this.setNumber = setNumber;
 	}
 
-	public int getSetsInProgressId() {
-		return setsInProgressId;
+	public int getSetInProgressId() {
+		return setInProgressId;
 	}
 
 	public Account getAccount() {
