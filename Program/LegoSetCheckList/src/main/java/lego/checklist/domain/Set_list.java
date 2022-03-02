@@ -1,29 +1,42 @@
 package lego.checklist.domain;
 
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
-@Table(name= "SetLists")
+@Table(name = "SetLists")
 public class Set_list {
 	@Id
 	@GeneratedValue
 	private int setListId;
 	
 	@ManyToOne
-	@JoinColumn(name = "email", referencedColumnName = "email")
+	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
 	private Account account;
 	
+	@Column(nullable = false)
 	private String listName;
 	
-	@Transient
-	private Set[] sets;
+	@OneToMany(orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "setListId", nullable = false)
+	private List<Set> sets;
 	
+	public Set_list(int setListId, Account account, String listName, List<Set> sets) {
+		this.setListId = setListId;
+		this.account = account;
+		this.listName = listName;
+		this.sets = sets;
+	}
+
 	public int getSetListId() {
 		return setListId;
 	}
@@ -36,7 +49,7 @@ public class Set_list {
 		return listName;
 	}
 	
-	public Set[] getSets() {
+	public List<Set> getSets() {
 		return sets;
 	}
 

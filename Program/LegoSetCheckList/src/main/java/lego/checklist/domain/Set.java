@@ -2,22 +2,42 @@ package lego.checklist.domain;
 
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "SetsInSetList")
 public class Set {
+	@Id
+	@GeneratedValue
+	private int setInSetListId;
 	
+	@Column(name = "setNumber", nullable = false)
 	private String num;
 	
+	@Transient
 	private String name;
-	
+
+	@Transient
 	private int year;
-	
+
+	@Transient
 	private String theme;
-	
+
+	@Transient
 	private int num_pieces;
-	
+
+	@Transient
 	private String img_url;
-	
+
+	@Transient
 	private List<Piece> piece_list;
-	
+
+	@Transient
 	private List<Minifigure> minifigures;
 	
 	public Set(String num, String name, int year, String theme, int num_pieces, String img_url) {
