@@ -56,7 +56,7 @@
 				// This sets a minimum size the page will adpat to until it will just zoom out,
 				// as going any smaller would affect elements in the page
 				if (width < 350) {
-					document.getElementById("viewport").setAttribute("content","width=350");
+					document.getElementById("viewport").setAttribute("content", "width=350");
 				}
 			}
 
@@ -79,7 +79,7 @@
 
 				// If the API does not returns a 404 error not found, the container to inform the user of this is hidden
 				// Otherwise the container containing details of the Lego Set is hidden and an alert is shown
-				if (${notFound} == false) {
+				if ("${notFound}" == "false") {
 					document.getElementById("setNotFound_Container").style.display = "none";
 				}
 				else {
@@ -95,22 +95,22 @@
 				
 				if (set_number.length == 0) {
 					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-invalid");
-					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
+					document.getElementById("set_number").setAttribute("title", "Set Number Cannot be Empty");
 					alert("Set Number Cannot be Empty");
 				}
 				else {
 					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-valid");
-					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
+					document.getElementById("set_number").setAttribute("title", "Set Number");
 				}
 				
 				if (set_variant.length == 0) {
 					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-invalid");
-					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+					document.getElementById("set_variant").setAttribute("title", "Set Variant Number Cannot be Empty");
 					alert("Set Variant Cannot be Empty");
 				}
 				else {
 					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-valid");
-					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+					document.getElementById("set_variant").setAttribute("title", "Set Variant Number");
 				}
 				
 				if ((set_number.length != 0) && (set_variant.length != 0)) {					
@@ -129,6 +129,16 @@
 				}
 			}
 			
+			// This clicks the button login-tab to switch to the login tab 
+			function loginTab() {
+				document.getElementById("login-tab").click();
+			}
+
+			// This clicks the button login-tab to switch to the login tab 
+			function signUpTab() {
+				document.getElementById("signUp-tab").click();
+			}
+			
 		</script>
 	</head>
 	
@@ -143,24 +153,33 @@
 				</button>
 
 				<div class="collapse navbar-collapse" id="navbar">
-					<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
-					<form class="d-flex row">
-						<div class="col-auto">
-							<label class="text-white mt-2"> Set Number: </label>
-						</div>
-						<div class="col-auto">
-							<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
-						</div>
-						<div class="col-auto">
-							<label class="text-white mt-2">-</label>
-						</div>
-						<div class="col-auto">
-							<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
-						</div>
-						<div class="col-auto">
-							<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
-						</div>
-					</form>
+					<ul class="navbar-nav  me-auto">
+						<li class="nav-item mx-5">
+							<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
+							<form class="d-flex row">
+								<div class="col-auto">
+									<label class="text-white mt-2"> Set Number: </label>
+								</div>
+								<div class="col-auto">
+									<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
+								</div>
+								<div class="col-auto">
+									<label class="text-white mt-2">-</label>
+								</div>
+								<div class="col-auto">
+									<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
+								</div>
+								<div class="col-auto">
+									<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
+								</div>
+							</form>
+						</li>
+					</ul>
+					<ul class="navbar-nav">
+						<li class="nav-item mx-5">
+							<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</nav>
@@ -226,7 +245,6 @@
 				</c:choose>
 				
 			</div>
-			
 		</div>
 		
 		<!-- If there was an error finding a Lego Set using the Set Number entered it is shown here -->
@@ -237,6 +255,99 @@
 			</div>
 		</div>
 		
+		<!-- Modal to Login or Sign Up -->
+		<div class="modal fade" id="login-signUp-Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login-signUp-Modal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<ul class="nav nav-tabs" id="Login-SignUp-Tabs" role="tablist">
+							<li class="nav-item" role="presentation">
+								<button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
+							</li>
+							 <li class="nav-item" role="presentation">
+								   <button class="nav-link" id="signUp-tab" data-bs-toggle="tab" data-bs-target="#signUp" type="button" role="tab" aria-controls="signUp" aria-selected="false">Sign Up</button>
+							  </li>
+						</ul>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="tab-content" id="login-signUp-tabContent">
+						<!-- Tab to display login information -->
+						<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+							<form id="login_form_id" method="post" name="login_form">
+								<div class="modal-body">
+									<div class="text-center">
+										<button type="button" class="btn btn-outline-dark">Continue With Google</button>
+									</div>
+									<hr>
+									<div class="container-fluid">
+										<div class="mb-3">
+											<label>Email:</label>
+											<input type="text" class="form-control" id="emailTextBox-Login" aria-describedby="emailHelp" placeholder="Enter Email">
+										</div>
+						
+										<div class="mb-3">
+											<label>Password:</label>
+											<input type="password" class="form-control" id="passwordTextBox-Login" placeholder="Enter Password"></input>
+										</div>
+										
+										<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username and/or Password incorrect</div>
+
+										<button type="button" value="Login" id="submitLogin" onclick="validate()" class="btn btn-primary"> <i class="fa fa-sign-in"></i> Login</button>
+									</div>
+									<hr>
+									<div class="text-center">
+										<!-- This calls a function to switch to the sign-up tab -->
+										Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- Tab to display sign-up information -->
+						<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
+							<form id="signUp_form_id" method="post" name="signUp_form">
+								<div class="modal-body">
+									<div class="text-center">
+										<button type="button" class="btn btn-outline-dark">Continue With Google</button>
+									</div>
+									<hr>
+									<div class="container-fluid">
+										<div class="mb-3">
+											<label>Email:</label>
+											<input type="text" class="form-control" id="emailTextBox-SignUp" aria-describedby="emailHelp" placeholder="Enter Email">
+										</div>
+						
+										<div id="emailTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username must be unique</div>
+										<div id="emailBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot be blank</div>
+										<div id="emailSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot contain spaces</div>
+						
+										<div class="mb-3">
+											<label>Password:</label>
+											<input type="password" class="form-control" id="passwordTextBox1-SignUp" placeholder="Enter password">
+										</div>
+										<div class="mb-3">
+											<label>Confirm Password:</label>
+											<input type="password" class="form-control" id="passwordTextBox2-SignUp" placeholder="Re-enter password">  
+										</div>
+										
+										<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
+										<div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords cannot be blank</div>
+										<div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div>
+						
+										<button type="button" value="SignUp" id="submitSignUp" onclick="validate()" class="btn btn-primary"> <i class="fa fa-user-plus"></i> Create an Account</button>
+										<hr>
+										<div class="text-center">
+											<!-- This calls a function to switch to the login tab -->
+											Already have an account? <a style="display: inline-block" href="#" onclick="loginTab()">Login</a>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
 			<div class="container-fluid">
 	            <ol class="breadcrumb bg-dark">

@@ -43,7 +43,7 @@
 				// This sets a minimum size the page will adpat to until it will just zoom out,
 				// as going any smaller would affect elements in the page
 				if (screen.width < 350) {
-					document.getElementById("viewport").setAttribute("content","width=350");
+					document.getElementById("viewport").setAttribute("content", "width=350");
 				}
 				
 				if ("${error}" == "true") {
@@ -62,25 +62,26 @@
 				
 				if (set_number.length == 0) {
 					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-invalid");
-					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
+					document.getElementById("set_number").setAttribute("title", "Set Number Cannot be Empty");
 					alert("Set Number Cannot be Empty");
 				}
 				else {
 					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-valid");
-					document.getElementById("set_number").setAttribute("title","Set Number Cannot be Empty");
+					document.getElementById("set_number").setAttribute("title", "Set Number");
 				}
 				
 				if (set_variant.length == 0) {
 					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-invalid");
-					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+					document.getElementById("set_variant").setAttribute("title", "Set Variant Number Cannot be Empty");
 					alert("Set Variant Cannot be Empty");
 				}
 				else {
 					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-valid");
-					document.getElementById("set_variant").setAttribute("title","Set Variant Cannot be Empty");
+					document.getElementById("set_variant").setAttribute("title", "Set Variant Number");
 				}
 				
-				if ((set_number.length != 0) && (set_variant.length != 0)) {					
+				if ((set_number.length != 0) && (set_variant.length != 0)) {
+					$("#spinnerModal").modal("show");
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
 				}
 			}
@@ -102,12 +103,121 @@
 				}
 			}
 
+			// This clicks the button login-tab to switch to the login tab 
 			function loginTab() {
 				document.getElementById("login-tab").click();
 			}
 
+			// This clicks the button login-tab to switch to the login tab 
 			function signUpTab() {
 				document.getElementById("signUp-tab").click();
+			}
+
+			// This will check for basic errors with the entered email and passwords needed to create an account
+			// If there are no errors these are then sent to the Account Controller
+			function signUp() {
+				var email = document.getElementById("emailTextBox-SignUp").value;
+				var password1 = document.getElementById("password1TextBox-SignUp").value;
+				var password2 = document.getElementById("password2TextBox-SignUp").value;
+
+				var fail = false;
+
+				// This performs error handling for errors with the entered email address
+				if (email.search(" ") != -1) {
+					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Email cannot contain spaces");
+					document.getElementById("emailSpacesHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("emailBlankHelp").setAttribute("class", "d-none");
+					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
+					document.getElementById("emailInvalid").setAttribute("class", "d-none");
+					alert("Email cannot contain spaces");
+					fail = true;
+				}
+				else if (email == "") {
+					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Email cannot be blank");
+					document.getElementById("emailBlankHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("emailSpacesHelp").setAttribute("class", "d-none");
+					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
+					document.getElementById("emailInvalid").setAttribute("class", "d-none");
+					alert("Email cannot be blank");
+					fail = true;
+				}
+				else if (!email.includes("@")) {
+					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Email requires '@' Symbol");
+					document.getElementById("emailInvalid").setAttribute("class", "alert alert-danger");
+					document.getElementById("emailBlankHelp").setAttribute("class", "d-none");
+					document.getElementById("emailSpacesHelp").setAttribute("class", "d-none");
+					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
+					alert("Email Address is not Valid, it requires the '@' Symbol");
+					fail = true;
+				}
+				else {
+					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-valid");
+					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Enter your Email Address");
+					document.getElementById("emailSpacesHelp").setAttribute("class", "d-none");
+					document.getElementById("emailBlankHelp").setAttribute("class", "d-none");
+					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
+					document.getElementById("emailInvalid").setAttribute("class", "d-none");
+				}
+
+				// This performs error handling for errors with the entered password
+				if (password1 == "" || password2 == "") {
+
+					if (password1 == "") {
+						document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-invalid");
+						document.getElementById("password1TextBox-SignUp").setAttribute("title", "Password cannot be blank");
+					}
+
+					if (password2 == "") {
+						document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-invalid");
+						document.getElementById("password2TextBox-SignUp").setAttribute("title", "Password cannot be blank");
+					}
+
+					document.getElementById("passwordBlankHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
+					document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
+					alert("Password cannot be blank");
+					fail = true;
+				}
+				else if (password1 != password2) {
+					document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("password1TextBox-SignUp").setAttribute("title", "Passwords must match");
+					document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("password2TextBox-SignUp").setAttribute("title", "Passwords must match");
+					document.getElementById("passwordMatchHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
+					document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
+					alert("Passwords do not match");
+					fail = true;
+				}
+				else if ((password1.search(" ") != -1) || (password2.search(" ") != -1)) {
+					document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("password1TextBox-SignUp").setAttribute("title", "Password cannot contain spaces");
+					document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("password2TextBox-SignUp").setAttribute("title", "Password cannot contain spaces");
+					document.getElementById("passwordSpacesHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
+					document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
+					alert("Password cannot contain spaces");
+					fail = true;
+				}
+				else {
+					document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-valid");
+					document.getElementById("password1TextBox-SignUp").setAttribute("title", "Enter a Password");
+					document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-valid");
+					document.getElementById("password2TextBox-SignUp").setAttribute("title", "Re-enter Password");
+					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
+					document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
+					document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
+				}
+
+				if (fail == false) {
+					
+					alert("Account Successfully Created");
+					window.location = "/SignUp/?email=" + email + "&password=" + password1;
+				}
 			}
 			
 		</script>
@@ -121,24 +231,33 @@
 					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
 
 					<div class="collapse navbar-collapse" id="navbar">
-						<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
-						<form class="d-flex row">
-							<div class="col-auto">
-								<label class="text-white mt-2"> Set Number: </label>
-							</div>
-							<div class="col-auto">
-								<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
-							</div>
-							<div class="col-auto">
-								<label class="text-white mt-2">-</label>
-							</div>
-							<div class="col-auto">
-								<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
-							</div>
-							<div class="col-auto">
-								<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
-							</div>
-						</form>
+						<ul class="navbar-nav me-auto">
+							<li class="nav-item mx-5">
+								<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
+								<form class="d-flex row">
+									<div class="col-auto">
+									<label class="text-white mt-2"> Set Number: </label>
+									</div>
+									<div class="col-auto">
+										<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
+									</div>
+									<div class="col-auto">
+										<label class="text-white mt-2">-</label>
+									</div>
+									<div class="col-auto">
+										<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
+									</div>
+									<div class="col-auto">
+										<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
+									</div>
+								</form>
+							</li>
+						</ul>
+						<ul class="navbar-nav">
+							<li class="nav-item mx-5">
+								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+							</li>
+						</ul>
 					</div>
 
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,13 +316,8 @@
 				</div>
 			</div>
 			
-			<!-- Button trigger modal -->
-			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal">
-				Login/Logout
-			</button>
-			
 			<!-- Modal to Login or Sign Up -->
-			<div class="modal fade" id="login-signUp-Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login-signUp-Modal" aria-hidden="true">
+			<div class="modal fade" id="login-signUp-Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login-signUp-ModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -229,20 +343,21 @@
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<input type="text" class="form-control" id="emailTextBox-Login" aria-describedby="usernameHelp" placeholder="Enter Email">
+												<input type="text" class="form-control" id="emailTextBox-Login" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address"/>
 											</div>
 							
 											<div class="mb-3">
 												<label>Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox-Login" placeholder="Enter Password"></input>
+												<input type="password" class="form-control" id="passwordTextBox-Login" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password"/>
 											</div>
 											
-											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username and/or Password incorrect</div>
+											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email and/or Password incorrect</div>
 
-											<button type="button" value="Login" id="submitLogin" onclick="validate()" class="btn btn-primary"> <i class="fa fa-sign-in"></i> Login</button>
+											<button type="button" value="Login" id="submitLogin" onclick="login()" class="btn btn-primary" style="width: 100%"> <i class="fa fa-sign-in"></i> Login</button>
 										</div>
 										<hr>
 										<div class="text-center">
+											<!-- This calls a function to switch to the sign-up tab -->
 											Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
 										</div>
 									</div>
@@ -255,39 +370,55 @@
 										<div class="text-center">
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
 										</div>
-										<hr>
+										<hr style="width: 70%">
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<input type="text" class="form-control" id="emailTextBox-SignUp" aria-describedby="usernameHelp" placeholder="Enter username">
+												<input type="text" class="form-control" id="emailTextBox-SignUp" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address"/>
 											</div>
 							
-											<div id="usernameTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username must be unique</div>
-											<div id="usernameBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot be blank</div>
-											<div id="usernameSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot contain spaces</div>
+											<div id="emailInvalid" class="d-none"><i class="fa fa-exclamation-circle"></i> Email is Invalid</div>
+											<div id="emailTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email must be unique</div>
+											<div id="emailBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email connot be blank</div>
+											<div id="emailSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email connot contain spaces</div>
 							
 											<div class="mb-3">
 												<label>Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox1-SignUp" placeholder="Enter password">
+												<input type="password" class="form-control" id="password1TextBox-SignUp" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password"/>
 											</div>
 											<div class="mb-3">
 												<label>Confirm Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox2-SignUp" placeholder="Re-enter password">  
+												<input type="password" class="form-control" id="password2TextBox-SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
 											</div>
 											
 											<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
 											<div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords cannot be blank</div>
 											<div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div>
 							
-											<button type="button" value="SignUp" id="submitSignUp" onclick="validate()" class="btn btn-primary"> <i class="fa fa-user-plus"></i> Sign Up</button>
+											<button type="button" value="SignUp" id="submitSignUp" onclick="signUp()" class="btn btn-primary" style="width: 100%"> <i class="fa fa-user-plus"></i> Create an Account</button>
 											<hr>
 											<div class="text-center">
-												Already have an account? <a class="" style="display: inline-block" href="#" onclick="loginTab()">Login</a>
+												<!-- This calls a function to switch to the login tab -->
+												Already have an account? <a style="display: inline-block" href="#" onclick="loginTab()">Login</a>
 											</div>
 										</div>
 									</div>
 								</form>
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal to Import a Lego Checklist -->
+			<div class="modal fade" id="spinnerModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="spinnerModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="d-flex align-items-center">
+								<strong>Loading...</strong>
+								<div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+							  </div>
 						</div>
 					</div>
 				</div>
