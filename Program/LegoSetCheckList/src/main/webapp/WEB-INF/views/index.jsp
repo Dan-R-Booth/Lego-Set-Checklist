@@ -101,6 +101,14 @@
 					document.getElementById("importFileErrorHelp").setAttribute("class", "d-none");
 				}
 			}
+
+			function loginTab() {
+				document.getElementById("login-tab").click();
+			}
+
+			function signUpTab() {
+				document.getElementById("signUp-tab").click();
+			}
 			
 		</script>
 
@@ -185,6 +193,102 @@
 								<button type="button" id="importFileButton" class="btn btn-primary" onclick="importCSVFile()"> <i class="fa fa-upload"></i> Import </button>
 							</div>
 						</form>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Button trigger modal -->
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal">
+				Login/Logout
+			</button>
+			
+			<!-- Modal to Login or Sign Up -->
+			<div class="modal fade" id="login-signUp-Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login-signUp-Modal" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<ul class="nav nav-tabs" id="Login-SignUp-Tabs" role="tablist">
+								<li class="nav-item" role="presentation">
+							    	<button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
+								</li>
+							 	<li class="nav-item" role="presentation">
+							   		<button class="nav-link" id="signUp-tab" data-bs-toggle="tab" data-bs-target="#signUp" type="button" role="tab" aria-controls="signUp" aria-selected="false">Sign Up</button>
+							  	</li>
+							</ul>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="tab-content" id="login-signUp-tabContent">
+							<!-- Tab to display login information -->
+							<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+								<form id="login_form_id" method="post" name="login_form">
+									<div class="modal-body">
+										<div class="text-center">
+											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
+										</div>
+										<hr>
+										<div class="container-fluid">
+											<div class="mb-3">
+												<label>Email:</label>
+												<input type="text" class="form-control" id="emailTextBox-Login" aria-describedby="usernameHelp" placeholder="Enter Email">
+											</div>
+							
+											<div class="mb-3">
+												<label>Password:</label>
+												<input type="password" class="form-control" id="passwordTextBox-Login" placeholder="Enter Password"></input>
+											</div>
+											
+											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username and/or Password incorrect</div>
+
+											<button type="button" value="Login" id="submitLogin" onclick="validate()" class="btn btn-primary"> <i class="fa fa-sign-in"></i> Login</button>
+										</div>
+										<hr>
+										<div class="text-center">
+											Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
+										</div>
+									</div>
+								</form>
+							</div>
+							<!-- Tab to display sign-up information -->
+							<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
+								<form id="signUp_form_id" method="post" name="signUp_form">
+									<div class="modal-body">
+										<div class="text-center">
+											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
+										</div>
+										<hr>
+										<div class="container-fluid">
+											<div class="mb-3">
+												<label>Email:</label>
+												<input type="text" class="form-control" id="emailTextBox-SignUp" aria-describedby="usernameHelp" placeholder="Enter username">
+											</div>
+							
+											<div id="usernameTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username must be unique</div>
+											<div id="usernameBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot be blank</div>
+											<div id="usernameSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot contain spaces</div>
+							
+											<div class="mb-3">
+												<label>Password:</label>
+												<input type="password" class="form-control" id="passwordTextBox1-SignUp" placeholder="Enter password">
+											</div>
+											<div class="mb-3">
+												<label>Confirm Password:</label>
+												<input type="password" class="form-control" id="passwordTextBox2-SignUp" placeholder="Re-enter password">  
+											</div>
+											
+											<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
+											<div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords cannot be blank</div>
+											<div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div>
+							
+											<button type="button" value="SignUp" id="submitSignUp" onclick="validate()" class="btn btn-primary"> <i class="fa fa-user-plus"></i> Sign Up</button>
+											<hr>
+											<div class="text-center">
+												Already have an account? <a class="" style="display: inline-block" href="#" onclick="loginTab()">Login</a>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
