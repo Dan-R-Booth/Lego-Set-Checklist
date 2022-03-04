@@ -576,6 +576,8 @@
 			// This function will return the user to the search page with the same filters and sorts they last had active
 			// and if they haven't been to the search page, to the default unfilter and sorted page
 			function backToSearch() {
+				openLoader();
+
 				if ("${searchURL}" != "") {
 					window.location = "${searchURL}";
 				}
@@ -611,6 +613,9 @@
 					var formActionURL = "/openImport/previousPage=showPiece_list/?previous_set_number=${set.num}&" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
 
 					document.getElementById("importForm").setAttribute("action", formActionURL);
+
+					openLoader();
+
 					document.getElementById("importForm").submit();
 				}
 				else {
@@ -628,6 +633,11 @@
 			// This clicks the button login-tab to switch to the login tab 
 			function signUpTab() {
 				document.getElementById("signUp-tab").click();
+			}
+
+			// This starts the loading spinner so the user knows that a page is being loaded
+			function openLoader() {
+				$("#loadingModal").modal("show");
 			}
 			
 		</script>
@@ -656,7 +666,7 @@
 							</li>
 						</ul>
 						<ul class="navbar-nav">
-							<li class="nav-item mx-5">
+							<li class="nav-item ms-5">
 								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 						</ul>
@@ -916,7 +926,7 @@
 			</div>
 
 	    <div class="mb-5">
-			<!-- This creates a container using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
+			<!-- This creates a container, using bootstrap, for every set in the pieces list and display the piece image, number, name, colour, quantity and the quantity found -->
 			<c:forEach items="${set.piece_list}" var="piece" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 				<div id="piece_${loop.index}" class="container-fluid border">
@@ -977,6 +987,20 @@
 					</script>
 				</c:if>
 			</c:forEach>
+		</div>
+
+		<!-- Modal to show loading -->
+		<div class="modal fade" id="loadingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="d-flex align-items-center">
+							<strong>Loading...</strong>
+							<div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">

@@ -86,7 +86,7 @@ public class SetController {
 		}
 		catch (HttpClientErrorException e) {
 			
-			if (e.getMessage().contains("404 Not Found")) {
+			if (e.getRawStatusCode() == 404) {
 				model.addAttribute("notFound", true);
 			}
 			else {
@@ -245,7 +245,7 @@ public class SetController {
 	private Set getSet(Model model, String set_number, RestTemplate restTemplate) {
 		// This is the uri to a specific set in the Rebrickable API
 		String set_uri = rebrickable_uri + "sets/" + set_number + "/?key=" + rebrickable_api_key;
-
+		
 		// The rest template created above is used to fetch the Lego set every time the website is loaded
 		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
 		String set_JSON = restTemplate.getForObject(set_uri, String.class);

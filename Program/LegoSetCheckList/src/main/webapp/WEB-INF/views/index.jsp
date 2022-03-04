@@ -81,9 +81,16 @@
 				}
 				
 				if ((set_number.length != 0) && (set_variant.length != 0)) {
-					$("#spinnerModal").modal("show");
+					// This starts the loading spinner so the user knows that the Lego Set is being loaded
+					openLoader();
+
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
 				}
+			}
+
+			// This starts the loading spinner so the user knows that a page is being loaded
+			function openLoader() {
+				$("#loadingModal").modal("show");
 			}
 			
 			// This will check if the import file input box has a value, if it does have a value this will return the
@@ -94,6 +101,9 @@
 					var formActionURL = "/openImport/previousPage=index";
 
 					document.getElementById("importForm").setAttribute("action", formActionURL);
+
+					openLoader();
+
 					document.getElementById("importForm").submit();
 				}
 				else {
@@ -248,13 +258,13 @@
 										<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
 									</div>
 									<div class="col-auto">
-										<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
+										<button id="findSetButton" class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
 									</div>
 								</form>
 							</li>
 						</ul>
 						<ul class="navbar-nav">
-							<li class="nav-item mx-5">
+							<li class="nav-item ms-5">
 								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 						</ul>
@@ -410,15 +420,15 @@
 				</div>
 			</div>
 
-			<!-- Modal to Import a Lego Checklist -->
-			<div class="modal fade" id="spinnerModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="spinnerModalLabel" aria-hidden="true">
+			<!-- Modal to show loading -->
+			<div class="modal fade" id="loadingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-body">
 							<div class="d-flex align-items-center">
 								<strong>Loading...</strong>
 								<div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
-							  </div>
+							</div>
 						</div>
 					</div>
 				</div>

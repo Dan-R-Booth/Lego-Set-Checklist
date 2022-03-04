@@ -242,7 +242,10 @@
 					document.getElementById("set_variant").setAttribute("title", "Set Variant Number");
 				}
 				
-				if ((set_number.length != 0) && (set_variant.length != 0)) {					
+				if ((set_number.length != 0) && (set_variant.length != 0)) {
+					// This starts the loading spinner so the user knows that the Lego Set is being loaded
+					openLoader();
+					
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
 				}
 			}
@@ -504,6 +507,7 @@
 				}
 			}
 
+			// This returns if eithier the filter bar or sort bar are open 
 			function getBarOpen() {
 				var filterBar = document.getElementById("filterBar").style.display;
 				var sortBar = document.getElementById("sortBar").style.display;
@@ -527,6 +531,11 @@
 			// This clicks the button login-tab to switch to the login tab 
 			function signUpTab() {
 				document.getElementById("signUp-tab").click();
+			}
+
+			// This starts the loading spinner so the user knows that a page is being loaded
+			function openLoader() {
+				$("#loadingModal").modal("show");
 			}
 
 		</script>
@@ -579,7 +588,7 @@
 							</li>
 						</ul>
 						<ul class="navbar-nav">
-							<li class="nav-item mx-5">
+							<li class="nav-item ms-5">
 								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 						</ul>
@@ -765,7 +774,7 @@
 							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
 						</div>
 						<div class="col">
-							<a href="/set?set_number=${set.num}">${set.num}</a>
+							<a href="/set?set_number=${set.num}" onclick="openLoader()">${set.num}</a>
 						</div>
 						<div class="col">
 							${set.name}
@@ -886,6 +895,20 @@
 									</div>
 								</form>
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal to show loading -->
+		<div class="modal fade" id="loadingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="d-flex align-items-center">
+							<strong>Loading...</strong>
+							<div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
 						</div>
 					</div>
 				</div>

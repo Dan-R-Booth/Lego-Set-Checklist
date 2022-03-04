@@ -321,6 +321,12 @@ public class PieceController {
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
 	// If there are other pages containing pieces on the api, this class will then be called recursively to get all of these pieces
 	public static List<Piece> getPiece_listPage(String piece_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+		// This makes the program wait one second before making an API call to stop a Too Many Requests error and timeout from the API
+		try {
+			Thread.sleep(1000);
+		}
+		catch (Exception e) {}
+		
 		// This uses restTemplate and the Lego set piece uri to call the API and then transforms the returned JSON into a String
 		String piece_list_JSON = restTemplate.getForObject(piece_list_uri, String.class);
 		
@@ -398,6 +404,12 @@ public class PieceController {
 	
 	// This returns a piece_list for pieces needed to build all the minifigures in a Lego set
 	public static List<Piece> getMinifigurePiece_list(String minifigure_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+		// This makes the program wait one second before making an API call to stop a Too Many Requests error and timeout from the API
+		try {
+			Thread.sleep(1000);
+		}
+		catch (Exception e) {}
+		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
 		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
 		List<Minifigure> minifigures = new ArrayList<>();
