@@ -1,4 +1,4 @@
-package lego.checklist.repo;
+package lego.checklist.repository;
 
 import org.springframework.data.repository.CrudRepository;
 

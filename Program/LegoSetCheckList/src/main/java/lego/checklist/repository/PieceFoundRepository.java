@@ -1,4 +1,4 @@
-package lego.checklist.repo;
+package lego.checklist.repository;
 
 import java.util.List;
 

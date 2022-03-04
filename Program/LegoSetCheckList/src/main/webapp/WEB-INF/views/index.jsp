@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <!-- Bootstrap [1] is a CSS and JavaScript framework, used for page styling, and useful for creating interactive pages that resize for different screen sizes. -->
 <!-- Font awesome [2] contains free icons that I am using in my UI to help user recognition, when using the website. -->
@@ -46,11 +47,27 @@
 					document.getElementById("viewport").setAttribute("content", "width=350");
 				}
 				
-				if ("${error}" == "true") {
+				if ("${importError}" == "true") {
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
 					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
 					importModal.show();
+				}
+
+				var login_signUpModal = new bootstrap.Modal(document.getElementById("login_signUp_Modal"));
+
+				if ("${emailValid}" == "true") {
+					document.getElementById("emailTextBox_SignUp").setAttribute("class", "form-control is-valid");
+
+					login_signUpModal.show();
+					document.getElementById("signUp-tab").click();
+				}
+				else if ("${passwordValid}" == "true") {
+					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-valid");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-valid");
+
+					login_signUpModal.show();
+					document.getElementById("signUp-tab").click();
 				}
 			}
 
@@ -126,107 +143,28 @@
 			// This will check for basic errors with the entered email and passwords needed to create an account
 			// If there are no errors these are then sent to the Account Controller
 			function signUp() {
-				var email = document.getElementById("emailTextBox-SignUp").value;
-				var password1 = document.getElementById("password1TextBox-SignUp").value;
-				var password2 = document.getElementById("password2TextBox-SignUp").value;
-
-				var fail = false;
-
-				// This performs error handling for errors with the entered email address
-				if (email.search(" ") != -1) {
-					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-invalid");
-					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Email cannot contain spaces");
-					document.getElementById("emailSpacesHelp").setAttribute("class", "alert alert-danger");
-					document.getElementById("emailBlankHelp").setAttribute("class", "d-none");
-					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
-					document.getElementById("emailInvalid").setAttribute("class", "d-none");
-					alert("Email cannot contain spaces");
-					fail = true;
-				}
-				else if (email == "") {
-					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-invalid");
-					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Email cannot be blank");
-					document.getElementById("emailBlankHelp").setAttribute("class", "alert alert-danger");
-					document.getElementById("emailSpacesHelp").setAttribute("class", "d-none");
-					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
-					document.getElementById("emailInvalid").setAttribute("class", "d-none");
-					alert("Email cannot be blank");
-					fail = true;
-				}
-				else if (!email.includes("@")) {
-					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-invalid");
-					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Email requires '@' Symbol");
-					document.getElementById("emailInvalid").setAttribute("class", "alert alert-danger");
-					document.getElementById("emailBlankHelp").setAttribute("class", "d-none");
-					document.getElementById("emailSpacesHelp").setAttribute("class", "d-none");
-					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
-					alert("Email Address is not Valid, it requires the '@' Symbol");
-					fail = true;
-				}
-				else {
-					document.getElementById("emailTextBox-SignUp").setAttribute("class", "form-control is-valid");
-					document.getElementById("emailTextBox-SignUp").setAttribute("title", "Enter your Email Address");
-					document.getElementById("emailSpacesHelp").setAttribute("class", "d-none");
-					document.getElementById("emailBlankHelp").setAttribute("class", "d-none");
-					document.getElementById("emailTakenHelp").setAttribute("class", "d-none");
-					document.getElementById("emailInvalid").setAttribute("class", "d-none");
-				}
+				var password = document.getElementById("passwordTextBox_SignUp").value;
+				var confirmedPassword = document.getElementById("confirmedPasswordTextBox_SignUp").value;
 
 				// This performs error handling for errors with the entered password
-				if (password1 == "" || password2 == "") {
-
-					if (password1 == "") {
-						document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-invalid");
-						document.getElementById("password1TextBox-SignUp").setAttribute("title", "Password cannot be blank");
-					}
-
-					if (password2 == "") {
-						document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-invalid");
-						document.getElementById("password2TextBox-SignUp").setAttribute("title", "Password cannot be blank");
-					}
-
-					document.getElementById("passwordBlankHelp").setAttribute("class", "alert alert-danger");
-					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
-					document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
-					alert("Password cannot be blank");
-					fail = true;
-				}
-				else if (password1 != password2) {
-					document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-invalid");
-					document.getElementById("password1TextBox-SignUp").setAttribute("title", "Passwords must match");
-					document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-invalid");
-					document.getElementById("password2TextBox-SignUp").setAttribute("title", "Passwords must match");
+				if (password != confirmedPassword) {
+					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("passwordTextBox_SignUp").setAttribute("title", "Passwords must match");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "Passwords must match");
 					document.getElementById("passwordMatchHelp").setAttribute("class", "alert alert-danger");
-					document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
-					document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
+					// document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
+					// document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
+
 					alert("Passwords do not match");
-					fail = true;
-				}
-				else if ((password1.search(" ") != -1) || (password2.search(" ") != -1)) {
-					document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-invalid");
-					document.getElementById("password1TextBox-SignUp").setAttribute("title", "Password cannot contain spaces");
-					document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-invalid");
-					document.getElementById("password2TextBox-SignUp").setAttribute("title", "Password cannot contain spaces");
-					document.getElementById("passwordSpacesHelp").setAttribute("class", "alert alert-danger");
-					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
-					document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
-					alert("Password cannot contain spaces");
-					fail = true;
 				}
 				else {
-					document.getElementById("password1TextBox-SignUp").setAttribute("class", "form-control is-valid");
-					document.getElementById("password1TextBox-SignUp").setAttribute("title", "Enter a Password");
-					document.getElementById("password2TextBox-SignUp").setAttribute("class", "form-control is-valid");
-					document.getElementById("password2TextBox-SignUp").setAttribute("title", "Re-enter Password");
 					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
-					document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
-					document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
-				}
+					// document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
+					// document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
 
-				if (fail == false) {
-					
 					alert("Account Successfully Created");
-					window.location = "/SignUp/?email=" + email + "&password=" + password1;
+					document.getElementById("signUp_form_id").submit();
 				}
 			}
 			
@@ -265,7 +203,7 @@
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login_signUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 						</ul>
 					</div>
@@ -327,7 +265,7 @@
 			</div>
 			
 			<!-- Modal to Login or Sign Up -->
-			<div class="modal fade" id="login-signUp-Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login-signUp-ModalLabel" aria-hidden="true">
+			<div class="modal fade" id="login_signUp_Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login_signUp_ModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -353,12 +291,12 @@
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<input type="text" class="form-control" id="emailTextBox-Login" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address"/>
+												<input type="text" class="form-control" id="emailTextBox_Login" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address"/>
 											</div>
 							
 											<div class="mb-3">
 												<label>Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox-Login" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password"/>
+												<input type="password" class="form-control" id="passwordTextBox_Login" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password"/>
 											</div>
 											
 											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email and/or Password incorrect</div>
@@ -375,7 +313,8 @@
 							</div>
 							<!-- Tab to display sign-up information -->
 							<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
-								<form id="signUp_form_id" method="post" name="signUp_form">
+								<!-- <form id="signUp_form_id" method="post" name="signUp_form"> -->
+								<form:form id="signUp_form_id" action="/SignUp" modelAttribute="account">
 									<div class="modal-body">
 										<div class="text-center">
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
@@ -384,26 +323,54 @@
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<input type="text" class="form-control" id="emailTextBox-SignUp" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address"/>
+												<form:input type="text" class="form-control" id="emailTextBox_SignUp" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
 											</div>
 							
-											<div id="emailInvalid" class="d-none"><i class="fa fa-exclamation-circle"></i> Email is Invalid</div>
+											<form:errors path="email">
+												<script>
+													document.getElementById("emailTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+													document.getElementById("emailTextBox_SignUp").setAttribute("title", "Email cannot be blank");
+													alert("${emailErrorMessage}");
+												</script>
+											</form:errors>
+											
+											<form:errors path="email"><div class="alert alert-danger"></form:errors>
+											<form:errors path="email"><i class="fa fa-exclamation-circle"></i></form:errors>
+											<form:errors path="email"/>
+											<form:errors path="email"></div></form:errors>
+
+											<!-- <div id="emailInvalid" class="d-none"><i class="fa fa-exclamation-circle"></i> Email is Invalid</div>
 											<div id="emailTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email must be unique</div>
 											<div id="emailBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email connot be blank</div>
-											<div id="emailSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email connot contain spaces</div>
+											<div id="emailSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email connot contain spaces</div> -->
 							
 											<div class="mb-3">
 												<label>Password:</label>
-												<input type="password" class="form-control" id="password1TextBox-SignUp" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password"/>
+												<form:input type="password" class="form-control" id="passwordTextBox_SignUp" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password" path="password"/>
 											</div>
 											<div class="mb-3">
 												<label>Confirm Password:</label>
-												<input type="password" class="form-control" id="password2TextBox-SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
+												<input type="password" class="form-control" id="confirmedPasswordTextBox_SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
 											</div>
+
+											<form:errors path="password">
+												<script>
+													document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+													document.getElementById("passwordTextBox_SignUp").setAttribute("title", "${passwordErrorMessage}");
+													document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+													document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "${passwordErrorMessage}");
+													alert("${passwordErrorMessage}");
+												</script>
+											</form:errors>
+											
+											<form:errors path="password"><div class="alert alert-danger"></form:errors>
+											<form:errors path="password"><i class="fa fa-exclamation-circle"></i></form:errors>
+											<form:errors path="password"/>
+											<form:errors path="password"></div></form:errors>
 											
 											<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
-											<div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords cannot be blank</div>
-											<div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div>
+											<!-- <div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot be blank</div> -->
+											<!-- <div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div> -->
 							
 											<button type="button" value="SignUp" id="submitSignUp" onclick="signUp()" class="btn btn-primary" style="width: 100%"> <i class="fa fa-user-plus"></i> Create an Account</button>
 											<hr>
@@ -413,7 +380,7 @@
 											</div>
 										</div>
 									</div>
-								</form>
+								</form:form>
 							</div>
 						</div>
 					</div>

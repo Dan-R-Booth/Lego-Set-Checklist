@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import lego.checklist.domain.Account;
+
 @Controller
 public class MainController {
 	
@@ -19,6 +21,9 @@ public class MainController {
 	
 	@RequestMapping("/")
 	public String home(Model model) {
+		
+		model.addAttribute("account", new Account());
+		
 		return "index";
 	}
 	

@@ -320,7 +320,7 @@ public class SetController {
 		// validate file
         if (importFile.isEmpty()) {
             model.addAttribute("message", "The file '" + importFile.getOriginalFilename() + "' is empty, please select a valid CSV file.");
-            model.addAttribute("error", true);
+            model.addAttribute("importError", true);
         } else {
             // parse CSV file to create a list of `User` objects
             try {
@@ -366,7 +366,7 @@ public class SetController {
             }
             catch (Exception ex) {
                 model.addAttribute("message", "An error occurred while processing the file: " + importFile.getOriginalFilename());
-                model.addAttribute("error", true);
+                model.addAttribute("importError", true);
             }
         }
         

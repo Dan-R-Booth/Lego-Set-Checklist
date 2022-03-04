@@ -52,7 +52,7 @@
 					document.getElementById("viewport").setAttribute("content", "width=650, initial-scale=0.5");
 				}
 
-				if ("${error}" == "true") {
+				if ("${importError}" == "true") {
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
 					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
