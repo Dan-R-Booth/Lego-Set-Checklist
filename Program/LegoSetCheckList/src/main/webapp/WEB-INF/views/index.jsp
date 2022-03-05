@@ -47,6 +47,10 @@
 					document.getElementById("viewport").setAttribute("content", "width=350");
 				}
 				
+				// If the model attribute importError is true, this highlights the import input box
+				// so the user knows that was an error there, as well as unhiding the error alert
+				// box that contains the error message for the returned error and finally this opens
+				// the importModal to the user
 				if ("${importError}" == "true") {
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
@@ -54,20 +58,22 @@
 					importModal.show();
 				}
 
-				var login_signUpModal = new bootstrap.Modal(document.getElementById("login_signUp_Modal"));
-
-				if ("${emailValid}" == "true") {
-					document.getElementById("emailTextBox_SignUp").setAttribute("class", "form-control is-valid");
-
-					login_signUpModal.show();
-					document.getElementById("signUp-tab").click();
+				// If the user successfully created an account a popup informs the user of this
+				if ("${accountCreated}" == "true") {
+					alert("Account Successfully Created");
 				}
-				else if ("${passwordValid}" == "true") {
-					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-valid");
-					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-valid");
-
-					login_signUpModal.show();
-					document.getElementById("signUp-tab").click();
+				
+				// If the user successfully logged into their account a popup informs the user of this
+				if ("${loggedIn}" == "true") {
+					alert("You have been logged in");
+				}
+				
+				// As there was an error in login or signUp the appropriate function is run
+				if ("${login_signUpErrors}" == "login") {
+					LoginErrors();
+				}
+				else if ("${login_signUpErrors}" == "signUp") {
+					SignUpErrors();
 				}
 			}
 
@@ -140,34 +146,130 @@
 				document.getElementById("signUp-tab").click();
 			}
 
-			// This will check for basic errors with the entered email and passwords needed to create an account
-			// If there are no errors these are then sent to the Account Controller
+			// This will check if the entered passwords match
+			// If they do match, the email and password entered in signUp form are then sent to the Account Controller
 			function signUp() {
 				var password = document.getElementById("passwordTextBox_SignUp").value;
 				var confirmedPassword = document.getElementById("confirmedPasswordTextBox_SignUp").value;
 
-				// This performs error handling for errors with the entered password
+				// This checks if the entered passwords match
+				// If they don't match, this highlights the sign-up password textboxes so the user knows
+				// that the passwords don't match, as well as adding this error message to these textbox's
+				// tooltips, unhiding the error alert box that contains the error message and finally
+				// displaying this message in a popup box
 				if (password != confirmedPassword) {
 					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
 					document.getElementById("passwordTextBox_SignUp").setAttribute("title", "Passwords must match");
 					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
 					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "Passwords must match");
 					document.getElementById("passwordMatchHelp").setAttribute("class", "alert alert-danger");
-					// document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
-					// document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
 
 					alert("Passwords do not match");
 				}
+				// If the passwords do match, the error alert box that contains the error message "Passwords don't match"
+				// is set to hiden and the signUp form is then submited with the enter email address and password
 				else {
 					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
-					// document.getElementById("passwordBlankHelp").setAttribute("class", "d-none");
-					// document.getElementById("passwordSpacesHelp").setAttribute("class", "d-none");
 
-					alert("Account Successfully Created");
-					document.getElementById("signUp_form_id").submit();
+					document.getElementById("signUp_form").submit();
 				}
 			}
-			
+
+			// These will display any errors returned by the AccountValidator when validating a user login or Sign Up
+			// attempt
+			function LoginErrors() {
+				// If there is an error returned to do with the entered email address, this highlights the login email
+				// textbox so the user knows that an error has been entered there, as well as adding the error message
+				// to the textbox tooltip, unhiding the error alert box that contains the message and finally displaying
+				// this message in a popup box
+				if ("${emailValid_Login}" == "false") {
+					document.getElementById("emailTextBox_Login").setAttribute("class", "form-control is-invalid");
+					document.getElementById("emailTextBox_Login").setAttribute("title", "${emailErrorMessage_Login}");
+					document.getElementById("emailErrorHelp_Login").setAttribute("class", "alert alert-danger");
+					alert("${emailErrorMessage_Login}");
+				}
+				
+				// If there is an error returned to do with the entered password, this highlights the login password
+				// textbox so the user knows that an error has been entered there, as well as adding the error message
+				// to the textbox tooltip, unhiding the error alert box that contains the message and finally displaying
+				// this message in a popup box
+				if ("${passwordValid_Login}" == "false") {
+					document.getElementById("passwordTextBox_Login").setAttribute("class", "form-control is-invalid");
+					document.getElementById("passwordTextBox_Login").setAttribute("title", "${passwordErrorMessage_Login}");
+
+					document.getElementById("passwordErrorHelp_Login").setAttribute("class", "alert alert-danger");
+
+					alert("${passwordErrorMessage_Login}");
+				}
+
+				// If there is an error returned as the email address doesn't exist or the entered password is wrong,
+				// this highlights the login email and password textboxes so the user knows that one or both of these
+				// boxes conatin an error, as well as adding the error message to both textbox tooltips, unhiding the
+				// error alert box that contains this error message and finally displaying this message in a popup box
+				if("${email_passwordValid}" == "false") {
+					document.getElementById("emailTextBox_Login").setAttribute("class", "form-control is-invalid");
+					document.getElementById("emailTextBox_Login").setAttribute("title", "${email_passwordErrorMessage}");
+					
+					document.getElementById("passwordTextBox_Login").setAttribute("class", "form-control is-invalid");
+					document.getElementById("passwordTextBox_Login").setAttribute("title", "${email_passwordErrorMessage}");
+					
+					document.getElementById("loginHelp").setAttribute("class", "alert alert-danger");
+					alert("${email_passwordErrorMessage}");
+				}
+				
+				// This gets the login_SignUp_Modal
+				var login_SignUpModal = new bootstrap.Modal(document.getElementById("login_SignUp_Modal"));
+				// This opens the login_SignUpModal
+				login_SignUpModal.show();
+			}
+
+			// These will display any errors returned by the AccountValidator when validating a user login or Sign Up
+			// attempt
+			function SignUpErrors() {
+				//If there is an error but its not with the email address, the sign-up email textbox is highlighted
+				// green to show it is valid.
+				if ("${emailValid_SignUp}" == "true") {
+					document.getElementById("emailTextBox_SignUp").setAttribute("class", "form-control is-valid");
+				}
+				// Otherwise if there is an error to do with the entered email address, this highlights the sign-up email
+				// textbox so the user knows that an error has been entered there, as well as adding the error message
+				// to the textbox tooltip, unhiding the error alert box that contains the message and finally displaying
+				// this message in a popup box
+				else if ("${emailValid_SignUp}" == "false") {
+					document.getElementById("emailTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("emailTextBox_SignUp").setAttribute("title", "${emailErrorMessage_SignUp}");
+					document.getElementById("emailErrorHelp_SignUp").setAttribute("class", "alert alert-danger");
+					alert("${emailErrorMessage_SignUp}");
+				}
+				
+				//If there is an error but its not with the password, the sign-up email textbox is highlighted
+				// green to show it is valid.
+				if ("${passwordValid_SignUp}" == "true") {
+					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-valid");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-valid");
+				}
+				// Otherwise if there is an error to do with the entered password, this highlights the sign-up password
+				// textboxes so the user knows that an error has been entered there, as well as adding the error message
+				// to these textbox's tooltip, unhiding the error alert box that contains the message and finally displaying
+				// this message in a popup box
+				else if ("${passwordValid_SignUp}" == "false") {
+					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("passwordTextBox_SignUp").setAttribute("title", "${passwordErrorMessage_SignUp}");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "${passwordErrorMessage_SignUp}");
+					document.getElementById("passwordErrorHelp_SignUp").setAttribute("class", "alert alert-danger");
+					alert("${passwordErrorMessage_SignUp}");
+				}
+
+				// This gets the login_SignUp_Modal
+				var login_SignUpModal = new bootstrap.Modal(document.getElementById("login_SignUp_Modal"));
+				// This opens the login_SignUpModal
+				login_SignUpModal.show();
+				
+				// This switches to the signUp tab
+				signUpTab();
+			}
+
 		</script>
 
 	</head>
@@ -203,7 +305,7 @@
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login_signUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 						</ul>
 					</div>
@@ -265,7 +367,7 @@
 			</div>
 			
 			<!-- Modal to Login or Sign Up -->
-			<div class="modal fade" id="login_signUp_Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login_signUp_ModalLabel" aria-hidden="true">
+			<div class="modal fade" id="login_SignUp_Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login_SignUp_ModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -280,9 +382,9 @@
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="tab-content" id="login-signUp-tabContent">
-							<!-- Tab to display login information -->
+							<!-- Tab that displays the login form to the user, so they can login to their account -->
 							<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
-								<form id="login_form_id" method="post" name="login_form">
+								<form:form id="login_form" action="/Login" modelAttribute="account">
 									<div class="modal-body">
 										<div class="text-center">
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
@@ -291,17 +393,24 @@
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<input type="text" class="form-control" id="emailTextBox_Login" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address"/>
+												<form:input type="email" class="form-control" id="emailTextBox_Login" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
 											</div>
-							
+												
+											<!-- This will output the error message returned to the user -->
+											<div id="emailErrorHelp_Login" class="d-none"><i class="fa fa-exclamation-circle"></i> ${emailErrorMessage_Login}</div>
+
 											<div class="mb-3">
 												<label>Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox_Login" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password"/>
+												<form:input type="password" class="form-control" id="passwordTextBox_Login" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password" path="password"/>
 											</div>
-											
-											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email and/or Password incorrect</div>
+	
+											<!-- This will output the error message returned to the user -->
+											<div id="passwordErrorHelp_Login" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage_Login}</div>
 
-											<button type="button" value="Login" id="submitLogin" onclick="login()" class="btn btn-primary" style="width: 100%"> <i class="fa fa-sign-in"></i> Login</button>
+											<!-- This will output the error message returned to the user -->
+											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${email_passwordErrorMessage}</div>
+
+											<button type="submit" value="Login" id="submitLogin" class="btn btn-primary" style="width: 100%"> <i class="fa fa-sign-in"></i> Login</button>
 										</div>
 										<hr>
 										<div class="text-center">
@@ -309,12 +418,11 @@
 											Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
 										</div>
 									</div>
-								</form>
+								</form:form>
 							</div>
-							<!-- Tab to display sign-up information -->
+							<!-- Tab that displays the sign-up form to the user, so they can create an account -->
 							<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
-								<!-- <form id="signUp_form_id" method="post" name="signUp_form"> -->
-								<form:form id="signUp_form_id" action="/SignUp" modelAttribute="account">
+								<form:form id="signUp_form" action="/SignUp" modelAttribute="account">
 									<div class="modal-body">
 										<div class="text-center">
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
@@ -323,26 +431,10 @@
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<form:input type="text" class="form-control" id="emailTextBox_SignUp" aria-describedby="emailHelp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
+												<form:input type="email" class="form-control" id="emailTextBox_SignUp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
 											</div>
-							
-											<form:errors path="email">
-												<script>
-													document.getElementById("emailTextBox_SignUp").setAttribute("class", "form-control is-invalid");
-													document.getElementById("emailTextBox_SignUp").setAttribute("title", "Email cannot be blank");
-													alert("${emailErrorMessage}");
-												</script>
-											</form:errors>
-											
-											<form:errors path="email"><div class="alert alert-danger"></form:errors>
-											<form:errors path="email"><i class="fa fa-exclamation-circle"></i></form:errors>
-											<form:errors path="email"/>
-											<form:errors path="email"></div></form:errors>
 
-											<!-- <div id="emailInvalid" class="d-none"><i class="fa fa-exclamation-circle"></i> Email is Invalid</div>
-											<div id="emailTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email must be unique</div>
-											<div id="emailBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email connot be blank</div>
-											<div id="emailSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Email connot contain spaces</div> -->
+											<div id="emailErrorHelp_SignUp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${emailErrorMessage_SignUp}</div>
 							
 											<div class="mb-3">
 												<label>Password:</label>
@@ -352,25 +444,10 @@
 												<label>Confirm Password:</label>
 												<input type="password" class="form-control" id="confirmedPasswordTextBox_SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
 											</div>
-
-											<form:errors path="password">
-												<script>
-													document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
-													document.getElementById("passwordTextBox_SignUp").setAttribute("title", "${passwordErrorMessage}");
-													document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
-													document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "${passwordErrorMessage}");
-													alert("${passwordErrorMessage}");
-												</script>
-											</form:errors>
 											
-											<form:errors path="password"><div class="alert alert-danger"></form:errors>
-											<form:errors path="password"><i class="fa fa-exclamation-circle"></i></form:errors>
-											<form:errors path="password"/>
-											<form:errors path="password"></div></form:errors>
-											
+											<!-- This is hidden and will be displayed to the user via the signUp function if the entered passwords don't match -->
 											<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
-											<!-- <div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot be blank</div> -->
-											<!-- <div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div> -->
+											<div id="passwordErrorHelp_SignUp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage_SignUp}</div>
 							
 											<button type="button" value="SignUp" id="submitSignUp" onclick="signUp()" class="btn btn-primary" style="width: 100%"> <i class="fa fa-user-plus"></i> Create an Account</button>
 											<hr>

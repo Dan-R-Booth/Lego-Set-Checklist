@@ -21,7 +21,7 @@ public class MainController {
 	
 	@RequestMapping("/")
 	public String home(Model model) {
-		
+		// This adds the a new account class that will be used by the forms to login and create an account
 		model.addAttribute("account", new Account());
 		
 		return "index";

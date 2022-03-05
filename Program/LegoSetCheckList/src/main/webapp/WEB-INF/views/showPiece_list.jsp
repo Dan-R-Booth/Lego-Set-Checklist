@@ -52,6 +52,10 @@
 					document.getElementById("viewport").setAttribute("content", "width=650, initial-scale=0.5");
 				}
 
+				// If the model attribute importError is true, this highlights the import input box
+				// so the user knows that was an error there, as well as unhiding the error alert
+				// box that contains the error message for the returned error and finally this opens
+				// the importModal to the user
 				if ("${importError}" == "true") {
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
