@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -315,12 +316,13 @@ public class SetController {
 	// This also takes values for filter and sort for the showPieceList page as if the import popup is on this page
 	// it needs these values to return to the exact some page if the import fails
 	@PostMapping("/openImport/previousPage={previousPage}")
-	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @ModelAttribute("set") Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
-		
+	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @ModelAttribute("set") Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, RedirectAttributes redirectAttributes) {
 		// validate file
         if (importFile.isEmpty()) {
-            model.addAttribute("message", "The file '" + importFile.getOriginalFilename() + "' is empty, please select a valid CSV file.");
-            model.addAttribute("importError", true);
+        		// This is used so the JSP page knows to inform the user that the import failed
+        		// and why and is added to redirectAttributes so it stays after the page redirect
+        		redirectAttributes.addFlashAttribute("message", "The file '" + importFile.getOriginalFilename() + "' is empty, please select a valid CSV file.");
+        		redirectAttributes.addFlashAttribute("importError", true);
         } else {
             // parse CSV file to create a list of `User` objects
             try {
@@ -365,36 +367,64 @@ public class SetController {
         		return "showSet";
             }
             catch (Exception ex) {
-                model.addAttribute("message", "An error occurred while processing the file: " + importFile.getOriginalFilename());
-                model.addAttribute("importError", true);
+				// This is used so the JSP page knows to inform the user that the import failed
+        		// and why and is added to redirectAttributes so it stays after the page redirect
+				redirectAttributes.addFlashAttribute("message", "An error occurred while processing the file: '" + importFile.getOriginalFilename() + "'");
+				redirectAttributes.addFlashAttribute("importError", true);
             }
         }
         
         // If the import was called from the showPiece_list page this adds the values inputed from that page so that the user is returned
         // to the exact same page
-        if (previousPage.equals("showPiece_list")) {
+        if (previousPage.equals("Set_Pieces")) {
         	// This calls the function updateQuantityChecked in the PieceController class, that
         	PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
         	
-	        // If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
+	        // If their is a sort to be applied to the checklist (sort not null), then it is added to string
+        	// thats added to the redirect as a requestParam
 	 		if (sort != null) {
-	 	    	model.addAttribute("sort", sort);
+	 	    	redirectAttributes.addFlashAttribute("sort", sort);
 	 		}
-	        
-	 		// This calls the function addListFilters in the PieceController class, that adds all the model attributes
-	 		// needed to apply the filters that have been parsed in
-			PieceController.addListFilters(model, quantityChecked, colourFilter, pieceTypeFilter, hidePiecesFound);
-	 		
-			// This calls a function in getColoursAndPieceTypes the PieceController class, that adds all the colours to a list that
-			// is used to display options to filter the list by colours. This function also adds all the piece types to another list
-			// that is used to display options to filter the list by types of Lego pieces
-			PieceController.getColoursAndPieceTypes(model, previousSet);
+	    	
+			String colourFilterRequestParam = "";
+
+			// If the string colourFilter is parsed into the controller it is added to redirectAttributes as an addAttribute so can
+			// be added to the string below as a URI variable and then this String can be added to the redirect as a requestParam.
+			// If this value is added directly to the String and then to the redirect, the redirect will not work properly.
+			// This is because any space will not be converted properly as "%20" but as added as a "+", however adding the string
+			// as an attribute of redirectAttributes and then using this attribute converts these spaces properly.
+			if (colourFilter != null) {
+				redirectAttributes.addAttribute("colourFilter", colourFilter);
+				colourFilterRequestParam = "&colourFilter={colourFilter}";
+			}
+
+			String pieceTypeFilterRequestParam = "";
+
+			// If the string pieceTypeFilter is parsed into the controller it is added to redirectAttributes as an addAttribute so can
+			// be added to the string below as a URI variable and then this String can be added to the redirect as a requestParam.
+			// If this value is added directly to the String and then to the redirect, the redirect will not work properly.
+			// This is because any space will not be converted properly as "%20" but as added as a "+", however adding the string
+			// as an attribute of redirectAttributes and then using this attribute converts these spaces properly.
+			if (pieceTypeFilter != null) {
+				redirectAttributes.addAttribute("pieceTypeFilter", pieceTypeFilter);
+				pieceTypeFilterRequestParam = "&pieceTypeFilter={pieceTypeFilter}";
+			}
+
+			String hidePiecesFoundRequestParam = "";
+
+			// If the boolean hidePiecesFound is parsed into the controller, it is added to string
+			// thats added to the redirect as a requestParam
+			if (hidePiecesFound != null) {
+				hidePiecesFoundRequestParam = "&hidePiecesFound=" + hidePiecesFound;
+			}
 			
-			model.addAttribute("set_number", previousSet.getNum());
-	    	model.addAttribute("num_items", previousSet.getPiece_list().size());
+			// This redirects the user back to the set pieces page and will display the errors with the import
+	    	return "redirect:/set/" + previous_set_number + "/pieces/?" + colourFilterRequestParam + pieceTypeFilterRequestParam + hidePiecesFoundRequestParam;
         }
-		
-        return previousPage;
+        else {
+        	// This redirects the user back to the index page and will display the errors with the import
+    		return "redirect:/";
+        }
 	}
 	
 	// This gets a list of strings with each list containing a description and web link to an Lego instruction booklet for the Lego Set

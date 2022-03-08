@@ -43,7 +43,7 @@ public class DatabaseController {
 	@PostMapping("/SignUp")
 	public String signUp(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		// This creates an instance of the AccountValidator and calls the validate function
-		// with an Account generated using values entered in the signUp form. this function
+		// with an Account generated using values entered in the signUp form. This function
 		// then checks if there are any errors with the accounts details and if there are
 		// adds these to the BindingResult result
 		AccountValidator accountValidator = new AccountValidator(accountRepo);
@@ -92,7 +92,10 @@ public class DatabaseController {
 	// This will sign a user into their account, as long as the entered details are valid
 	@PostMapping("/Login")
 	public String login(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
-		
+		// This creates an instance of the AccountValidator and calls the validateLogin function
+		// with an Account generated using values entered in the login form. This function
+		// then checks if there are any errors with the accounts details and if there are
+		// adds these to the BindingResult result
 		AccountValidator accountValidator = new AccountValidator(accountRepo);
 		accountValidator.validateLogin(account, result);
 		

@@ -52,6 +52,7 @@
 				// box that contains the error message for the returned error and finally this opens
 				// the importModal to the user
 				if ("${importError}" == "true") {
+					alert("Import Failed");
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
 					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
@@ -351,7 +352,7 @@
 							<div class="modal-body">
 								<div class="mb-3">
 									<label for="importFile" class="form-label">Choose a CSV file containing a saved checklist to import</label>
-									<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv" required>
+									<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv" required/>
 								</div>
 
 								<div id="importFileNoneHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Please select a CSV file to upload.</div>
