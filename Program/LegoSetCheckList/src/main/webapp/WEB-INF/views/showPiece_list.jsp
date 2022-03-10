@@ -653,6 +653,14 @@
 			function openLoader() {
 				$("#loadingModal").modal("show");
 			}
+
+			// This asks the user to confirm they want logout and if they do the user is sent to the database controller to do this 
+			function logout() {
+				if (confirm("Are you sure you want to logout")) {
+					alert("You have been successfully logged out")
+					window.location = "/logout";
+				}
+			}
 			
 		</script>
 		
@@ -684,7 +692,7 @@
 								<a class="d-none" id="login/signUpLink" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="d-none" id="logoutLink" href="/logout"> <i class="fa fa-sign-in"></i> Logout</a>
+								<a class="d-none" id="logoutLink" href="#" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
 							</li>
 						</ul>
 					</div>
