@@ -60,8 +60,14 @@
 				}
 
 				// If the user successfully created an account a popup informs the user of this
+				// It then opens the login form so the user can log into their account
 				if ("${accountCreated}" == "true") {
 					alert("Account Successfully Created");
+
+					// This gets the login_SignUp_Modal
+					var login_SignUpModal = new bootstrap.Modal(document.getElementById("login_SignUp_Modal"));
+					// This opens the login_SignUpModal
+					login_SignUpModal.show();
 				}
 				
 				// If the user successfully logged into their account a popup informs the user of this
@@ -75,6 +81,13 @@
 				}
 				else if ("${login_signUpErrors}" == "signUp") {
 					SignUpErrors();
+				}
+
+				if("${accountLoggedIn}" == "") {
+					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
+				}
+				else {
+					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 				}
 			}
 
@@ -147,37 +160,38 @@
 				document.getElementById("signUp-tab").click();
 			}
 
-			// This will check if the entered passwords match
-			// If they do match, the email and password entered in signUp form are then sent to the Account Controller
-			function signUp() {
+			// This function is called everytime a change occurs in the password textboxes to check if the entered passwords match
+			function passwordsMatchCheck() {
 				var password = document.getElementById("passwordTextBox_SignUp").value;
 				var confirmedPassword = document.getElementById("confirmedPasswordTextBox_SignUp").value;
 
 				// This checks if the entered passwords match
 				// If they don't match, this highlights the sign-up password textboxes so the user knows
 				// that the passwords don't match, as well as adding this error message to these textbox's
-				// tooltips, unhiding the error alert box that contains the error message and finally
-				// displaying this message in a popup box
+				// tooltips, unhiding the error alert box that contains the error message and finally disabling
+				// the signUp button
 				if (password != confirmedPassword) {
 					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
 					document.getElementById("passwordTextBox_SignUp").setAttribute("title", "Passwords must match");
 					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
 					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "Passwords must match");
 					document.getElementById("passwordMatchHelp").setAttribute("class", "alert alert-danger");
-
-					alert("Passwords do not match");
+					document.getElementById("submitSignUp").disabled = true;
 				}
-				// If the passwords do match, the error alert box that contains the error message "Passwords don't match"
-				// is set to hiden and the signUp form is then submited with the enter email address and password
+				// If the passwords do match, this highlights the sign-up password textboxes are highlighted
+				// green to show the passwords do match, the error alert box that contains the error message
+				// "Passwords don't match" is set to hidden and finally enabling the signUp button
 				else {
+					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-valid");
+					document.getElementById("passwordTextBox_SignUp").setAttribute("title", "Enter a Password");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-valid");
+					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "Re-enter Password");
 					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
-
-					document.getElementById("signUp_form").submit();
+					document.getElementById("submitSignUp").disabled = false;
 				}
 			}
 
-			// These will display any errors returned by the AccountValidator when validating a user login or Sign Up
-			// attempt
+			// These will display any errors returned by the AccountValidator when validating a user login attempt
 			function LoginErrors() {
 				// If there is an error returned to do with the entered email address, this highlights the login email
 				// textbox so the user knows that an error has been entered there, as well as adding the error message
@@ -224,8 +238,7 @@
 				login_SignUpModal.show();
 			}
 
-			// These will display any errors returned by the AccountValidator when validating a user login or Sign Up
-			// attempt
+			// These will display any errors returned by the AccountValidator when validating a user Sign Up attempt
 			function SignUpErrors() {
 				//If there is an error but its not with the email address, the sign-up email textbox is highlighted
 				// green to show it is valid.
@@ -243,7 +256,7 @@
 					alert("${emailErrorMessage_SignUp}");
 				}
 				
-				//If there is an error but its not with the password, the sign-up email textbox is highlighted
+				//If there is an error but its not with the password, the sign-up password textboxes are highlighted
 				// green to show it is valid.
 				if ("${passwordValid_SignUp}" == "true") {
 					document.getElementById("passwordTextBox_SignUp").setAttribute("class", "form-control is-valid");
@@ -306,7 +319,10 @@
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="d-none" id="login/signUpLink" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+							</li>
+							<li class="nav-item ms-5">
+								<a class="d-none" id="logoutLink" href="/logout"> <i class="fa fa-sign-in"></i> Logout</a>
 							</li>
 						</ul>
 					</div>
@@ -339,7 +355,7 @@
 		</div>
 		
 		<div class="container-fluid mb-5">
-			
+
 			<!-- Modal to Import a Lego Checklist -->
 			<div class="modal fade" id="importModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
@@ -385,13 +401,13 @@
 						<div class="tab-content" id="login-signUp-tabContent">
 							<!-- Tab that displays the login form to the user, so they can login to their account -->
 							<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
-								<form:form id="login_form" action="/Login" modelAttribute="account">
+								<form:form id="login_form" action="/login" modelAttribute="account">
 									<div class="modal-body">
 										<div class="text-center">
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
 										</div>
-										<hr>
 										<div class="container-fluid">
+											<hr>
 											<div class="mb-3">
 												<label>Email:</label>
 												<form:input type="email" class="form-control" id="emailTextBox_Login" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
@@ -412,24 +428,24 @@
 											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${email_passwordErrorMessage}</div>
 
 											<button type="submit" value="Login" id="submitLogin" class="btn btn-primary" style="width: 100%"> <i class="fa fa-sign-in"></i> Login</button>
-										</div>
-										<hr>
-										<div class="text-center">
-											<!-- This calls a function to switch to the sign-up tab -->
-											Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
+											<hr>
+											<div class="text-center">
+												<!-- This calls a function to switch to the sign-up tab -->
+												Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
+											</div>
 										</div>
 									</div>
 								</form:form>
 							</div>
 							<!-- Tab that displays the sign-up form to the user, so they can create an account -->
 							<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
-								<form:form id="signUp_form" action="/SignUp" modelAttribute="account">
+								<form:form id="signUp_form" action="/signUp" modelAttribute="account">
 									<div class="modal-body">
 										<div class="text-center">
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
 										</div>
-										<hr style="width: 70%">
 										<div class="container-fluid">
+											<hr>
 											<div class="mb-3">
 												<label>Email:</label>
 												<form:input type="email" class="form-control" id="emailTextBox_SignUp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
@@ -439,18 +455,18 @@
 							
 											<div class="mb-3">
 												<label>Password:</label>
-												<form:input type="password" class="form-control" id="passwordTextBox_SignUp" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password" path="password"/>
+												<form:input oninput="passwordsMatchCheck()" type="password" class="form-control" id="passwordTextBox_SignUp" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password" path="password"/>
 											</div>
 											<div class="mb-3">
 												<label>Confirm Password:</label>
-												<input type="password" class="form-control" id="confirmedPasswordTextBox_SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
+												<input oninput="passwordsMatchCheck()" type="password" class="form-control" id="confirmedPasswordTextBox_SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
 											</div>
 											
 											<!-- This is hidden and will be displayed to the user via the signUp function if the entered passwords don't match -->
 											<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
 											<div id="passwordErrorHelp_SignUp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage_SignUp}</div>
 							
-											<button type="button" value="SignUp" id="submitSignUp" onclick="signUp()" class="btn btn-primary" style="width: 100%"> <i class="fa fa-user-plus"></i> Create an Account</button>
+											<button type="submit" value="SignUp" id="submitSignUp" class="btn btn-primary" style="width: 100%"> <i class="fa fa-user-plus"></i> Create an Account</button>
 											<hr>
 											<div class="text-center">
 												<!-- This calls a function to switch to the login tab -->

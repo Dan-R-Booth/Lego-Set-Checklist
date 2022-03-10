@@ -5,8 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lego.checklist.domain.Account;
@@ -19,6 +22,7 @@ import lego.checklist.repository.SetsOwnedListRepository;
 import lego.checklist.validator.AccountValidator;
 
 @Controller
+@SessionAttributes("accountLoggedIn")
 public class DatabaseController {
 	
 	@Autowired
@@ -40,7 +44,7 @@ public class DatabaseController {
 	private PieceFoundRepository pieceFoundRepo;
 	
 	// This will create an new account for a user, as long as the entered details are valid
-	@PostMapping("/SignUp")
+	@PostMapping("/signUp")
 	public String signUp(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		// This creates an instance of the AccountValidator and calls the validate function
 		// with an Account generated using values entered in the signUp form. This function
@@ -90,7 +94,7 @@ public class DatabaseController {
 	}
 	
 	// This will sign a user into their account, as long as the entered details are valid
-	@PostMapping("/Login")
+	@PostMapping("/login")
 	public String login(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		// This creates an instance of the AccountValidator and calls the validateLogin function
 		// with an Account generated using values entered in the login form. This function
@@ -138,7 +142,16 @@ public class DatabaseController {
 		// logged in and is added to redirectAttributes so it stays after the page redirect
 		redirectAttributes.addFlashAttribute("loggedIn", true);
 		
+		redirectAttributes.addFlashAttribute("accountLoggedIn", account);
+		
 		// This redirects the user back to the index page
+		return "redirect:/";
+	}
+	
+	@GetMapping("/logout")
+	public String logout(SessionStatus status) {
+		status.setComplete();
+		
 		return "redirect:/";
 	}
 }
