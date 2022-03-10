@@ -142,16 +142,19 @@ public class DatabaseController {
 		// logged in and is added to redirectAttributes so it stays after the page redirect
 		redirectAttributes.addFlashAttribute("loggedIn", true);
 		
-		redirectAttributes.addFlashAttribute("accountLoggedIn", account);
+		model.addAttribute("accountLoggedIn", account);
 		
 		// This redirects the user back to the index page
 		return "redirect:/";
 	}
 	
+	// This logs the user out of their account and returns them to the index page
 	@GetMapping("/logout")
 	public String logout(SessionStatus status) {
+		// This removs the the the Session attribute accountLogedIn thus logging the user out
 		status.setComplete();
 		
+		// This redirects the user back to the index page
 		return "redirect:/";
 	}
 }

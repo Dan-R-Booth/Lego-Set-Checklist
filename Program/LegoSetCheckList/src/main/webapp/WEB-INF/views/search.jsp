@@ -201,6 +201,15 @@
 				// These add the current min pieces and max pieces filters to their number boxes
 				document.getElementById("minPiecesBox").value = "${minPieces}";
 				document.getElementById("maxPiecesBox").value = "${maxPieces}";
+
+				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				// Otherwise the logout link is displayed allowing users to logout of their account
+				if("${accountLoggedIn}" == "") {
+					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
+				}
+				else {
+					document.getElementById("logoutLink").setAttribute("class", "nav-link");
+				}
 			}
 			
 			// The following two functions call the api with the either the previous or next page uri
@@ -589,7 +598,10 @@
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-signUp-Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="d-none" id="login/signUpLink" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+							</li>
+							<li class="nav-item ms-5">
+								<a class="d-none" id="logoutLink" href="/logout"> <i class="fa fa-sign-in"></i> Logout</a>
 							</li>
 						</ul>
 					</div>

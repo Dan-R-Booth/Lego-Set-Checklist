@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import lego.checklist.domain.Account;
 
 @Controller
-@SessionAttributes("account")
 public class MainController {
 	
 	@RequestMapping("/")

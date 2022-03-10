@@ -83,6 +83,8 @@
 					SignUpErrors();
 				}
 
+				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				// Otherwise the logout link is displayed allowing users to logout of their account
 				if("${accountLoggedIn}" == "") {
 					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
 				}
