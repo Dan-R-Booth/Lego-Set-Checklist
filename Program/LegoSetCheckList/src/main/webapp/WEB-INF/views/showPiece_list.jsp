@@ -57,7 +57,6 @@
 				// box that contains the error message for the returned error and finally this opens
 				// the importModal to the user
 				if ("${importError}" == "true") {
-					alert("Import Failed");
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
 					var importModal = new bootstrap.Modal(document.getElementById("importModal"));

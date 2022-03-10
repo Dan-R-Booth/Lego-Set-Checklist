@@ -52,7 +52,6 @@
 				// box that contains the error message for the returned error and finally this opens
 				// the importModal to the user
 				if ("${importError}" == "true") {
-					alert("Import Failed");
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
 					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
@@ -203,7 +202,6 @@
 					document.getElementById("emailTextBox_Login").setAttribute("class", "form-control is-invalid");
 					document.getElementById("emailTextBox_Login").setAttribute("title", "${emailErrorMessage_Login}");
 					document.getElementById("emailErrorHelp_Login").setAttribute("class", "alert alert-danger");
-					alert("${emailErrorMessage_Login}");
 				}
 				
 				// If there is an error returned to do with the entered password, this highlights the login password
@@ -213,10 +211,7 @@
 				if ("${passwordValid_Login}" == "false") {
 					document.getElementById("passwordTextBox_Login").setAttribute("class", "form-control is-invalid");
 					document.getElementById("passwordTextBox_Login").setAttribute("title", "${passwordErrorMessage_Login}");
-
 					document.getElementById("passwordErrorHelp_Login").setAttribute("class", "alert alert-danger");
-
-					alert("${passwordErrorMessage_Login}");
 				}
 
 				// If there is an error returned as the email address doesn't exist or the entered password is wrong,
@@ -231,7 +226,6 @@
 					document.getElementById("passwordTextBox_Login").setAttribute("title", "${email_passwordErrorMessage}");
 					
 					document.getElementById("loginHelp").setAttribute("class", "alert alert-danger");
-					alert("${email_passwordErrorMessage}");
 				}
 				
 				// This gets the login_SignUp_Modal
@@ -255,7 +249,6 @@
 					document.getElementById("emailTextBox_SignUp").setAttribute("class", "form-control is-invalid");
 					document.getElementById("emailTextBox_SignUp").setAttribute("title", "${emailErrorMessage_SignUp}");
 					document.getElementById("emailErrorHelp_SignUp").setAttribute("class", "alert alert-danger");
-					alert("${emailErrorMessage_SignUp}");
 				}
 				
 				//If there is an error but its not with the password, the sign-up password textboxes are highlighted
@@ -274,7 +267,6 @@
 					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("class", "form-control is-invalid");
 					document.getElementById("confirmedPasswordTextBox_SignUp").setAttribute("title", "${passwordErrorMessage_SignUp}");
 					document.getElementById("passwordErrorHelp_SignUp").setAttribute("class", "alert alert-danger");
-					alert("${passwordErrorMessage_SignUp}");
 				}
 
 				// This gets the login_SignUp_Modal
