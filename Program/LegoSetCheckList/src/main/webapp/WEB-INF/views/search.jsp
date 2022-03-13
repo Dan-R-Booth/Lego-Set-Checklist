@@ -792,6 +792,9 @@
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
 							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
+							<c:if test="${not empty accountLoggedIn}">
+								<i class="fa fa-plus" data-bs-toggle="modal" data-bs-target="#addSetToListModel_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"></i>
+							</c:if>
 						</div>
 						<div class="col">
 							<a href="/set?set_number=${set.num}" onclick="openLoader()">${set.num}</a>
@@ -822,6 +825,41 @@
 							<div class="modal-body">
 								<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 100%">
 							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Modal to Add a Lego Set to a List -->
+				<div class="modal fade" id="addSetToListModel_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${set.num}" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<form method="POST" id="addSetToListForm_${set.num}" action="/openImport" enctype="multipart/form-data">
+								<div class="modal-body">
+									<div class="mb-3">
+										<label class="form-label">Add Set: ${set.num} to a list</label>
+										<br>
+										<h5> Set List: </h5>
+										<div class="input-group">
+											<select id="selectList_${set.num}" class="form-select" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
+												<option selected>Open this select menu</option>
+												<option value="1">One</option>
+												<option value="2">Two</option>
+												<option value="3">Three</option>
+											</select>
+											<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i> New List</button>
+										</div>
+									</div>
+
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									<button type="button" id="addSetToListButton_${set.num}" class="btn btn-primary" onclick="importCSVFile()"> <i class="fa fa-plus"></i> New List </button>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
