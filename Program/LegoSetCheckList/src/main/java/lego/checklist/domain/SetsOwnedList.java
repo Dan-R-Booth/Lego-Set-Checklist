@@ -1,6 +1,7 @@
 
 package lego.checklist.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,7 +16,7 @@ public class SetsOwnedList {
 	@GeneratedValue
 	private int setsOwnedListId;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "setListId", referencedColumnName = "setListId", nullable = false)
 	private Set_list setList;
 	
@@ -23,9 +24,7 @@ public class SetsOwnedList {
 	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
 	private Account account;
 
-	public SetsOwnedList(int setsOwnedListId, Set_list setList, Account account) {
-		super();
-		this.setsOwnedListId = setsOwnedListId;
+	public SetsOwnedList(Set_list setList, Account account) {
 		this.setList = setList;
 		this.account = account;
 	}

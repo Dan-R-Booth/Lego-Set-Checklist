@@ -29,9 +29,10 @@ public class Set_list {
 	@OneToMany(orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "setListId", nullable = false)
 	private List<Set> sets;
+
+	public Set_list() {}
 	
-	public Set_list(int setListId, Account account, String listName, List<Set> sets) {
-		this.setListId = setListId;
+	public Set_list(Account account, String listName, List<Set> sets) {
 		this.account = account;
 		this.listName = listName;
 		this.sets = sets;

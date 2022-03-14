@@ -1,5 +1,8 @@
 package lego.checklist.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lego.checklist.domain.Account;
+import lego.checklist.domain.Set;
+import lego.checklist.domain.Set_list;
+import lego.checklist.domain.SetsOwnedList;
 import lego.checklist.repository.AccountRepository;
 import lego.checklist.repository.PieceFoundRepository;
 import lego.checklist.repository.SetInProgressRepository;
@@ -84,6 +90,14 @@ public class DatabaseController {
 		}
 		// This adds the created account to the database table Accounts
 		accountRepo.save(account);
+		
+		List<Set> sets = new ArrayList<>();
+		
+		Set_list set_list = new Set_list(account, "Sets Owned List", sets);
+		set_listRepo.save(set_list);
+		
+		SetsOwnedList setsOwnedList = new SetsOwnedList(set_list, account);
+		setsOwnedListRepo.save(setsOwnedList);
 		
 		// This is used so the JSP page knows to inform the user that they have successfully created
 		// an account and is added to redirectAttributes so it stays after the page redirect

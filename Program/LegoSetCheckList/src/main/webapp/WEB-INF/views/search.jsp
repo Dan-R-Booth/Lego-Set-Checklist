@@ -848,14 +848,15 @@
 											<br>
 											<h5> Set List: </h5>
 											<div class="input-group">
-												<select id="selectList_${set.num}" class="form-select" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
-													<option selected>Open this select menu</option>
-													<option value="1">Sets Owned List</option>
-													<option value="2">Two</option>
-													<option value="3">Three</option>
+												<select class="form-select" id="selectList_${set.num}" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
+													<c:forEach items="${set_lists}" var="set_list">
+														<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
+													</c:forEach>
 												</select>
-												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i> New List</button>
+												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i> Add Set</button>
 											</div>
+											<!-- This creates a select box using bootstrap, for every Lego theme -->
+											</select>
 										</div>
 
 									</div>

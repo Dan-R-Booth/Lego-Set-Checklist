@@ -4,10 +4,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +31,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
 
+import lego.checklist.domain.Account;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Set;
+import lego.checklist.domain.Set_list;
 import lego.checklist.domain.Theme;
+import lego.checklist.repository.Set_listRepository;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
@@ -61,6 +68,9 @@ public class SetController {
 	
 	// The api key used to access the Rebrickable api
 	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	
+	@Autowired
+	private Set_listRepository set_listRepo;
 	
 	@GetMapping("/set")
 	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate) {
@@ -100,7 +110,7 @@ public class SetController {
 	}
 	
 	@GetMapping("/search/text={text}/barOpen={barOpen}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
-	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
+	public String showSetPage(Model model, HttpSession session, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
@@ -232,6 +242,20 @@ public class SetController {
         catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
+        
+//        if (sessionAttributes.contains("accountLoggedIn")) {
+        try {
+        	Account account = (Account) session.getAttribute("accountLoggedIn");
+        	List<Set_list> set_lists = set_listRepo.findByAccount(account);
+//        	for (Set_list set_list : set_lists) {
+//        		System.out.println(set_list.getListName());
+//        	}
+        	
+        	model.addAttribute("set_lists", set_lists);
+        }
+        catch (Exception e) {
+        	System.out.println("Failure! " + e);
+        }
         
         model.addAttribute("previousPage", previous);
         model.addAttribute("nextPage", next);
