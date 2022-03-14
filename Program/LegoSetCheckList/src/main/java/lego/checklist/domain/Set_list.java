@@ -58,7 +58,11 @@ public class Set_list {
 		this.listName = listName;
 	}
 	
-	public void addList() {}
+	public void addSet(Set set) {
+		sets.add(set);
+	}
 	
-	public void removeList() {}
+	public void removeSet(Set set) {
+		sets.remove(set);
+	}
 }

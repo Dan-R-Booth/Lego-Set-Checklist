@@ -841,13 +841,14 @@
 									<h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
-								<form method="POST" id="addSetToListForm_${set.num}" action="/openImport" enctype="multipart/form-data">
+								<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList" enctype="multipart/form-data">
 									<div class="modal-body">
 										<div class="mb-3">
-											<label class="form-label">Add Set: ${set.num} to a list</label>
+											<label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
 											<br>
 											<h5> Set List: </h5>
 											<div class="input-group">
+												<!-- This creates a select box using bootstrap, for every List of LEgo Sets belonging to the logged in user -->
 												<select class="form-select" id="selectList_${set.num}" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
 													<c:forEach items="${set_lists}" var="set_list">
 														<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
@@ -855,14 +856,13 @@
 												</select>
 												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i> Add Set</button>
 											</div>
-											<!-- This creates a select box using bootstrap, for every Lego theme -->
-											</select>
+											<!-- This is a hidden input that adds the set number of the set selected to the form -->
+											<input type="hidden" id="inputSetNum_${set.num}" value="${set.num}">
 										</div>
-
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-										<button type="button" id="addSetToListButton_${set.num}" class="btn btn-primary" onclick="importCSVFile()"> <i class="fa fa-plus"></i> New List </button>
+										<button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"> <i class="fa fa-plus"></i> New List </button>
 									</div>
 								</form>
 							</div>
