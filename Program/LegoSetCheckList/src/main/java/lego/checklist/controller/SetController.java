@@ -71,7 +71,7 @@ public class SetController {
 	private Set_listRepository set_listRepo;
 	
 	@GetMapping("/set")
-	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate) {
+	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate, HttpSession httpSession) {
 		
 		if (set_variant != null) {
 			// As there are different versions of certain sets denoted by '-' and the version number,
@@ -103,6 +103,16 @@ public class SetController {
 			}
 		}
 		model.addAttribute("set_number", set_number);
+		
+		// This gets the account of the user logged in, if they are not logged in this try catch will fail
+        // This gets a list of sets belong to the logged in user, and adds these to the model
+        try {
+        	Account account = (Account) httpSession.getAttribute("accountLoggedIn");
+        	List<Set_list> set_lists = set_listRepo.findByAccount(account);
+
+        	model.addAttribute("set_lists", set_lists);
+        }
+        catch (Exception e) {}
 		
 		return "showSet";
 	}

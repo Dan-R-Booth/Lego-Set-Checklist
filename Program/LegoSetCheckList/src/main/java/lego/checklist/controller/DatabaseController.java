@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -187,8 +188,8 @@ public class DatabaseController {
 		return "redirect:/";
 	}
 	
-	@PostMapping("/addSetToList")
-	public String addSetToList(Model model, HttpSession httpSession, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	@PostMapping("/addSetToList/previousPage={previousPage}")
+	public String addSetToList(Model model, HttpSession httpSession, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
 		// This gets the account of the user logged in, if they are not logged in this try catch will fail
         // This gets a list of sets belong to the logged in user, and adds these to the model
@@ -219,9 +220,14 @@ public class DatabaseController {
 	        	redirectAttributes.addFlashAttribute("setAdded", true);
 	        }
 			
-			String searchURL = (String) httpSession.getAttribute("searchURL");
-			
-			return "redirect:" + searchURL;
+			if (previousPage.equals("search")) {
+				String searchURL = (String) httpSession.getAttribute("searchURL");
+				
+				return "redirect:" + searchURL;
+			}
+			else {
+				return "redirect:/set/?set_number=" + set_number;
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -92,7 +92,7 @@
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 				}
 
-				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				// If a Lego set has just been added to a list, this will inform the user of this
 				if("${setAdded}" == "true") {
 					alert("Set: \"${set_number}\" added to list: \"${set_list.listName}\"");
 				}
@@ -106,8 +106,6 @@
 
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
-
-					alert("Set already in list: \"${set_list.listName}\"")
 				}
 			}
 			
@@ -864,7 +862,7 @@
 									<h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
-								<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList">
+								<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=search">
 									<div class="modal-body">
 										<div class="mb-3">
 											<label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
@@ -877,7 +875,7 @@
 														<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
 													</c:forEach>
 												</select>
-												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i> Add Set</button>
+												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
 											</div>
 											
 											<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
@@ -888,7 +886,7 @@
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-										<button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"> <i class="fa fa-plus"></i> New List </button>
+										<button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
 									</div>
 								</form>
 							</div>

@@ -94,6 +94,22 @@
 				else {
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 				}
+				
+				// If a Lego set has just been added to a list, this will inform the user of this
+				if("${setAdded}" == "true") {
+					alert("Set: \"${set_number}\" added to list: \"${set_list.listName}\"");
+				}
+
+				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				if("${setAddedError}" == "true") {
+					document.getElementById("selectList_${set_number}").setAttribute("class", "form-select is-invalid");
+					document.getElementById("addSetToListHelp_${set_number}").setAttribute("class", "alert alert-danger mt-2s");
+					
+					document.getElementById("selectList_${set_number}").value = "${set_list.setListId}";
+
+					// This opens the addSetToListModal
+					$("#addSetToListModal_${set_number}").modal("show");
+				}
 			}
 		
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
@@ -273,7 +289,10 @@
 				        <h4 class="text-warning"><i class="fa fa-warning"></i> No Instructions Found</h4>
 				    </c:otherwise>
 				</c:choose>
-				
+				<!-- This code will only display this button if the user is logged in -->
+				<c:if test="${not empty accountLoggedIn}">
+					<button class="row btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"><i class="fa fa-plus"></i> Add to List</button>
+				</c:if>
 			</div>
 		</div>
 		
@@ -287,6 +306,47 @@
 		
 		<!-- Modal to Login or Sign Up -->
 		
+		<!-- This code will only be run if the user is logged in -->
+		<c:if test="${not empty accountLoggedIn}">
+			<!-- Modal to Add a Lego Set to a List -->
+			<div class="modal fade" id="addSetToListModal_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${set.num}" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=set">
+							<div class="modal-body">
+								<div class="mb-3">
+									<label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
+									<br>
+									<h5> Set List: </h5>
+									<div class="input-group mb-3">
+										<!-- This creates a select box using bootstrap, for every List of Lego Sets belonging to the logged in user -->
+										<select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
+											<c:forEach items="${set_lists}" var="set_list">
+												<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
+											</c:forEach>
+										</select>
+										<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
+									</div>
+									
+									<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
+
+									<!-- This is a hidden input that adds the set number of the set selected to the form -->
+									<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}">
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+								<button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</c:if>
 
 		<!-- Modal to show loading -->
 		<div class="modal fade" id="loadingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
