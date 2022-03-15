@@ -54,10 +54,10 @@ import lego.checklist.domain.Set;
 @SessionAttributes("set")
 public class PieceController {
 	// This stores the basic uri to the Rebrickable API
-	public final static String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
+	private final static String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 		
 	// The api key used to access the Rebrickable api
-	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	private final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 		
 	@GetMapping("set/{set_number}/pieces")
 	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {

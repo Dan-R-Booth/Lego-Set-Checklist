@@ -59,8 +59,7 @@
 				if ("${importError}" == "true") {
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
-					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
-					importModal.show();
+					$("#importModal").modal("show");
 				}
 
 				// This sets the quantity checked buttons for each piece to be disabled if can't decresse quantity further or increased any further
@@ -80,6 +79,22 @@
 				
 				piecesFound();
 
+				applySortVisuals()
+				
+				applyFiltersOnReload()
+
+				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				// Otherwise the logout link is displayed allowing users to logout of their account
+				if("${accountLoggedIn}" == "") {
+					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
+				}
+				else {
+					document.getElementById("logoutLink").setAttribute("class", "nav-link");
+				}
+			}
+			
+			// If sorts are applied to the page this adds visuals for the user so it is clear which columns are being filtered
+			function applySortVisuals() {
 				// If their is a sort this sets the correct column to the correct sort symbol
 				if ("${sort}" == "pieceNumber") {
 					document.getElementById("pieceNumberSortIcon").setAttribute("class", "fa fa-sort-numeric-asc");
@@ -117,7 +132,10 @@
 				else if ("${sort}" == "-quantityFound") {
 					document.getElementById("quantityFoundSortIcon").setAttribute("class", "fa fa-sort-amount-desc");
 				}
+			}
 
+			// This reapplies any filters that where open when the page reloads
+			function applyFiltersOnReload() {
 				var coloursFiltered = [];
 				var pieceTypesFiltered = [];
 				
@@ -210,17 +228,8 @@
 						document.getElementById("piece_" + id).style.display = "none";
 					}
 				}
-
-				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
-				// Otherwise the logout link is displayed allowing users to logout of their account
-				if("${accountLoggedIn}" == "") {
-					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
-				}
-				else {
-					document.getElementById("logoutLink").setAttribute("class", "nav-link");
-				}
 			}
-			
+
 			// This decreases the quantity of a piece found
 			function decreaseQuantityChecked(id) {
 				var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
@@ -677,21 +686,21 @@
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
 							<li class="nav-item mx-5">
-								<a class="nav-link" onclick="saveProgress()"> <i class="fa fa-save"></i> Save CheckList</a>
+								<a class="nav-link" style="cursor: pointer;" onclick="saveProgress()"> <i class="fa fa-save"></i> Save CheckList</a>
 							</li>
 							<li class="nav-item mx-5">
-								<a class="nav-link" onclick="exportList()"> <i class="fa fa-download"></i> Export Checklist</a>
+								<a class="nav-link" style="cursor: pointer;" onclick="exportList()"> <i class="fa fa-download"></i> Export Checklist</a>
 							</li>
 							<li class="nav-item mx-5">
-								<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
+								<a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
 							</li>
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="d-none" id="login/signUpLink" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="d-none" id="logoutLink" href="#" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
+								<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
 							</li>
 						</ul>
 					</div>
@@ -752,8 +761,8 @@
 								</ul>
 							</li>
 							<li class="nav-item mx-5 mt-2">
-								<input type="checkbox" name="themeFilter" id="hidePiecesFound"  onclick="filter(this)">
-								<label class="form-check-label text-white" for="hidePiecesFound"> Hide Pieces Found </label>
+								<input type="checkbox" name="themeFilter" id="hidePiecesFound" style="cursor: pointer;" onclick="filter(this)">
+								<label class="form-check-label text-white" style="cursor: pointer;" for="hidePiecesFound"> Hide Pieces Found </label>
 							</li>
 						</ul>
 					</div>
@@ -771,7 +780,7 @@
 					<div class="col">
 						<!-- The style width sets the percentage size the image will be on any screen -->
 						<!-- When clicked this will display a Model with the image enlarged within -->
-						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%" class="img-thumbnail rounded m-2" data-bs-toggle="modal" data-bs-target="#setModal">
+						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%; cursor: pointer;" class="img-thumbnail rounded m-2" data-bs-toggle="modal" data-bs-target="#setModal">
 					</div>
 					<div class="col">
 						<h4>${set.name}</h4>
@@ -793,22 +802,22 @@
 					<div class="col">
 					</div>
 					<div class="col">
-						<h6 onclick="pieceNumberSort()" data-bs-toggle="tooltip" title="Sort by Piece Number">Piece Number: <i id="pieceNumberSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="pieceNumberSort()" data-bs-toggle="tooltip" title="Sort by Piece Number">Piece Number: <i id="pieceNumberSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="pieceNameSort()" data-bs-toggle="tooltip" title="Sort by Piece Name">Piece Name: <i id="pieceNameSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="pieceNameSort()" data-bs-toggle="tooltip" title="Sort by Piece Name">Piece Name: <i id="pieceNameSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Piece Colour">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="colourSort()" data-bs-toggle="tooltip" title="Sort by Piece Colour">Piece Colour: <i id="colourSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Type">Piece Type: <i id="typeSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="typeSort()" data-bs-toggle="tooltip" title="Sort by Piece Type">Piece Type: <i id="typeSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="quantitySort()" data-bs-toggle="tooltip" title="Sort by Quantity">Quantity: <i id="quantitySortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="quantitySort()" data-bs-toggle="tooltip" title="Sort by Quantity">Quantity: <i id="quantitySortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="quantityFoundSort()" data-bs-toggle="tooltip" title="Sort by Quantity Found">Quantity Found: <i id="quantityFoundSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="quantityFoundSort()" data-bs-toggle="tooltip" title="Sort by Quantity Found">Quantity Found: <i id="quantityFoundSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 				</div>
 			</div>

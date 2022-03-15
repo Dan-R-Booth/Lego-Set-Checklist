@@ -4,13 +4,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,10 +62,10 @@ import lego.checklist.repository.Set_listRepository;
 @SessionAttributes({"set", "searchURL"})
 public class SetController {
 	// This stores the basic uri to the Rebrickable API
-	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
+	private final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 	
 	// The api key used to access the Rebrickable api
-	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 	
 	@Autowired
 	private Set_listRepository set_listRepo;
@@ -110,7 +108,7 @@ public class SetController {
 	}
 	
 	@GetMapping("/search/text={text}/barOpen={barOpen}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
-	public String showSetPage(Model model, HttpSession session, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
+	public String showSetPage(Model model, HttpSession httpSession, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
@@ -243,19 +241,15 @@ public class SetController {
 			e.printStackTrace();
 		}
         
-//        if (sessionAttributes.contains("accountLoggedIn")) {
+        // This gets the account of the user logged in, if they are not logged in this try catch will fail
+        // This gets a list of sets belong to the logged in user, and adds these to the model
         try {
-        	Account account = (Account) session.getAttribute("accountLoggedIn");
+        	Account account = (Account) httpSession.getAttribute("accountLoggedIn");
         	List<Set_list> set_lists = set_listRepo.findByAccount(account);
-//        	for (Set_list set_list : set_lists) {
-//        		System.out.println(set_list.getListName());
-//        	}
-        	
+
         	model.addAttribute("set_lists", set_lists);
         }
-        catch (Exception e) {
-        	System.out.println("Failure! " + e);
-        }
+        catch (Exception e) {}
         
         model.addAttribute("previousPage", previous);
         model.addAttribute("nextPage", next);
@@ -267,6 +261,7 @@ public class SetController {
 		return "search";
 	}
 	
+	// This gets all the information and Lego pieces for a Lego Set that is received from the Rebrickable API via the Set Number
 	private Set getSet(Model model, String set_number, RestTemplate restTemplate) {
 		// This is the uri to a specific set in the Rebrickable API
 		String set_uri = rebrickable_uri + "sets/" + set_number + "/?key=" + rebrickable_api_key;

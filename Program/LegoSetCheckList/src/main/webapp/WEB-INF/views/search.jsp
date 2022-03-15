@@ -71,6 +71,48 @@
 					document.getElementById("sortBar").style.display = "block";
 				}
 
+				applySortVisuals()
+				
+				sortSelectChange();
+
+				// These add the current min year and max year filters to their number boxes
+				document.getElementById("minYearBox").value = "${minYear}";
+				document.getElementById("maxYearBox").value = "${maxYear}";
+				
+				// These add the current min pieces and max pieces filters to their number boxes
+				document.getElementById("minPiecesBox").value = "${minPieces}";
+				document.getElementById("maxPiecesBox").value = "${maxPieces}";
+
+				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				// Otherwise the logout link is displayed allowing users to logout of their account
+				if("${accountLoggedIn}" == "") {
+					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
+				}
+				else {
+					document.getElementById("logoutLink").setAttribute("class", "nav-link");
+				}
+
+				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				if("${setAdded}" == "true") {
+					alert("Set: \"${set_number}\" added to list: \"${set_list.listName}\"");
+				}
+
+				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				if("${setAddedError}" == "true") {
+					document.getElementById("selectList_${set_number}").setAttribute("class", "form-select is-invalid");
+					document.getElementById("addSetToListHelp_${set_number}").setAttribute("class", "alert alert-danger mt-2s");
+					
+					document.getElementById("selectList_${set_number}").value = "${set_list.setListId}";
+
+					// This opens the addSetToListModal
+					$("#addSetToListModal_${set_number}").modal("show");
+
+					alert("Set already in list: \"${set_list.listName}\"")
+				}
+			}
+			
+			// If sorts are applied to the page this adds visuals for the user so it is clear which columns are being filtered
+			function applySortVisuals() {
 				// If their is a sort this sets the correct column to the correct sort symbol,
 				// and if their isn't a sort or it's set number, it sorts it by set number 
 				if ("${sort1}" == "name") {
@@ -191,27 +233,8 @@
 					document.getElementById("numSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
 					document.getElementById("sortSelect3").value = "Set Number (desc)";
 				}
-				
-				sortSelectChange();
-
-				// These add the current min year and max year filters to their number boxes
-				document.getElementById("minYearBox").value = "${minYear}";
-				document.getElementById("maxYearBox").value = "${maxYear}";
-				
-				// These add the current min pieces and max pieces filters to their number boxes
-				document.getElementById("minPiecesBox").value = "${minPieces}";
-				document.getElementById("maxPiecesBox").value = "${maxPieces}";
-
-				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
-				// Otherwise the logout link is displayed allowing users to logout of their account
-				if("${accountLoggedIn}" == "") {
-					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
-				}
-				else {
-					document.getElementById("logoutLink").setAttribute("class", "nav-link");
-				}
 			}
-			
+
 			// The following two functions call the api with the either the previous or next page uri
 			function previousPage() {
 				var previous = "${previousPage}";
@@ -606,10 +629,10 @@
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="d-none" id="login/signUpLink" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="d-none" id="logoutLink" href="#" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
+								<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
 							</li>
 						</ul>
 					</div>
@@ -636,7 +659,7 @@
 									<div class="col-auto">
 										<label class="text-white" for="themeSelect"> <i class="fa fa-filter"></i> Filter by Theme: </label>
 										<!-- This creates a select box using bootstrap, for every Lego theme -->
-										<select class="form-select" id="themeFilter" style="max-height: 50vh; overflow-y: auto;">
+										<select class="form-select" id="themeFilter" style="max-height: 50vh; overflow-y: auto; cursor: pointer;">
 											<c:forEach items="${themeList}" var="theme">
 												<c:choose>
 													<c:when test="${theme.id == theme_id}">
@@ -692,7 +715,7 @@
 										<label class="text-white mt-2"> Sort By: </label>
 									</div>
 									<div class="col-auto mt-1">
-										<select class="form-select" id="sortSelect1" onchange="sortSelectChange()">
+										<select class="form-select" id="sortSelect1" style="cursor: pointer;" onchange="sortSelectChange()">
 											<option selected> Set Number (asc) </option>
 											<option> Set Number (desc) </option>
 											<option> Set Name (asc) </option>
@@ -709,7 +732,7 @@
 										<label class="text-white mt-2"> Then By: </label>
 									</div>
 									<div class="col-auto mt-1">
-										<select class="form-select" id="sortSelect2" onchange="sortSelectChange()">
+										<select class="form-select" id="sortSelect2" style="cursor: pointer;" onchange="sortSelectChange()">
 											<option selected> None </option>
 											<option> Set Number (asc) </option>
 											<option> Set Number (desc) </option>
@@ -727,7 +750,7 @@
 										<label class="text-white mt-2"> Then By: </label>
 									</div>
 									<div class="col-auto mt-1">
-										<select class="form-select" id="sortSelect3" onchange="sortSelectChange()" disabled>
+										<select class="form-select" id="sortSelect3" style="cursor: pointer;" onchange="sortSelectChange()" disabled>
 											<option selected> None </option>
 											<option> Set Number (asc) </option>
 											<option> Set Number (desc) </option>
@@ -763,19 +786,19 @@
 						<h6>Set Image:</h6>
 					</div>
 					<div class="col">
-						<h6 onclick="numSort()" data-bs-toggle="tooltip" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="numSort()" data-bs-toggle="tooltip" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="nameSort()" data-bs-toggle="tooltip" title="Sort by Set Name">Set Name: <i id="nameSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="nameSort()" data-bs-toggle="tooltip" title="Sort by Set Name">Set Name: <i id="nameSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="yearSort()" data-bs-toggle="tooltip" title="Sort by Year Released">Year Released: <i id="yearSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="yearSort()" data-bs-toggle="tooltip" title="Sort by Year Released">Year Released: <i id="yearSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="themeSort()" data-bs-toggle="tooltip" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="themeSort()" data-bs-toggle="tooltip" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 onclick="numPiecesSort()" data-bs-toggle="tooltip" title="Sort by Number of Pieces">Number of Pieces: <i id="numPiecesSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="numPiecesSort()" data-bs-toggle="tooltip" title="Sort by Number of Pieces">Number of Pieces: <i id="numPiecesSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 				</div>
 			</div>
@@ -791,11 +814,11 @@
 						<div class="col">
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
-							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
+							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
 							
 							<!-- This code will only display this button if the user is logged in -->
 							<c:if test="${not empty accountLoggedIn}">
-								<i class="fa fa-plus" data-bs-toggle="modal" data-bs-target="#addSetToListModel_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"></i>
+								<i class="fa fa-plus" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"></i>
 							</c:if>
 						</div>
 						<div class="col">
@@ -808,7 +831,7 @@
 							${set.year}
 						</div>
 						<div class="col">
-						${set.theme}
+							${set.theme}
 						</div>
 						<div class="col">
 							${set.num_pieces}
@@ -834,30 +857,33 @@
 				<!-- This code will only be run if the user is logged in -->
 				<c:if test="${not empty accountLoggedIn}">
 					<!-- Modal to Add a Lego Set to a List -->
-					<div class="modal fade" id="addSetToListModel_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${set.num}" aria-hidden="true">
+					<div class="modal fade" id="addSetToListModal_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${set.num}" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
-								<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList" enctype="multipart/form-data">
+								<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList">
 									<div class="modal-body">
 										<div class="mb-3">
 											<label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
 											<br>
 											<h5> Set List: </h5>
-											<div class="input-group">
-												<!-- This creates a select box using bootstrap, for every List of LEgo Sets belonging to the logged in user -->
-												<select class="form-select" id="selectList_${set.num}" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
+											<div class="input-group mb-3">
+												<!-- This creates a select box using bootstrap, for every List of Lego Sets belonging to the logged in user -->
+												<select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
 													<c:forEach items="${set_lists}" var="set_list">
 														<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
 													</c:forEach>
 												</select>
 												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i> Add Set</button>
 											</div>
+											
+											<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
+
 											<!-- This is a hidden input that adds the set number of the set selected to the form -->
-											<input type="hidden" id="inputSetNum_${set.num}" value="${set.num}">
+											<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}">
 										</div>
 									</div>
 									<div class="modal-footer">

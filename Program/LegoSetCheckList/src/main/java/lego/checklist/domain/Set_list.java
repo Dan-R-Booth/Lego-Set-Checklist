@@ -65,4 +65,13 @@ public class Set_list {
 	public void removeSet(Set set) {
 		sets.remove(set);
 	}
+	
+	public boolean contains(String set_number) {
+		for (Set set : sets) {
+			if (set_number.equals(set.getNum())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

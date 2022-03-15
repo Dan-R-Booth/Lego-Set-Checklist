@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import lego.checklist.domain.Account;
-import lego.checklist.domain.Set;
 import lego.checklist.domain.Set_list;
 
 public interface Set_listRepository extends CrudRepository<Set_list, Integer> {
@@ -13,6 +12,5 @@ public interface Set_listRepository extends CrudRepository<Set_list, Integer> {
 	
 	public List<Set_list> findByAccount(Account account);
 	
-	public Set_list findByAccountAndListName(String email, String listName);
-	
+	public Set_list findByAccountAndSetListId(Account account, int setListId);
 }

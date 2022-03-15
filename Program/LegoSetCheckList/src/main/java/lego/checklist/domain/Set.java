@@ -40,6 +40,13 @@ public class Set {
 	@Transient
 	private List<Minifigure> minifigures;
 	
+	public Set() {}
+	
+	public Set(String num) {
+		this.num = num;
+	}
+	
+	
 	public Set(String num, String name, int year, String theme, int num_pieces, String img_url) {
 		this.num = num;
 		this.name = name;

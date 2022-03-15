@@ -3,6 +3,8 @@ package lego.checklist.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,14 +13,23 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lego.checklist.domain.Account;
+import lego.checklist.domain.Piece;
 import lego.checklist.domain.Set;
 import lego.checklist.domain.Set_list;
 import lego.checklist.domain.SetsOwnedList;
+import lego.checklist.domain.Theme;
 import lego.checklist.repository.AccountRepository;
 import lego.checklist.repository.PieceFoundRepository;
 import lego.checklist.repository.SetInProgressRepository;
@@ -93,9 +104,13 @@ public class DatabaseController {
 		
 		List<Set> sets = new ArrayList<>();
 		
+		// This creates a set_list called setsOwnedList for the new user with an empty list of sets
+		// and saves list to the database table SetLists
 		Set_list set_list = new Set_list(account, "Sets Owned List", sets);
 		set_listRepo.save(set_list);
 		
+		// This then creates a setsOwnedList with the new set_list
+		// and saves this to the database table setsOwnedLists
 		SetsOwnedList setsOwnedList = new SetsOwnedList(set_list, account);
 		setsOwnedListRepo.save(setsOwnedList);
 		
@@ -170,5 +185,48 @@ public class DatabaseController {
 		
 		// This redirects the user back to the index page
 		return "redirect:/";
+	}
+	
+	@PostMapping("/addSetToList")
+	public String addSetToList(Model model, HttpSession httpSession, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+		
+		// This gets the account of the user logged in, if they are not logged in this try catch will fail
+        // This gets a list of sets belong to the logged in user, and adds these to the model
+		try {
+			Account account = (Account) httpSession.getAttribute("accountLoggedIn");
+	
+			// This gets a list of sets belong to the logged in user
+			Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+			
+			// This is used so the JSP page knows to inform the user that they have been
+			// logged in and is added to redirectAttributes so it stays after the page redirect
+			redirectAttributes.addFlashAttribute("set_number", set_number);
+			redirectAttributes.addFlashAttribute("set_list", set_list);
+			
+	      	// 
+			if (set_list.contains(set_number)) {
+				redirectAttributes.addFlashAttribute("setAddedError", true);
+			}
+			else {
+	        	Set set = new Set(set_number);
+	        	
+	        	set_list.addSet(set);
+	        	
+	        	setRepo.save(set);
+	        	
+	        	set_listRepo.save(set_list);
+	        	
+	        	redirectAttributes.addFlashAttribute("setAdded", true);
+	        }
+			
+			String searchURL = (String) httpSession.getAttribute("searchURL");
+			
+			return "redirect:" + searchURL;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 }

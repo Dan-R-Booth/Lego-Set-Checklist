@@ -54,19 +54,16 @@
 				if ("${importError}" == "true") {
 					document.getElementById("importFile").setAttribute("class", "form-control is-invalid");
 					document.getElementById("importFileErrorHelp").setAttribute("class", "alert alert-danger mt-2s");
-					var importModal = new bootstrap.Modal(document.getElementById("importModal"));
-					importModal.show();
+					$("#importModal").modal("show");
 				}
 
 				// If the user successfully created an account a popup informs the user of this
 				// It then opens the login form so the user can log into their account
 				if ("${accountCreated}" == "true") {
 					alert("Account Successfully Created");
-
-					// This gets the login_SignUp_Modal
-					var login_SignUpModal = new bootstrap.Modal(document.getElementById("login_SignUp_Modal"));
-					// This opens the login_SignUpModal
-					login_SignUpModal.show();
+					
+					// This opens the login_SignUp_Modal
+					$("#login_SignUp_Modal").modal("show");
 				}
 				
 				// If the user successfully logged into their account a popup informs the user of this
@@ -228,10 +225,8 @@
 					document.getElementById("loginHelp").setAttribute("class", "alert alert-danger");
 				}
 				
-				// This gets the login_SignUp_Modal
-				var login_SignUpModal = new bootstrap.Modal(document.getElementById("login_SignUp_Modal"));
 				// This opens the login_SignUpModal
-				login_SignUpModal.show();
+				$("#login_SignUp_Modal").modal("show");
 			}
 
 			// These will display any errors returned by the AccountValidator when validating a user Sign Up attempt
@@ -269,10 +264,8 @@
 					document.getElementById("passwordErrorHelp_SignUp").setAttribute("class", "alert alert-danger");
 				}
 
-				// This gets the login_SignUp_Modal
-				var login_SignUpModal = new bootstrap.Modal(document.getElementById("login_SignUp_Modal"));
 				// This opens the login_SignUpModal
-				login_SignUpModal.show();
+				$("#login_SignUp_Modal").modal("show");
 				
 				// This switches to the signUp tab
 				signUpTab();
@@ -321,10 +314,10 @@
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="d-none" id="login/signUpLink" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="d-none" id="logoutLink" href="#" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
+								<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
 							</li>
 						</ul>
 					</div>
@@ -344,7 +337,7 @@
 								<a class="nav-link active" href="/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/"> <i class="fa fa-search"></i> Search for a Lego Set</a>
 							</li>
 							<li class="nav-item mx-5">
-								<a class="nav-link active" href="#" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
+								<a class="nav-link active" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
 							</li>
 						</ul>
 					</div>

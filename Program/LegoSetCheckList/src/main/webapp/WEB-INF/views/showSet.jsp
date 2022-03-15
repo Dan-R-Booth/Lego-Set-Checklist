@@ -204,10 +204,10 @@
 					</ul>
 					<ul class="navbar-nav">
 						<li class="nav-item ms-5">
-							<a class="d-none" id="login/signUpLink" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+							<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 						</li>
 						<li class="nav-item ms-5">
-							<a class="d-none" id="logoutLink" href="#" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
+							<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
 						</li>
 					</ul>
 				</div>
@@ -218,7 +218,7 @@
 			<div id="imageDiv" class="col-6 m-3">
 				<!-- The style width sets the percentage size the image will be on any screen -->
 				<!-- When clicked this will display a Model with the image enlarged within -->
-				<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 80%" class="row img-fluid img-thumbnail rounded" data-bs-toggle="modal" data-bs-target="#setModal">
+				<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 80%; cursor: pointer;" class="row img-fluid img-thumbnail rounded" data-bs-toggle="modal" data-bs-target="#setModal">
 
 				<!-- Lego Set Modal Image Viewer -->
 				<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModalLabel" aria-hidden="true">
