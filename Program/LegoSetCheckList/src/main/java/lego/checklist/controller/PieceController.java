@@ -78,9 +78,14 @@ public class PieceController {
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
 		
+		// When quantityChecked (which holds the current quantities for each piece in the Lego Set)
+		// is parsed in this calls the updateQuantityChecked function to update the quantity checked
+		// for each piece in the Lego set
 		if (quantityChecked != null) {
 			updateQuantityChecked(set, quantityChecked, piece_list);
 		}
+		// Otherwise, if the user is logged in and the sets progress is saved to the database this updates
+		// every piece's quantity in the set, to match the quantity that is stored in the database
 		else if ((account != null) && (setInProgessRepo.findByAccountAndSetNumber(account, set_number) != null)) {
     		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSetNumber(account, set_number);
     		List<PieceFound> piecesFound = pieceFoundRepo.findBySetInProgress(setInProgress);
@@ -228,19 +233,14 @@ public class PieceController {
 		return "showPiece_list";
 	}
 	
-	// Updates the quantity found for a Set object
+	// Updates the quantity of pieces found for a Set object
 	public static void updateQuantityChecked(Set set, List<Integer> quantityChecked, List<Piece> piece_list) {
-		// quantityChecked List holds the quantities of all the current quantities for each piece
-		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter
-		if (quantityChecked != null) {
-			// This updates the quantity checked for each piece in the Lego set
-			for (int i = 0; i < piece_list.size(); i++) {
-				Piece piece = piece_list.get(i);
-				piece.setQuantity_checked(quantityChecked.get(i));
-			}
-			
-			set.setPiece_list(piece_list);
+		for (int i = 0; i < piece_list.size(); i++) {
+			Piece piece = piece_list.get(i);
+			piece.setQuantity_checked(quantityChecked.get(i));
 		}
+		
+		set.setPiece_list(piece_list);
 	}
 	
 	// This adds all the colours to a list that is used to display options to filter the list by colours
@@ -581,9 +581,9 @@ public class PieceController {
         //write all users to csv file
 		writer.writeNext(new String[] {set_number});
 		
+		// For each piece in the Lego set if its quantity is above zero, this writes a piece's number, colour name
+		// and if its a spare as a line to the new CSV file, as these values uniquely identity each Lego piece
 		for (Piece piece : piece_list) {
-			// This adds the number, colour name and if its a spare of pieces that have a quantity above zero,
-			// as these values uniquely identity each Lego piece
 			if (piece.getQuantity_checked() != 0) {
 				String[] csv_data = {piece.getNum(), piece.getColour_name(), String.valueOf(piece.isSpare()), String.valueOf(piece.getQuantity_checked())};
 				writer.writeNext(csv_data);

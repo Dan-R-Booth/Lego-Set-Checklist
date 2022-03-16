@@ -246,6 +246,10 @@ public class DatabaseController {
 		// and saves this to the database table setsOwnedLists
     	SetInProgress setInProgress = new SetInProgress(account, set_number);
     	
+    	// If the user already has saved the set to the database, this sets the set saved
+    	// in the database table to setInProgress, and then deletes all the pieces saved
+    	// in the database so that these can then be replaced with the new updated pieces
+    	// Otherwise a new setInProgress is saved to the database
     	if (setInProgessRepo.findByAccountAndSetNumber(account, set_number) != null) {
     		setInProgress = setInProgessRepo.findByAccountAndSetNumber(account, set_number);
     		pieceFoundRepo.deleteBySetInProgress(setInProgress);
@@ -254,17 +258,14 @@ public class DatabaseController {
 	    	setInProgessRepo.save(setInProgress);
     	}
     	
+    	// For each piece in the Lego set if its quantity is above zero, this adds a piece's number, colour name
+		// and if its a spare as a line to the database with the setInProgress, as these values uniquely identity
+    	// each Lego piece and which setInProgress they belong to and thus user
     	for (Piece piece : piece_list) {
-    		// This adds the number, colour name and if its a spare of pieces that have a quantity above zero,
-    		// as these values uniquely identity each Lego piece
     		if (piece.getQuantity_checked() != 0) {
     			PieceFound pieceFound = new PieceFound(setInProgress, piece.getNum(), piece.getColour_name(), piece.isSpare(), piece.getQuantity_checked());
     			pieceFoundRepo.save(pieceFound);
     		}
     	}
-    	
-    	// This is used so the JSP page knows to inform the user that they have added the Lego
-    	// Set to a list and is added to redirectAttributes so it stays after the page redirect
-//    	redirectAttributes.addFlashAttribute("setAdded", true);
 	}
 }

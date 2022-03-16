@@ -308,7 +308,7 @@
 				return array;
 			}
 			
-			// This saves all the changes to Piece quantity found to the class to the database
+			// This sends a post request to controller to save all the changes to Piece quantity found to the database
 			function saveProgress() {
 				var array = getQuantityChecked();
 				

@@ -365,6 +365,7 @@ public class SetController {
                 
                 List<Piece> piece_list = set.getPiece_list();
                 
+                // This updates every piece's quantity in the set, to match the quantity that is stored in the CSV file
                 for (Piece piece : piece_list) {
                 	for (String[] piece_checked : pieces_checked) {
                 		if (piece_checked[0].equals(piece.getNum()) && piece_checked[1].equals(piece.getColour_name()) && piece_checked[2].equals(String.valueOf(piece.isSpare()))) {
@@ -393,8 +394,12 @@ public class SetController {
         // If the import was called from the showPiece_list page this adds the values inputed from that page so that the user is returned
         // to the exact same page
         if (previousPage.equals("Set_Pieces")) {
-        	// This calls the function updateQuantityChecked in the PieceController class, that
-        	PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
+        	// When quantityChecked (which holds the current quantities for each piece in the Lego Set)
+    		// is parsed in this calls the updateQuantityChecked function in the PieceController class
+        	// to update the quantity checked for each piece in the Lego set
+    		if (quantityChecked != null) {
+    			PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
+    		}
         	
 	        // If their is a sort to be applied to the checklist (sort not null), then it is added to string
         	// thats added to the redirect as a requestParam
