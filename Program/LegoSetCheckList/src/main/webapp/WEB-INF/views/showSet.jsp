@@ -77,13 +77,13 @@
 				document.getElementById("set_number").value = set_numArray[0];
 				document.getElementById("set_variant").value = set_numArray[1];
 
-				// If the API returns a 404 error not found, the container containing details of the Lego Set is hidden and an alert is shown
-				// Otherwise the container to inform the user of this is hidden
+				// If the API returns a 404 error not found, the container to inform the user of this is shown
+				// Otherwise the container containing details of the Lego Set is shown
 				if ("${notFound}" == "true") {
-					document.getElementById("setFound_Container").style.display = "none";
+					document.getElementById("setNotFound_Container").setAttribute("class", "container-fluid");
 				}
 				else {
-					document.getElementById("setNotFound_Container").style.display = "none";
+					document.getElementById("setFound_Container").setAttribute("class", "container-fluid row mb-5");
 				}
 
 				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
@@ -230,7 +230,7 @@
 			</div>
 		</nav>
 	
-		<div class="container-fluid row mb-5" id="setFound_Container">
+		<div class="d-none" id="setFound_Container">
 			<div id="imageDiv" class="col-6 m-3">
 				<!-- The style width sets the percentage size the image will be on any screen -->
 				<!-- When clicked this will display a Model with the image enlarged within -->
@@ -289,15 +289,16 @@
 				        <h4 class="text-warning"><i class="fa fa-warning"></i> No Instructions Found</h4>
 				    </c:otherwise>
 				</c:choose>
+				<br>
 				<!-- This code will only display this button if the user is logged in -->
 				<c:if test="${not empty accountLoggedIn}">
-					<button class="row btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"><i class="fa fa-plus"></i> Add to List</button>
+					<button class="btn btn-secondary" style="width: 100%;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"><i class="fa fa-plus"></i> Add Set to a List</button>
 				</c:if>
 			</div>
 		</div>
 		
 		<!-- If there was an error finding a Lego Set using the Set Number entered it is shown here -->
-		<div class="container-fluid" id="setNotFound_Container">
+		<div class="d-none" id="setNotFound_Container">
 			<div class="col-8 m-5">
 				<h3 class="text-danger"><i class="fa fa-exclamation-circle"></i> Lego Set with Set Number: '<i class="text-dark">${set_number}</i>' Not Found</h3>
 				<button class="btn btn-outline-secondary btn-dark text-white" type="button" onclick="backToSearch()" style="width: 75%"> BACK TO SEARCH </button>

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,7 +70,7 @@ public class SetController {
 	private Set_listRepository set_listRepo;
 	
 	@GetMapping("/set")
-	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate, @SessionAttribute("accountLoggedIn") Account account) {
+	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate, @SessionAttribute(value = "accountLoggedIn", required = false) Account account) {
 		
 		if (set_variant != null) {
 			// As there are different versions of certain sets denoted by '-' and the version number,
@@ -112,7 +111,7 @@ public class SetController {
 	}
 	
 	@GetMapping("/search/text={text}/barOpen={barOpen}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
-	public String showSetPage(Model model, @SessionAttribute("accountLoggedIn") Account account, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
+	public String showSetPage(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
@@ -333,7 +332,7 @@ public class SetController {
 	// This also takes values for filter and sort for the showPieceList page as if the import popup is on this page
 	// it needs these values to return to the exact some page if the import fails
 	@PostMapping("/openImport/previousPage={previousPage}")
-	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @ModelAttribute("set") Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, RedirectAttributes redirectAttributes) {
+	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @SessionAttribute(value = "set", required = false) Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, RedirectAttributes redirectAttributes) {
 		// validate file
         if (importFile.isEmpty()) {
         		// This is used so the JSP page knows to inform the user that the import failed

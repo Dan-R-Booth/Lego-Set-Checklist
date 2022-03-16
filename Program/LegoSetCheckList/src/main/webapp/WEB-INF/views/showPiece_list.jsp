@@ -90,6 +90,7 @@
 				}
 				else {
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
+					document.getElementById("saveLink").setAttribute("class", "nav-link");
 				}
 			}
 			
@@ -307,11 +308,11 @@
 				return array;
 			}
 			
-			// This saves all the changes to Piece quantity found to the class
+			// This saves all the changes to Piece quantity found to the class to the database
 			function saveProgress() {
 				var array = getQuantityChecked();
 				
-				window.location = "/set/${set.num}/pieces/save/?" + "quantityChecked=" + array;
+				$.post("/set/${set.num}/pieces/save/?" + "quantityChecked=" + array);
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -671,7 +672,7 @@
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
 							<li class="nav-item mx-5">
-								<a class="nav-link" style="cursor: pointer;" onclick="saveProgress()"> <i class="fa fa-save"></i> Save CheckList</a>
+								<a class="d-none" id="saveLink" style="cursor: pointer;" onclick="saveProgress()"> <i class="fa fa-save"></i> Save CheckList</a>
 							</li>
 							<li class="nav-item mx-5">
 								<a class="nav-link" style="cursor: pointer;" onclick="exportList()"> <i class="fa fa-download"></i> Export Checklist</a>

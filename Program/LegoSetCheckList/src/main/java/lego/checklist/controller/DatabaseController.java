@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
@@ -185,7 +186,7 @@ public class DatabaseController {
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
 	@PostMapping("/addSetToList/previousPage={previousPage}")
-	public String addSetToList(@ModelAttribute("accountLoggedIn") Account account, @SessionAttribute("searchURL") String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	public String addSetToList(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute("searchURL") String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
 		// This gets a list of sets belong to the logged in user
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -229,8 +230,9 @@ public class DatabaseController {
 	}
 
 	// This saves the progress on a set piece checklist to the database
-	@GetMapping("/set/{set_number}/pieces/save")
-	public void saveChecklist(@ModelAttribute("accountLoggedIn") Account account, @PathVariable String set_number, @SessionAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, RedirectAttributes redirectAttributes) {
+	@PostMapping("/set/{set_number}/pieces/save")
+	@ResponseBody
+	public void saveChecklist(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable String set_number, @SessionAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, RedirectAttributes redirectAttributes) {
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
     	
