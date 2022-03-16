@@ -28,7 +28,7 @@ public class PieceFound {
 	private String pieceNumber;
 
 	@Column(nullable = false)
-	private String colourNumber;
+	private String colourName;
 	
 	@Column(nullable = false)
 	private boolean isSpare;
@@ -38,10 +38,10 @@ public class PieceFound {
 
 	public PieceFound() {}
 	
-	public PieceFound(SetInProgress setInProgress, String pieceNumber, String colourNumber, boolean isSpare, int quantityFound) {
+	public PieceFound(SetInProgress setInProgress, String pieceNumber, String colourName, boolean isSpare, int quantityFound) {
 		this.setInProgress = setInProgress;
 		this.pieceNumber = pieceNumber;
-		this.colourNumber = colourNumber;
+		this.colourName = colourName;
 		this.isSpare = isSpare;
 		this.quantityFound = quantityFound;
 	}
@@ -58,8 +58,8 @@ public class PieceFound {
 		return pieceNumber;
 	}
 
-	public String getColourNumber() {
-		return colourNumber;
+	public String getColourName() {
+		return colourName;
 	}
 
 	public boolean isSpare() {

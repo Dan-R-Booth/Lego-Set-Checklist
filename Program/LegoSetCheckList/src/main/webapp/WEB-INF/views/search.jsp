@@ -783,6 +783,11 @@
 					<div class="col">
 						<h6>Set Image:</h6>
 					</div>
+					<!-- This code will only display this button if the user is logged in -->
+					<c:if test="${not empty accountLoggedIn}">
+						<div class="col-1">
+						</div>
+					</c:if>
 					<div class="col">
 						<h6 style="cursor: pointer;" onclick="numSort()" data-bs-toggle="tooltip" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></h6>
 					</div>
@@ -813,12 +818,13 @@
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
 							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
-							
-							<!-- This code will only display this button if the user is logged in -->
-							<c:if test="${not empty accountLoggedIn}">
-								<i class="fa fa-plus" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"></i>
-							</c:if>
 						</div>
+						<!-- This code will only display this button if the user is logged in -->
+						<c:if test="${not empty accountLoggedIn}">
+							<div class="col-1">
+								<i class="fa fa-plus fa-lg" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"></i>
+							</div>
+						</c:if>
 						<div class="col">
 							<a href="/set?set_number=${set.num}" onclick="openLoader()">${set.num}</a>
 						</div>

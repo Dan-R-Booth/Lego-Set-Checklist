@@ -10,7 +10,7 @@ import lego.checklist.domain.PieceFound;
 import lego.checklist.domain.SetInProgress;
 
 public interface PieceFoundRepository extends CrudRepository<PieceFound, Integer> {
-	public List<PieceFound> findBySetInProgress(int setInProgressId);
+	public List<PieceFound> findBySetInProgress(SetInProgress setInProgress);
 	
 	@Transactional
 	public void deleteBySetInProgress(SetInProgress setInProgress);

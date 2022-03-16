@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,9 +26,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 
+import lego.checklist.domain.Account;
 import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
+import lego.checklist.domain.PieceFound;
 import lego.checklist.domain.Set;
+import lego.checklist.domain.SetInProgress;
+import lego.checklist.repository.PieceFoundRepository;
+import lego.checklist.repository.SetInProgressRepository;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
@@ -58,14 +65,36 @@ public class PieceController {
 		
 	// The api key used to access the Rebrickable api
 	private final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	
+	@Autowired
+	private SetInProgressRepository setInProgessRepo;
+	
+	@Autowired
+	private PieceFoundRepository pieceFoundRepo;
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
+	public String showPieces(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
 		
-		updateQuantityChecked(set, quantityChecked, piece_list);
+		if (quantityChecked != null) {
+			updateQuantityChecked(set, quantityChecked, piece_list);
+		}
+		else if ((account != null) && (setInProgessRepo.findByAccountAndSetNumber(account, set_number) != null)) {
+    		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSetNumber(account, set_number);
+    		List<PieceFound> piecesFound = pieceFoundRepo.findBySetInProgress(setInProgress);
+    		
+    		for (Piece piece : piece_list) {
+            	for (PieceFound pieceFound : piecesFound) {
+            		if (pieceFound.getPieceNumber().equals(piece.getNum()) && pieceFound.getColourName().equals(piece.getColour_name()) && pieceFound.isSpare() == piece.isSpare()) {
+            			piece.setQuantity_checked(pieceFound.getQuantityFound());
+            		}
+            	}
+            }
+    		
+    		set.setPiece_list(piece_list);
+    	}
 		
 		// If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
 		if (sort != null) {
