@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "SetLists")
 public class Set_list {
@@ -21,6 +24,7 @@ public class Set_list {
 	
 	@ManyToOne
 	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Account account;
 	
 	@Column(nullable = false)

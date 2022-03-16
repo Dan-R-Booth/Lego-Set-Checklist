@@ -8,6 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "SetsInProgress")
 public class SetInProgress {
@@ -17,13 +20,15 @@ public class SetInProgress {
 	
 	@ManyToOne
 	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Account account;
 	
 	@Column(nullable = false)
 	private String setNumber;
 
-	public SetInProgress(int setInProgressId, Account account, String setNumber) {
-		this.setInProgressId = setInProgressId;
+	public SetInProgress() {}
+
+	public SetInProgress(Account account, String setNumber) {
 		this.account = account;
 		this.setNumber = setNumber;
 	}

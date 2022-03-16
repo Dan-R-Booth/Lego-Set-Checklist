@@ -9,6 +9,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "PiecesFound")
 public class PieceFound {
@@ -18,6 +21,7 @@ public class PieceFound {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "setInProgressId", referencedColumnName = "setInProgressId", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private SetInProgress setInProgress;
 	
 	@Column(nullable = false)
@@ -32,8 +36,9 @@ public class PieceFound {
 	@Column(nullable = false)
 	private int quantityFound;
 
-	public PieceFound(int pieceFoundId, SetInProgress setInProgress, String pieceNumber, String colourNumber, boolean isSpare, int quantityFound) {
-		this.pieceFoundId = pieceFoundId;
+	public PieceFound() {}
+	
+	public PieceFound(SetInProgress setInProgress, String pieceNumber, String colourNumber, boolean isSpare, int quantityFound) {
 		this.setInProgress = setInProgress;
 		this.pieceNumber = pieceNumber;
 		this.colourNumber = colourNumber;

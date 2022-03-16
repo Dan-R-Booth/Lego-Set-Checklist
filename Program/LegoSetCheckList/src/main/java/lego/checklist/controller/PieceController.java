@@ -521,8 +521,7 @@ public class PieceController {
 	 * I have labelled where I have started using this code below
 	 */
 	@GetMapping("/set/{set_number}/pieces/export")
-	public void export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws Exception {
-		
+	public void export(@PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws Exception {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();

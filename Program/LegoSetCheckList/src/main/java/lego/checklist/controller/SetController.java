@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -71,7 +71,7 @@ public class SetController {
 	private Set_listRepository set_listRepo;
 	
 	@GetMapping("/set")
-	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate, HttpSession httpSession) {
+	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate, @SessionAttribute("accountLoggedIn") Account account) {
 		
 		if (set_variant != null) {
 			// As there are different versions of certain sets denoted by '-' and the version number,
@@ -104,21 +104,15 @@ public class SetController {
 		}
 		model.addAttribute("set_number", set_number);
 		
-		// This gets the account of the user logged in, if they are not logged in this try catch will fail
         // This gets a list of sets belong to the logged in user, and adds these to the model
-        try {
-        	Account account = (Account) httpSession.getAttribute("accountLoggedIn");
-        	List<Set_list> set_lists = set_listRepo.findByAccount(account);
-
-        	model.addAttribute("set_lists", set_lists);
-        }
-        catch (Exception e) {}
+    	List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
 		
 		return "showSet";
 	}
 	
 	@GetMapping("/search/text={text}/barOpen={barOpen}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
-	public String showSetPage(Model model, HttpSession httpSession, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
+	public String showSetPage(Model model, @SessionAttribute("accountLoggedIn") Account account, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
@@ -251,15 +245,9 @@ public class SetController {
 			e.printStackTrace();
 		}
         
-        // This gets the account of the user logged in, if they are not logged in this try catch will fail
         // This gets a list of sets belong to the logged in user, and adds these to the model
-        try {
-        	Account account = (Account) httpSession.getAttribute("accountLoggedIn");
-        	List<Set_list> set_lists = set_listRepo.findByAccount(account);
-
-        	model.addAttribute("set_lists", set_lists);
-        }
-        catch (Exception e) {}
+    	List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
         
         model.addAttribute("previousPage", previous);
         model.addAttribute("nextPage", next);

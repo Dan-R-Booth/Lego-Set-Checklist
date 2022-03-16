@@ -311,22 +311,7 @@
 			function saveProgress() {
 				var array = getQuantityChecked();
 				
-				var colourFilter = getColourFilter();
-				var pieceTypeFilter = getPieceTypeFilter();
-				
-				var sort = "";
-				
-				if ("${sort}" != "") {
-					sort = "sort=${sort}&"
-				}
-				
-				var hidePiecesFound = "";
-				
-				if (document.getElementById("hidePiecesFound").checked == true) {
-					hidePiecesFound = "&hidePiecesFound=true";
-				}
-				
-				window.location = "/set/${set.num}/pieces/?" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				window.location = "/set/${set.num}/pieces/save/?" + "quantityChecked=" + array;
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -700,7 +685,7 @@
 								<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-in"></i> Logout</a>
+								<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-out"></i> Logout</a>
 							</li>
 						</ul>
 					</div>
