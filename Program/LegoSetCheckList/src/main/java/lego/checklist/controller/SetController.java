@@ -239,7 +239,6 @@ public class SetController {
         model.addAttribute("current", set_list_uri);
         model.addAttribute("searchText", searchText);
         model.addAttribute("sets", sets);
-        model.addAttribute("themes", ThemeController.themes);
         model.addAttribute("themeList", ThemeController.themeList);
 		return "search";
 	}

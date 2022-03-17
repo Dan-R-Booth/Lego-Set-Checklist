@@ -20,6 +20,11 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lego.checklist.domain.Account;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.PieceFound;
@@ -27,6 +32,7 @@ import lego.checklist.domain.Set;
 import lego.checklist.domain.SetInProgress;
 import lego.checklist.domain.Set_list;
 import lego.checklist.domain.SetsOwnedList;
+import lego.checklist.domain.Theme;
 import lego.checklist.repository.AccountRepository;
 import lego.checklist.repository.PieceFoundRepository;
 import lego.checklist.repository.SetInProgressRepository;
@@ -56,6 +62,12 @@ public class DatabaseController {
 	
 	@Autowired
 	private PieceFoundRepository pieceFoundRepo;
+	
+	// This stores the basic uri to the Rebrickable API
+	private final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
+	
+	// The api key used to access the Rebrickable api
+	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 	
 	// This will create an new account for a user, as long as the entered details are valid
 	@PostMapping("/signUp")
@@ -278,12 +290,139 @@ public class DatabaseController {
 	}
 
 	@GetMapping("/set_list={setListId}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("setListId") int setListId) {
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("setListId") int setListId, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id, RestTemplate restTemplate) {
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+		model.addAttribute("set_list", set_list);
+		
+		String set_list_uri = "";
+		
+		// This is used so that if the filter or sort bar was open or no bar was open on the search page
+		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+		model.addAttribute("barOpen", barOpen);
+		
+		// If there is a attribute the user would like to sort by this is added to the uri and the model
+		if (sort != null) {
+			String[] sorts = sort.split(",");
+			
+			set_list_uri += "&ordering=" + sort;
+			
+			model.addAttribute("sort1", sorts[0]);
+			if (sorts.length >= 2) {
+				model.addAttribute("sort2", sorts[1]);
+			}
+			
+			if (sorts.length == 3) {
+				model.addAttribute("sort3", sorts[2]);
+			}
+		}
+		
+		// If there is a min year the user would like to filter by this is added to the uri and the model
+		if (minYear != null){
+			set_list_uri += "&min_year=" + minYear;
+			model.addAttribute("minYear", minYear);
+		}
+		
+		// If there is a max year the user would like to filter by this is added to the uri and the model
+		if (maxYear != null) {
+			set_list_uri += "&max_year=" + maxYear;
+			model.addAttribute("maxYear", maxYear);
+		}
+		
+		// If there is a minimum number of pieces the user would like to filter by this is added to the uri and the model
+		if (minPieces != null){
+			set_list_uri += "&min_parts=" + minPieces;
+			model.addAttribute("minPieces", minPieces);
+		}
+		
+		// If there is a maximum number of pieces the user would like to filter by this is added to the uri and the model
+		if (maxPieces != null) {
+			set_list_uri += "&max_parts=" + maxPieces;
+			model.addAttribute("maxPieces", maxPieces);
+		}
+		
+		// If there is a theme_id the user would like to filter by this is added to the uri and the model
+		if (filteredTheme_id != null) {
+			set_list_uri += "&theme_id=" + filteredTheme_id;
+			model.addAttribute("theme_id", filteredTheme_id);
+		}
+		
 		List<Set> sets = set_list.getSets();
 		
-		model.addAttribute("set_list", set_list);
+		for (int i = 0; i < sets.size(); i++) {
+			Set set = sets.get(i);
+			
+			// This is the uri to a specific set in the Rebrickable API
+			String set_uri = rebrickable_uri + "sets/" + set.getNum() + "/?key=" + rebrickable_api_key;
+			
+			// The rest template created above is used to fetch the Lego set every time the website is loaded
+			// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
+			String set_JSON = restTemplate.getForObject(set_uri, String.class);
+			
+			// Sets default values in case the following try catch statement fails
+			String num = "";
+			String name = "";
+			int year = -1;
+			String theme_name = "";
+			int num_pieces = -1;
+			String img_url = "";
+			
+	        // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
+	        try {
+	        	// This provides functionality for reading and writing JSON
+	        	ObjectMapper mapper = new ObjectMapper();
+				
+	        	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
+	        	JsonNode setNode = mapper.readTree(set_JSON);
+				
+	        	// The following search search for a path on the setNode Tree and return the node that matches this
+	        	JsonNode numNode = setNode.path("set_num");
+	        	JsonNode nameNode = setNode.path("name");
+	        	JsonNode yearNode = setNode.path("year");
+	        	JsonNode theme_idNode = setNode.path("theme_id");
+	        	JsonNode num_piecesNode = setNode.path("num_parts");
+	        	JsonNode img_urlNode = setNode.path("set_img_url");
+	        	
+	        	// These return the data stored in the JsonNodes
+	        	num = numNode.textValue();
+	    		name = nameNode.textValue();
+	    		year = yearNode.intValue();
+				
+	    		// This return the int stored in the JsonNode theme_idNode
+	        	int theme_id = theme_idNode.asInt();
+	        	
+	        	// This gets the Theme relating to the theme_id from the HashMap themes set on start up in the theme_controller
+	        	// and then uses this theme to display the theme name to the user
+	        	Theme theme = ThemeController.themes.get(theme_id);
+	        	theme_name = theme.getName();
+	        	
+	        	// These return the data stored in JsonNodes
+	        	num_pieces = num_piecesNode.intValue();
+	        	img_url = img_urlNode.textValue();
+			}
+	        catch (JsonMappingException e) {
+				e.printStackTrace();
+			}
+	        catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			
+			set = new Set(num, name, year, theme_name, num_pieces, img_url);
+			
+			sets.set(i, set);
+			
+			// This makes the program wait one second before making an API call to stop a Too Many Requests error and timeout from the API
+			try {
+				Thread.sleep(1000);
+			}
+			catch (Exception e) {}
+		}
+		
 		model.addAttribute("sets", sets);
+		
+		model.addAttribute("current", set_list_uri);
+        model.addAttribute("searchText", searchText);
+        model.addAttribute("sets", sets);
+        model.addAttribute("themeList", ThemeController.themeList);
 		
 		return "showSetList";
 	}
