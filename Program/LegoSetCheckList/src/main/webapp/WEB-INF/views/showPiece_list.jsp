@@ -204,9 +204,16 @@
 					</c:forEach>
 				}
 				
-				// This checks the hide pieces checkbox if hidePiecesFound has been added to the model
+				// This checks the hide pieces found checkbox if hidePiecesFound has been added to the model
+				// so that pieces found are hidden
 				if ("${hidePiecesFound}" == "true") {
 					document.getElementById("hidePiecesFound").checked = true;
+				}
+
+				// This checks the hide pieces not found checkbox if hidePiecesNotFound has been added to the model
+				// so that pieces not found are hidden
+				if ("${hidePiecesNotFound}" == "true") {
+					document.getElementById("hidePiecesNotFound").checked = true;
 				}
 				
 				// This runs displaying only the pieces that match the piece types and colours selected
@@ -218,10 +225,12 @@
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					
 					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox
-					// is clicked, or if they are a spare piece (stored in the list of spare pieces) and spares are not being shown
+					// is clicked, or will hide all pieces where their quantity and quantity found are not equal if the hide pieces
+					// not found checkbox is clicked, or if they are a spare piece (stored in the list of spare pieces) and spares
+					// are not being shown.
 					// Otherwise this shows pieces depending on if their piece type and colour are in lists storing the filters the
 					// list is currently being sorted by
-					if ((showSpares == false && sparePieceList.indexOf(id) > -1) || (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity)) {
+					if ((showSpares == false && sparePieceList.indexOf(id) > -1) || (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity) || (document.getElementById("hidePiecesNotFound").checked == true && quantityChecked != quantity)) {
 						document.getElementById("piece_" + id).style.display = "none";
 					}
 					else if (pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
@@ -235,12 +244,17 @@
 
 			// This decreases the quantity of a piece found
 			function decreaseQuantityChecked(id) {
+				var quantity = document.getElementById("piece_quantity_checked_" + id).max;
 				var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 				quantityChecked --;
 					
 				 if (quantityChecked == 0) {
 					document.getElementById("decreaseQuantityCheckedButton_" + id).disabled = true;
-				 }
+				}
+				// This hides the piece if its quantity is not max and hidePiecesNotFound is checked
+				else if ((quantityChecked != quantity) && (document.getElementById("hidePiecesNotFound").checked == true)) {
+					document.getElementById("piece_" + id).style.display = "none";
+				}
 				 document.getElementById("increaseQuantityCheckedButton_" + id).disabled = false;
 				 
 				 document.getElementById("piece_quantity_checked_" + id).value = quantityChecked;
@@ -258,6 +272,7 @@
 				 if (quantityChecked == quantity) {
 					document.getElementById("increaseQuantityCheckedButton_" + id).disabled = true;
 					
+					// This hides the piece if its quantity is max and hidePiecesFound is checked
 					if (document.getElementById("hidePiecesFound").checked == true) {
 						document.getElementById("piece_" + id).style.display = "none";
 					}
@@ -315,6 +330,7 @@
 				var array = getQuantityChecked();
 				
 				$.post("/set/${set.num}/pieces/save/?" + "quantityChecked=" + array);
+				alert("Saved");
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -404,12 +420,16 @@
 				var pieceTypeFilter = getPieceTypeFilter();
 				
 				var hidePiecesFound = "";
-				
 				if (document.getElementById("hidePiecesFound").checked) {
 					hidePiecesFound = "&hidePiecesFound=true";
 				}
 
-				window.location = "/set/${set_number}/pieces/?sort=" + sort + "&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+				var hidePiecesNotFound = "";
+				if (document.getElementById("hidePiecesNotFound").checked) {
+					hidePiecesNotFound = "&hidePiecesNotFound=true";
+				}
+
+				window.location = "/set/${set_number}/pieces/?sort=" + sort + "&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound + hidePiecesNotFound;
 			}
 
 			// This filters the list by piece types and colours the user would like to view
@@ -496,10 +516,12 @@
 					var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 					
 					// This will hide all pieces where their quantity and quantity found are equal if the hide pieces found checkbox
-					// is clicked, or if they are a spare piece (stored in the list of spare pieces) and spares are not being shown
+					// is clicked, or will hide all pieces where their quantity and quantity found are not equal if the hide pieces
+					// not found checkbox is clicked, or if they are a spare piece (stored in the list of spare pieces) and spares
+					// are not being shown.
 					// Otherwise this shows pieces depending on if their piece type and colour are in lists storing the filters the
 					// list is currently being sorted by
-					if ((showSpares == false && sparePieceList.indexOf(id) > -1) || (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity)) {
+					if ((showSpares == false && sparePieceList.indexOf(id) > -1) || (document.getElementById("hidePiecesFound").checked == true && quantityChecked == quantity) || (document.getElementById("hidePiecesNotFound").checked == true && quantityChecked != quantity)) {
 						document.getElementById("piece_" + id).style.display = "none";
 					}
 					else if (pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
@@ -615,12 +637,16 @@
 					}
 					
 					var hidePiecesFound = "";
-					
 					if (document.getElementById("hidePiecesFound").checked == true) {
 						hidePiecesFound = "&hidePiecesFound=true";
 					}
 
-					var formActionURL = "/openImport/previousPage=Set_Pieces/?previous_set_number=${set.num}&" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound;
+					var hidePiecesNotFound = "";
+					if (document.getElementById("hidePiecesNotFound").checked) {
+						hidePiecesNotFound = "&hidePiecesNotFound=true";
+					}
+					
+					var formActionURL = "/openImport/previousPage=Set_Pieces/?previous_set_number=${set.num}&" + sort + "quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound + hidePiecesNotFound;
 
 					document.getElementById("importForm").setAttribute("action", formActionURL);
 
@@ -749,8 +775,12 @@
 								</ul>
 							</li>
 							<li class="nav-item mx-5 mt-2">
-								<input type="checkbox" name="themeFilter" id="hidePiecesFound" style="cursor: pointer;" onclick="filter(this)">
+								<input type="checkbox" name="hidePiecesFound" id="hidePiecesFound" style="cursor: pointer;" onclick="filter(this)">
 								<label class="form-check-label text-white" style="cursor: pointer;" for="hidePiecesFound"> Hide Pieces Found </label>
+							</li>
+							<li class="nav-item mx-5 mt-2">
+								<input type="checkbox" name="hidePiecesNotFound" id="hidePiecesNotFound" style="cursor: pointer;" onclick="filter(this)">
+								<label class="form-check-label text-white" style="cursor: pointer;" for="hidePiecesNotFound"> Hide Pieces Not Found </label>
 							</li>
 						</ul>
 					</div>
@@ -768,7 +798,9 @@
 					<div class="col">
 						<!-- The style width sets the percentage size the image will be on any screen -->
 						<!-- When clicked this will display a Model with the image enlarged within -->
-						<img src="${set.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)" alt="Image of the Lego Set: ${set.name}" style="width: 50%; cursor: pointer;" class="img-thumbnail rounded m-2" data-bs-toggle="modal" data-bs-target="#setModal">
+						<span data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)">
+							<img class="img-thumbnail rounded m-2" src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#setModal">
+						</span>
 					</div>
 					<div class="col">
 						<h4>${set.name}</h4>
@@ -953,10 +985,10 @@
 				<div id="piece_${loop.index}" class="container-fluid border">
 					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
-						<div class="col">
+						<div class="col" data-bs-toggle="tooltip" title="Image of the Lego Piece '${piece.name}' (Click to enlarge)">
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
-							<img src="${piece.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Piece '${piece.name}' (Click to enlarge)" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#pieceModal_${piece.num}">
+							<img class="m-2" src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#pieceModal_${piece.num}">
 						</div>
 						<div class="col-1">
 							<!-- This displays a Shoping cart icon that when clicked opens a new tab to the Rebrickable website for that specific piece so the user can buy any missing Lego pieces there. -->

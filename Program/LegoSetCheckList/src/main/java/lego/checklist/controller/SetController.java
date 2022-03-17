@@ -332,7 +332,7 @@ public class SetController {
 	// This also takes values for filter and sort for the showPieceList page as if the import popup is on this page
 	// it needs these values to return to the exact some page if the import fails
 	@PostMapping("/openImport/previousPage={previousPage}")
-	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @SessionAttribute(value = "set", required = false) Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, RedirectAttributes redirectAttributes) {
+	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @SessionAttribute(value = "set", required = false) Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, @RequestParam(required = false) Boolean hidePiecesNotFound, RedirectAttributes redirectAttributes) {
 		// validate file
         if (importFile.isEmpty()) {
         		// This is used so the JSP page knows to inform the user that the import failed
@@ -439,8 +439,15 @@ public class SetController {
 				hidePiecesFoundRequestParam = "&hidePiecesFound=" + hidePiecesFound;
 			}
 			
+			String hidePiecesNotFoundRequestParam = "";
+			
+			// If the boolean hidePiecesFound is parsed into the controller this adds it to the model
+			if (hidePiecesNotFound != null) {
+				hidePiecesNotFoundRequestParam = "&hidePiecesNotFound=" + hidePiecesNotFound;
+			}
+			
 			// This redirects the user back to the set pieces page and will display the errors with the import
-	    	return "redirect:/set/" + previous_set_number + "/pieces/?" + colourFilterRequestParam + pieceTypeFilterRequestParam + hidePiecesFoundRequestParam;
+	    	return "redirect:/set/" + previous_set_number + "/pieces/?" + colourFilterRequestParam + pieceTypeFilterRequestParam + hidePiecesFoundRequestParam + hidePiecesNotFoundRequestParam;
         }
         else {
         	// This redirects the user back to the index page and will display the errors with the import

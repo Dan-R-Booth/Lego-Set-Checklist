@@ -236,7 +236,9 @@
 			<div id="imageDiv" class="col-6 m-3">
 				<!-- The style width sets the percentage size the image will be on any screen -->
 				<!-- When clicked this will display a Model with the image enlarged within -->
-				<img src="${set.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)" alt="Image of the Lego Set: ${set.name}" style="width: 80%; cursor: pointer;" class="row img-fluid img-thumbnail rounded" data-bs-toggle="modal" data-bs-target="#setModal">
+				<div data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)" style="width: 80%;">
+					<img class="row img-fluid img-thumbnail rounded" src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#setModal">
+				</div>
 
 				<!-- Lego Set Modal Image Viewer -->
 				<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModalLabel" aria-hidden="true">
@@ -282,7 +284,7 @@
 							<!-- This displays all instruction booklets for the Lego Set in Bootstrap list group, that when clicked on opens the instruction book in a new tab -->
 							<div class="list-group">
 								<c:forEach items="${instructions}" var="instructionBook">
-									<a href="${instructionBook[0]}" target="_blank" class="list-group-item list-group-item-action">${instructionBook[1]}</a>
+									<a href="${instructionBook[0]}" target="_blank" class="list-group-item list-group-item-action" data-bs-toggle="tooltip" title="Click to open instruction book">${instructionBook[1]}</a>
 								</c:forEach>
 							</div>
 						</h4>

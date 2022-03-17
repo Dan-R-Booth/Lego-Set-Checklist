@@ -817,10 +817,10 @@
 				<div id="set_${loop.index}" class="container-fluid border">
 					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
-						<div class="col">
+						<div class="col" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)">
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
-							<img src="${set.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
+							<img class="m-2" src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
 						</div>
 						<!-- This code will only display this button if the user is logged in -->
 						<c:if test="${not empty accountLoggedIn}">
@@ -835,7 +835,7 @@
 							</script>
 						</c:if>
 						<div class="col">
-							<a href="/set?set_number=${set.num}" onclick="openLoader()">${set.num}</a>
+							<a href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
 						</div>
 						<div class="col">
 							${set.name}
