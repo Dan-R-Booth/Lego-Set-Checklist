@@ -107,6 +107,9 @@
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
 				}
+
+				// This adds bootstrap styling to tooltips
+				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
 			
 			// If sorts are applied to the page this adds visuals for the user so it is clear which columns are being filtered
@@ -817,13 +820,19 @@
 						<div class="col">
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
-							<img src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
+							<img src="${set.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
 						</div>
 						<!-- This code will only display this button if the user is logged in -->
 						<c:if test="${not empty accountLoggedIn}">
 							<div class="col-1">
-								<i class="fa fa-plus fa-lg" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"></i>
+								<i class="fa fa-plus fa-lg" id="addSetToListModelButton_${set.num}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set: '${set.name}' to a List"></i>
 							</div>
+							<script>
+								// This adds bootstrap styling to this tooltip, as because its in a c:if it is not added with the other tooltips
+								$(document).ready(function(){ 
+									$('#addSetToListModelButton_${set.num}').tooltip();
+								});
+							</script>
 						</c:if>
 						<div class="col">
 							<a href="/set?set_number=${set.num}" onclick="openLoader()">${set.num}</a>
@@ -876,7 +885,7 @@
 											<h5> Set List: </h5>
 											<div class="input-group mb-3">
 												<!-- This creates a select box using bootstrap, for every List of Lego Sets belonging to the logged in user -->
-												<select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
+												<select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}"  data-bs-toggle="tooltip" title="Select a list to add the set to">
 													<c:forEach items="${set_lists}" var="set_list">
 														<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
 													</c:forEach>
@@ -887,7 +896,7 @@
 											<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
 
 											<!-- This is a hidden input that adds the set number of the set selected to the form -->
-											<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}">
+											<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
 										</div>
 									</div>
 									<div class="modal-footer">

@@ -38,7 +38,6 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 		<script type="text/javascript">
-		
 			// This does setup for the page when it is first loaded
 			function setup() {
 				// This sets a minimum size the page will adpat to until it will just zoom out,
@@ -87,6 +86,9 @@
 				else {
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 				}
+
+				// This adds bootstrap styling to tooltips
+				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
 
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant

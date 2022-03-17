@@ -37,7 +37,6 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
-
 			// Global boolean used to show if the list is displaying by spares or not
 			var showSpares = false;
 		
@@ -92,6 +91,9 @@
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 					document.getElementById("saveLink").setAttribute("class", "nav-link");
 				}
+
+				// This adds bootstrap styling to tooltips
+				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
 			
 			// If sorts are applied to the page this adds visuals for the user so it is clear which columns are being filtered
@@ -766,7 +768,7 @@
 					<div class="col">
 						<!-- The style width sets the percentage size the image will be on any screen -->
 						<!-- When clicked this will display a Model with the image enlarged within -->
-						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%; cursor: pointer;" class="img-thumbnail rounded m-2" data-bs-toggle="modal" data-bs-target="#setModal">
+						<img src="${set.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)" alt="Image of the Lego Set: ${set.name}" style="width: 50%; cursor: pointer;" class="img-thumbnail rounded m-2" data-bs-toggle="modal" data-bs-target="#setModal">
 					</div>
 					<div class="col">
 						<h4>${set.name}</h4>
@@ -954,7 +956,7 @@
 						<div class="col">
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
-							<img src="${piece.img_url}" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#pieceModal_${piece.num}">
+							<img src="${piece.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Piece '${piece.name}' (Click to enlarge)" alt="Image of the Lego Piece: ${piece.name}" style="width: 50%; cursor: pointer;" class="m-2" data-bs-toggle="modal" data-bs-target="#pieceModal_${piece.num}">
 						</div>
 						<div class="col-1">
 							<!-- This displays a Shoping cart icon that when clicked opens a new tab to the Rebrickable website for that specific piece so the user can buy any missing Lego pieces there. -->

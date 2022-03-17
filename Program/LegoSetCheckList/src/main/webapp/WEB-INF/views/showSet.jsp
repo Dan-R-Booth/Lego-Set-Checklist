@@ -38,7 +38,6 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<script type="text/javascript">
-
 			// This resizes the page so it fits different screen and window sizes
 			function resize() {
 				var width = $(window).width();
@@ -110,6 +109,9 @@
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
 				}
+
+				// This adds bootstrap styling to tooltips
+				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
 		
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
@@ -234,7 +236,7 @@
 			<div id="imageDiv" class="col-6 m-3">
 				<!-- The style width sets the percentage size the image will be on any screen -->
 				<!-- When clicked this will display a Model with the image enlarged within -->
-				<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 80%; cursor: pointer;" class="row img-fluid img-thumbnail rounded" data-bs-toggle="modal" data-bs-target="#setModal">
+				<img src="${set.img_url}" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)" alt="Image of the Lego Set: ${set.name}" style="width: 80%; cursor: pointer;" class="row img-fluid img-thumbnail rounded" data-bs-toggle="modal" data-bs-target="#setModal">
 
 				<!-- Lego Set Modal Image Viewer -->
 				<div class="modal fade" id="setModal" tabindex="-1" aria-labelledby="setModalLabel" aria-hidden="true">
@@ -336,7 +338,7 @@
 									<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
 
 									<!-- This is a hidden input that adds the set number of the set selected to the form -->
-									<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}">
+									<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
 								</div>
 							</div>
 							<div class="modal-footer">
