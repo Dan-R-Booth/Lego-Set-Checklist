@@ -33,13 +33,17 @@ public class Set_list {
 	@OneToMany(orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "setListId", nullable = false)
 	private List<Set> sets;
+	
+	@Column(nullable = false)
+	private int totalSets;
 
 	public Set_list() {}
 	
-	public Set_list(Account account, String listName, List<Set> sets) {
+	public Set_list(Account account, String listName, List<Set> sets, int totalSets) {
 		this.account = account;
 		this.listName = listName;
 		this.sets = sets;
+		this.totalSets = totalSets;
 	}
 
 	public int getSetListId() {
@@ -58,16 +62,22 @@ public class Set_list {
 		return sets;
 	}
 
+	public int getTotalSets() {
+		return totalSets;
+	}
+
 	public void setListName(String listName) {
 		this.listName = listName;
 	}
 	
 	public void addSet(Set set) {
 		sets.add(set);
+		totalSets++;
 	}
 	
 	public void removeSet(Set set) {
 		sets.remove(set);
+		totalSets--;
 	}
 	
 	public boolean contains(String set_number) {

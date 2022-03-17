@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,9 +30,7 @@ import com.opencsv.CSVReader;
 import lego.checklist.domain.Account;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Set;
-import lego.checklist.domain.Set_list;
 import lego.checklist.domain.Theme;
-import lego.checklist.repository.Set_listRepository;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
@@ -65,9 +62,6 @@ public class SetController {
 	
 	// The api key used to access the Rebrickable api
 	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
-	
-	@Autowired
-	private Set_listRepository set_listRepo;
 	
 	@GetMapping("/set")
 	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate, @SessionAttribute(value = "accountLoggedIn", required = false) Account account) {
@@ -102,10 +96,6 @@ public class SetController {
 			}
 		}
 		model.addAttribute("set_number", set_number);
-		
-        // This gets a list of sets belong to the logged in user, and adds these to the model
-    	List<Set_list> set_lists = set_listRepo.findByAccount(account);
-    	model.addAttribute("set_lists", set_lists);
 		
 		return "showSet";
 	}
@@ -243,10 +233,6 @@ public class SetController {
         catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-        
-        // This gets a list of sets belong to the logged in user, and adds these to the model
-    	List<Set_list> set_lists = set_listRepo.findByAccount(account);
-    	model.addAttribute("set_lists", set_lists);
         
         model.addAttribute("previousPage", previous);
         model.addAttribute("nextPage", next);
@@ -506,5 +492,11 @@ public class SetController {
 		}
         
         return instructions;
+	}
+	
+	// This displays the page to display a logged in users set lists
+	@GetMapping("/set_lists")
+	public String showSetLists() {
+		return "showSetLists";
 	}
 }

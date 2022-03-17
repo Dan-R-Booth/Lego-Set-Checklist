@@ -372,7 +372,7 @@
 				if (sort == "Set Number (asc)") {
 					return "set_num";
 				}
-				if (sort == "Set Number (desc)") {
+				else if (sort == "Set Number (desc)") {
 					return "-set_num";
 				}
 				else if (sort == "Set Name (asc)") {
@@ -652,7 +652,7 @@
 						<ul class="navbar-nav">
 							<li class="nav-item mx-5">
 								<!-- This creates a form where users can enter details on how they would like to filter the list of Lego sets and a button to display those that match this search -->
-								<form class="container-fluid d-flex row">
+								<form class="d-flex row">
 									<div class="col-auto form-floating mt-1">
 										<input id="text_search" class="form-control" name="text_search" type="text" placeholder="Search for Lego Set"/>
 										<label class="text-secondary" for="text_search"> Search Text </label>
@@ -711,7 +711,7 @@
 						<ul class="navbar-nav">
 							<li class="nav-item mx-5">
 								<!-- This creates a form where users can enter details on how they would like to sort the list of Lego sets and a button to display that sort on the list -->
-								<form class="container-fluid d-flex row">
+								<form class="d-flex row">
 									<div class="col-auto">
 										<label class="text-white mt-2"> Sort By: </label>
 									</div>

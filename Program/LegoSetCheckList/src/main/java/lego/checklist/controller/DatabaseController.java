@@ -36,7 +36,7 @@ import lego.checklist.repository.SetsOwnedListRepository;
 import lego.checklist.validator.AccountValidator;
 
 @Controller
-@SessionAttributes("accountLoggedIn")
+@SessionAttributes({"accountLoggedIn", "set_lists"})
 public class DatabaseController {
 	
 	@Autowired
@@ -102,7 +102,7 @@ public class DatabaseController {
 		// This creates a set_list called setsOwnedList for the new user with
 		// an empty list of sets and saves list to the database table SetLists
 		List<Set> sets = new ArrayList<>();
-		Set_list set_list = new Set_list(account, "Sets Owned List", sets);
+		Set_list set_list = new Set_list(account, "Sets Owned List", sets, sets.size());
 		set_listRepo.save(set_list);
 		
 		// This then creates a setsOwnedList with the new set_list
@@ -169,6 +169,10 @@ public class DatabaseController {
 		
 		model.addAttribute("accountLoggedIn", account);
 		
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
+		
 		// This redirects the user back to the index page
 		return "redirect:/";
 	}
@@ -176,7 +180,7 @@ public class DatabaseController {
 	// This logs the user out of their account and returns them to the index page
 	@GetMapping("/logout")
 	public String logout(SessionStatus status) {
-		// This removs the the the Session attribute accountLogedIn thus logging the user out
+		// This removes the Session attributes accountLogedIn, and Set_lists thus logging the user out of their account
 		status.setComplete();
 		
 		// This redirects the user back to the index page
@@ -186,7 +190,7 @@ public class DatabaseController {
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
 	@PostMapping("/addSetToList/previousPage={previousPage}")
-	public String addSetToList(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute("searchURL") String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute("searchURL") String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
 		// This gets a list of sets belong to the logged in user
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -219,6 +223,10 @@ public class DatabaseController {
         	// Set to a list and is added to redirectAttributes so it stays after the page redirect
         	redirectAttributes.addFlashAttribute("setAdded", true);
         }
+		
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
 		
 		// These returns the user back to the page that the user called the controller from
 		if (previousPage.equals("search")) {
@@ -267,5 +275,16 @@ public class DatabaseController {
     			pieceFoundRepo.save(pieceFound);
     		}
     	}
+	}
+
+	@GetMapping("/set_list={setListId}")
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("setListId") int setListId) {
+		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+		List<Set> sets = set_list.getSets();
+		
+		model.addAttribute("set_list", set_list);
+		model.addAttribute("sets", sets);
+		
+		return "showSetList";
 	}
 }

@@ -79,12 +79,24 @@
 				}
 
 				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
-				// Otherwise the logout link is displayed allowing users to logout of their account
+				// Otherwise the logout link is displayed allowing users to logout of their account, along with
+				// information only for logged in users
 				if("${accountLoggedIn}" == "") {
 					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
+					
+					//This displays the main div in body for users not logged in
+					document.getElementById("loggedOutDiv").setAttribute("class", "");
 				}
 				else {
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
+
+					// This displays navlinks for logged in users
+					document.getElementById("viewSetListsLink").setAttribute("class", "nav-link active");
+					document.getElementById("viewSetsInProgressLink").setAttribute("class", "nav-link active");
+					document.getElementById("profileLink").setAttribute("class", "nav-link active");
+
+					//This displays the main div in body for users logged in
+					document.getElementById("loggedInDiv").setAttribute("class", "");
 				}
 
 				// This adds bootstrap styling to tooltips
@@ -341,6 +353,15 @@
 							<li class="nav-item mx-5">
 								<a class="nav-link active" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
 							</li>
+							<li class="nav-item ms-5">
+								<a class="d-none" id="viewSetListsLink" href="set_lists"> <i class="fa fa-list"></i> View Set Lists</a>
+							</li>
+							<li class="nav-item ms-5">
+								<a class="d-none" id="viewSetsInProgressLink" href="setsInProgress"> <i class="fa fa-list"></i> View Sets In Progress</a>
+							</li>
+							<li class="nav-item ms-5">
+								<a class="d-none" id="profileLink" href="profile"> <i class="fa fa-user"></i> Profile</a>
+							</li>
 						</ul>
 					</div>
 
@@ -352,6 +373,13 @@
 		</div>
 		
 		<div class="container-fluid mb-5">
+			<div id="loggedOutDiv" class="d-none">
+				hi
+			</div>
+
+			<div id="loggedInDiv" class="d-none">
+				Hi ${accountLoggedIn.email}
+			</div>
 
 			<!-- Modal to Import a Lego Checklist -->
 			<div class="modal fade" id="importModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
