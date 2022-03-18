@@ -36,16 +36,12 @@ public class Set {
 
 	@Transient
 	private List<Piece> piece_list;
-
-	@Transient
-	private List<Minifigure> minifigures;
 	
 	public Set() {}
 	
 	public Set(String num) {
 		this.num = num;
 	}
-	
 	
 	public Set(String num, String name, int year, String theme, int num_pieces, String img_url) {
 		this.num = num;
@@ -94,15 +90,7 @@ public class Set {
 		return piece_list;
 	}
 
-	public List<Minifigure> getMinifigures() {
-		return minifigures;
-	}
-
 	public void setPiece_list(List<Piece> piece_list) {
 		this.piece_list = piece_list;
-	}
-	
-	public void setMinifigures(List<Minifigure> minifigures) {
-		this.minifigures = minifigures;
 	}
 }
