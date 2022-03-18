@@ -392,7 +392,7 @@
 		
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
+					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
 	
 					<ul class="navbar-nav">
 						<li class="nav-item dropdown">
@@ -541,10 +541,10 @@
 				<!-- This is the header for all the Lego sets, made using a bootstrap row and columns with column names -->
 				<div class="row align-items-center my-3">
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="nameSort()" data-bs-toggle="tooltip" title="Sort by List Name">List name: <i id="nameSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="nameSort()"><span data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by List Name"> List name: <i id="nameSortIcon" class="fa fa-sort"></i></span></h6>
 					</div>
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="numSetsSort()" data-bs-toggle="tooltip" title="Sort by Number of Sets">Number of Sets: <i id="numSetsSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="numSetsSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Number of Sets">Number of Sets: <i id="numSetsSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 				</div>
 			</div>

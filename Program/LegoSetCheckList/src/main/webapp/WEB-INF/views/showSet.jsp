@@ -191,7 +191,7 @@
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
+				<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
 
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>

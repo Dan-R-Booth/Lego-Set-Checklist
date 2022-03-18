@@ -105,7 +105,7 @@
 		<div class="sticky-top" data-toggle="affix">
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
+					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
 
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
@@ -173,20 +173,23 @@
                 <h4>
                     <dl class="row">
                         <dt class="col-sm-4">Email:</dt>
-                        <dd class="col-sm-4"><input type="email" class="form-control" value="${accountLoggedIn.email}" disabled readonly/></dd>
-                        <dd class="col-sm-4"> <i class="fa fa-edit"></i> Change Email</dd>
-                        <hr>
+                        <dd class="col-sm-4"><input  class="form-control" type="email" value="${accountLoggedIn.email}" style="width: 80%;" disabled readonly/></dd>
+                        <dd class="col-sm-4"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Email Address"><i class="fa fa-edit"></i> Change Email </a></dd>
+                        <br>
+                        <br>
                         <dt class="col-sm-4">Password:</dt>
                         <dd class="col-sm-4"> Set</dd>
-                        <dd class="col-sm-4"> <i class="fa fa-edit"></i> Change Password</dd>
-                        <hr>
+                        <dd class="col-sm-4"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Password"><i class="fa fa-edit"></i> Change Password </a></dd>
+                        <br>
+                        <br>
                         <dt class="col-sm-4">Google Account Linked:</dt>
                         <dd class="col-sm-4"> Not Linked</dd>
-                        <dd class="col-sm-4"> <i class="fa fa-edit"></i> Change Email</dd>
-                        <hr>
+                        <dd class="col-sm-4"> <a href="#">Link Account</a></dd>
+                        <br>
                     </dl>
-                    <br>
                 </h4>
+                <hr>
+                <u class="text-danger" onclick="deleteAccount()" style="cursor: pointer;"> Delete your account</u>
             </div>
 
 			<!-- Modal to show loading -->
@@ -208,7 +211,8 @@
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
 			<div class="container-fluid">
 	            <ol class="breadcrumb bg-dark">
-	                <li class="breadcrumb-item text-white" aria-current="page">Home</li>
+	                <li class="breadcrumb-item"><a href="/">Home</a></li>
+	                <li class="breadcrumb-item text-white" aria-current="page">Profile</li>
 	            </ol>
 		    </div>
 		</nav>

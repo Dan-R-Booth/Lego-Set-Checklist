@@ -571,7 +571,7 @@
 		
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
+					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
                     <span class="navbar-text text-white"> ${set_list.listName} </span>
 
 					<ul class="navbar-nav">
@@ -757,19 +757,19 @@
 						</div>
 					</c:if>
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="numSort()" data-bs-toggle="tooltip" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="numSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="nameSort()" data-bs-toggle="tooltip" title="Sort by Set Name">Set Name: <i id="nameSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="nameSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Set Name">Set Name: <i id="nameSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="yearSort()" data-bs-toggle="tooltip" title="Sort by Year Released">Year Released: <i id="yearSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="yearSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Year Released">Year Released: <i id="yearSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="themeSort()" data-bs-toggle="tooltip" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="themeSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Theme">Theme: <i id="themeSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="numPiecesSort()" data-bs-toggle="tooltip" title="Sort by Number of Pieces">Number of Pieces: <i id="numPiecesSortIcon" class="fa fa-sort"></i></h6>
+						<h6 style="cursor: pointer;" onclick="numPiecesSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Number of Pieces">Number of Pieces: <i id="numPiecesSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 				</div>
 			</div>

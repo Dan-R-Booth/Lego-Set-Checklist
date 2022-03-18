@@ -251,7 +251,7 @@
 				 if (quantityChecked == 0) {
 					document.getElementById("decreaseQuantityCheckedButton_" + id).disabled = true;
 				}
-				
+
 				// This hides the piece if its quantity is not max and hidePiecesNotFound is checked
 				if ((quantityChecked != quantity) && (document.getElementById("hidePiecesNotFound").checked == true)) {
 					document.getElementById("piece_" + id).style.display = "none";
@@ -696,7 +696,7 @@
 		
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
+					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
 	
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">

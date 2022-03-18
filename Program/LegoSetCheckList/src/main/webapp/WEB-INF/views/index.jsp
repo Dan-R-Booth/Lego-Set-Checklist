@@ -301,7 +301,7 @@
 		<div class="sticky-top" data-toggle="affix">
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="/"> Lego: Set Checklist Creator </a>
+					<a class="navbar-brand"> Lego: Set Checklist Creator </a>
 
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
