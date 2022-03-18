@@ -296,7 +296,7 @@
 				<br>
 				<!-- This code will only display this button if the user is logged in -->
 				<c:if test="${not empty accountLoggedIn}">
-					<button class="btn btn-secondary" style="width: 100%;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set to a List"><i class="fa fa-plus"></i> Add Set to a List</button>
+					<button class="btn btn-secondary" style="width: 100%;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}"><i class="fa fa-plus"></i> Add Set to a List</button>
 				</c:if>
 			</div>
 		</div>

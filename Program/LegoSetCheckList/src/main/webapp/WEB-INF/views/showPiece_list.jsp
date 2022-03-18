@@ -251,8 +251,9 @@
 				 if (quantityChecked == 0) {
 					document.getElementById("decreaseQuantityCheckedButton_" + id).disabled = true;
 				}
+				
 				// This hides the piece if its quantity is not max and hidePiecesNotFound is checked
-				else if ((quantityChecked != quantity) && (document.getElementById("hidePiecesNotFound").checked == true)) {
+				if ((quantityChecked != quantity) && (document.getElementById("hidePiecesNotFound").checked == true)) {
 					document.getElementById("piece_" + id).style.display = "none";
 				}
 				 document.getElementById("increaseQuantityCheckedButton_" + id).disabled = false;

@@ -1,22 +1,17 @@
 package lego.checklist.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,25 +26,15 @@ import lego.checklist.domain.PieceFound;
 import lego.checklist.domain.Set;
 import lego.checklist.domain.SetInProgress;
 import lego.checklist.domain.Set_list;
-import lego.checklist.domain.SetsOwnedList;
 import lego.checklist.domain.Theme;
-import lego.checklist.repository.AccountRepository;
 import lego.checklist.repository.PieceFoundRepository;
 import lego.checklist.repository.SetInProgressRepository;
 import lego.checklist.repository.SetInSetListRepository;
 import lego.checklist.repository.Set_listRepository;
-import lego.checklist.repository.SetsOwnedListRepository;
-import lego.checklist.validator.AccountValidator;
 
 @Controller
 @SessionAttributes({"accountLoggedIn", "set_lists"})
 public class DatabaseController {
-	
-	@Autowired
-	private AccountRepository accountRepo;
-
-	@Autowired
-	private SetsOwnedListRepository setsOwnedListRepo;
 	
 	@Autowired
 	private Set_listRepository set_listRepo;
@@ -68,7 +53,7 @@ public class DatabaseController {
 	
 	// The api key used to access the Rebrickable api
 	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
-	
+	/*
 	// This will create an new account for a user, as long as the entered details are valid
 	@PostMapping("/signUp")
 	public String signUp(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
@@ -198,7 +183,8 @@ public class DatabaseController {
 		// This redirects the user back to the index page
 		return "redirect:/";
 	}
-	
+
+	*/
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
 	@PostMapping("/addSetToList/previousPage={previousPage}")
@@ -420,7 +406,7 @@ public class DatabaseController {
 		
 		model.addAttribute("sets", sets);
 		
-		model.addAttribute("current", set_list_uri);
+//		model.addAttribute("current", set_list_uri);
         model.addAttribute("searchText", searchText);
         model.addAttribute("sets", sets);
         model.addAttribute("themeList", ThemeController.themeList);
@@ -428,11 +414,13 @@ public class DatabaseController {
 		return "showSetList";
 	}
 
+	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
-	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account) {
+	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id) {
 		List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
-		
 		model.addAttribute("setsInProgress", setsInProgress);
+		
+		model.addAttribute("themeList", ThemeController.themeList);
 		
 		return "showSetsInProgress";
 	}

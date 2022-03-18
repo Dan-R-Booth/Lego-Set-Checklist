@@ -4,14 +4,14 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import lego.checklist.domain.Account;
 
 @Controller
 public class MainController {
 	
-	@RequestMapping("/")
+	@GetMapping("/")
 	public String home(Model model) {
 		// This adds the a new account class that will be used by the forms to login and create an account
 		model.addAttribute("account", new Account());
