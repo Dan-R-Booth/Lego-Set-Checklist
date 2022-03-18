@@ -264,7 +264,7 @@ public class DatabaseController {
     	
     	// This then creates a setsOwnedList with the new set_list
 		// and saves this to the database table setsOwnedLists
-    	SetInProgress setInProgress = new SetInProgress(account, set_number);
+    	SetInProgress setInProgress = new SetInProgress(account, set_number, set.getName(), set.getYear(), set.getTheme(), set.getNum_pieces(), set.getImg_url());
     	
     	// If the user already has saved the set to the database, this sets the set saved
     	// in the database table to setInProgress, and then deletes all the pieces saved
@@ -289,6 +289,7 @@ public class DatabaseController {
     	}
 	}
 
+	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
 	@GetMapping("/set_list={setListId}")
 	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("setListId") int setListId, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id, RestTemplate restTemplate) {
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -425,5 +426,14 @@ public class DatabaseController {
         model.addAttribute("themeList", ThemeController.themeList);
 		
 		return "showSetList";
+	}
+
+	@GetMapping("/setsInProgress")
+	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account) {
+		List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
+		
+		model.addAttribute("setsInProgress", setsInProgress);
+		
+		return "showSetsInProgress";
 	}
 }
