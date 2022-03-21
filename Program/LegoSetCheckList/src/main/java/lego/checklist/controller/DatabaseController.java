@@ -189,7 +189,7 @@ public class DatabaseController {
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
 	@PostMapping("/addSetToList/previousPage={previousPage}")
-	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, @RequestParam(required = false) String setListName, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
 		// This gets a list of sets belong to the logged in user
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -230,6 +230,12 @@ public class DatabaseController {
 		// These returns the user back to the page that the user called the controller from
 		if (previousPage.equals("search")) {
 			return "redirect:" + searchURL;
+		}
+		else if (previousPage.equals("setsInProgress")) {
+			return "redirect:/setsInProgress";
+		}
+		else if (previousPage.equals("set_list")) {
+			return "redirect:/set_list=" + setListName;
 		}
 		else {
 			return "redirect:/set/?set_number=" + set_number;
@@ -277,9 +283,9 @@ public class DatabaseController {
 	}
 
 	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
-	@GetMapping("/set_list={setListId}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("setListId") int setListId, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id, RestTemplate restTemplate) {
-		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+	@GetMapping("/set_list={listName}")
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id, RestTemplate restTemplate) {
+		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
 		model.addAttribute("set_list", set_list);
 		
 		String set_list_uri = "";

@@ -83,9 +83,9 @@
 				document.getElementById("minPiecesBox").value = "${minPieces}";
 				document.getElementById("maxPiecesBox").value = "${maxPieces}";
 
-				// If a Lego set has just been added to a list, this will inform the user of this
+				// If a Lego set has just been added to a list, this will open an alert bar to inform the user of this
 				if("${setAdded}" == "true") {
-					alert("Set: \"${set_number}\" added to list: \"${set_list.listName}\"");
+					document.getElementById("setAddedToListAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
 
 				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
@@ -775,6 +775,12 @@
                     </div>
 				</div>
 			</div>
+
+            <!-- This alert will be display when a set is added to a set list -->
+			<div class="d-none" id="setAddedToListAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Set: "<a href="/set?set_number=${set_number}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_number}</a>" added to list: "<a href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>"</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
 		</div>
 	    
 		<div class="mb-5" id="sets">
@@ -845,7 +851,7 @@
                                 <h5 class="modal-title" id="addSetToListModalLabel_${setInProgress.setNumber}">Add Set to a List</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="POST" id="addSetToListForm_${setInProgress.setNumber}" action="/addSetToList/previousPage=search">
+                            <form method="POST" id="addSetToListForm_${setInProgress.setNumber}" action="/addSetToList/previousPage=setsInProgress">
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label class="form-label">Add Set: "${setInProgress.setNumber}/${setInProgress.setName}" to a list</label>

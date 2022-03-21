@@ -557,7 +557,7 @@
 					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
 						<div class="col">
-							<a href="/set_list=${set_list.setListId}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_list.listName}</a>
+							<a href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>
 						</div>
 						<div class="col">
 							${set_list.totalSets}

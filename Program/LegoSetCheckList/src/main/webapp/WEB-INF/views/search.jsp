@@ -812,7 +812,7 @@
 
 			<!-- This alert will be display when a set is added to a set list -->
 			<div class="d-none" id="setAddedToListAlert" role="alert">
-				<i class="fa fa-check-circle"></i> <strong>Set: "${set_number}" added to list: "${set_list.listName}"</strong>
+				<i class="fa fa-check-circle"></i> <strong>Set: "<a href="/set?set_number=${set_number}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_number}</a>" added to list: "<a href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 		</div>
