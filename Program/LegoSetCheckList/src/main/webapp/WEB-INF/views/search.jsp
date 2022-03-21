@@ -92,9 +92,10 @@
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 				}
 
-				// If a Lego set has just been added to a list, this will inform the user of this
+				
+				// If a Lego set has just been added to a list, this will open an alert bar to inform the user of this
 				if("${setAdded}" == "true") {
-					alert("Set: \"${set_number}\" added to list: \"${set_list.listName}\"");
+					document.getElementById("setAddedToListAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
 
 				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
@@ -807,6 +808,12 @@
 						<h6 style="cursor: pointer;" onclick="numPiecesSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Number of Pieces">Number of Pieces: <i id="numPiecesSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 				</div>
+			</div>
+
+			<!-- This alert will be display when a set is added to a set list -->
+			<div class="d-none" id="setAddedToListAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Set: "${set_number}" added to list: "${set_list.listName}"</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 		</div>
 	    

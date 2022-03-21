@@ -331,7 +331,9 @@
 				var array = getQuantityChecked();
 				
 				$.post("/set/${set.num}/pieces/save/?" + "quantityChecked=" + array);
-				alert("Saved");
+
+				// This displays an alert bar informing the user the checklist has been saved
+				document.getElementById("checklistSavedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
 			}
 			
 			// This calls a controller to export the checklist as a csv file
@@ -792,6 +794,7 @@
 				</div>
 			</nav>
 
+
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div class="container-fluid border bg-white">
 				<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with column names -->
@@ -841,6 +844,12 @@
 						<h6 style="cursor: pointer;" onclick="quantityFoundSort()" data-bs-toggle="tooltip" title="Sort by Quantity Found">Quantity Found: <i id="quantityFoundSortIcon" class="fa fa-sort"></i></h6>
 					</div>
 				</div>
+			</div>
+
+			<!-- This alert will be display when a logged in user saves the checklist -->
+			<div class="d-none" id="checklistSavedAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Saved</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 		</div>
 
@@ -1019,7 +1028,7 @@
 					</div>
 				</div>
 
-				<!-- Piece Modal Image Viewer -->
+				<!-- Lego Piece Modal Image Viewer -->
 				<div class="modal fade" id="pieceModal_${piece.num}" tabindex="-1" aria-labelledby="pieceModalLabel_${piece.num}" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">

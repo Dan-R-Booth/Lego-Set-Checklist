@@ -94,9 +94,9 @@
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 				}
 				
-				// If a Lego set has just been added to a list, this will inform the user of this
+				// If a Lego set has just been added to a list, this will open an alert bar to inform the user of this
 				if("${setAdded}" == "true") {
-					alert("Set: \"${set_number}\" added to list: \"${set_list.listName}\"");
+					document.getElementById("setAddedToListAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
 
 				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
@@ -189,48 +189,56 @@
 	
 	<body onload="setup()">
 		<!-- This uses bootstrap so that everything in this div stays at the top of the page when it's scrolled down -->
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
+		<div class="sticky-top" data-toggle="affix">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
 
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 
-				<div class="collapse navbar-collapse" id="navbar">
-					<ul class="navbar-nav  me-auto">
-						<li class="nav-item mx-5">
-							<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
-							<form class="d-flex row">
-								<div class="col-auto">
-									<label class="text-white mt-2"> Set Number: </label>
-								</div>
-								<div class="col-auto">
-									<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
-								</div>
-								<div class="col-auto">
-									<label class="text-white mt-2">-</label>
-								</div>
-								<div class="col-auto">
-									<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
-								</div>
-								<div class="col-auto">
-									<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
-								</div>
-							</form>
-						</li>
-					</ul>
-					<ul class="navbar-nav">
-						<li class="nav-item ms-5">
-							<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
-						</li>
-						<li class="nav-item ms-5">
-							<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-out"></i> Logout</a>
-						</li>
-					</ul>
+					<div class="collapse navbar-collapse" id="navbar">
+						<ul class="navbar-nav  me-auto">
+							<li class="nav-item mx-5">
+								<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
+								<form class="d-flex row">
+									<div class="col-auto">
+										<label class="text-white mt-2"> Set Number: </label>
+									</div>
+									<div class="col-auto">
+										<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Number"/>
+									</div>
+									<div class="col-auto">
+										<label class="text-white mt-2">-</label>
+									</div>
+									<div class="col-auto">
+										<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
+									</div>
+									<div class="col-auto">
+										<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a Set Number"> <i class="fa fa-search"></i> Find Set </button>
+									</div>
+								</form>
+							</li>
+						</ul>
+						<ul class="navbar-nav">
+							<li class="nav-item ms-5">
+								<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+							</li>
+							<li class="nav-item ms-5">
+								<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-out"></i> Logout</a>
+							</li>
+						</ul>
+					</div>
 				</div>
+			</nav>
+
+			<!-- This alert will be display when a set is added to a set list -->
+			<div class="d-none" id="setAddedToListAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Set: "${set_number}" added to list: "${set_list.listName}"</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
-		</nav>
+		</div>
 	
 		<div class="d-none" id="setFound_Container">
 			<div id="imageDiv" class="col-6 m-3">

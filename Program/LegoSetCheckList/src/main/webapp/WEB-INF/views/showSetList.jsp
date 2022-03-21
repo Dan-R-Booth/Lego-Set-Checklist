@@ -771,6 +771,8 @@
 					<div class="col">
 						<h6 style="cursor: pointer;" onclick="numPiecesSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Number of Pieces">Number of Pieces: <i id="numPiecesSortIcon" class="fa fa-sort"></i></h6>
 					</div>
+                    <div class="col-1">
+                    </div>
 				</div>
 			</div>
 		</div>
@@ -814,6 +816,9 @@
 						<div class="col">
 							${set.num_pieces}
 						</div>
+                        <div class="col-1">
+							<i class="fa fa-trash fa-lg" id="deleteLink_${set_list.setListId}" style="cursor: pointer;" onclick="deleteSetList()"></i>
+						</div>
 					</div>
 				</div>
 
@@ -832,48 +837,44 @@
 					</div>
 				</div>
 
-				<!-- This code will only be run if the user is logged in -->
-				<c:if test="${not empty accountLoggedIn}">
-					<!-- Modal to Add a Lego Set to a List -->
-					<div class="modal fade" id="addSetToListModal_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${set.num}" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=search">
-									<div class="modal-body">
-										<div class="mb-3">
-											<label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
-											<br>
-											<h5> Set List: </h5>
-											<div class="input-group mb-3">
-												<!-- This creates a select box using bootstrap, for every List of Lego Sets belonging to the logged in user -->
-												<select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}"  data-bs-toggle="tooltip" title="Select a list to add the set to">
-													<c:forEach items="${set_lists}" var="set_list">
-														<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
-													</c:forEach>
-												</select>
-												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
-											</div>
-											
-											<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
+                <!-- Modal to Add a Lego Set to a List -->
+                <div class="modal fade" id="addSetToListModal_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${set.num}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=search">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
+                                        <br>
+                                        <h5> Set List: </h5>
+                                        <div class="input-group mb-3">
+                                            <!-- This creates a select box using bootstrap, for every List of Lego Sets belonging to the logged in user -->
+                                            <select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}"  data-bs-toggle="tooltip" title="Select a list to add the set to">
+                                                <c:forEach items="${set_lists}" var="set_list">
+                                                    <option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
+                                                </c:forEach>
+                                            </select>
+                                            <button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
+                                        </div>
+                                        
+                                        <div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
 
-											<!-- This is a hidden input that adds the set number of the set selected to the form -->
-											<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
-										</div>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-										<button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</c:if>
-
+                                        <!-- This is a hidden input that adds the set number of the set selected to the form -->
+                                        <input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 			</c:forEach>
 		</div>
 

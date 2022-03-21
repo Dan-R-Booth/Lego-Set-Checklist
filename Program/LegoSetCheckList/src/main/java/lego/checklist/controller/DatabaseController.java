@@ -1,5 +1,6 @@
 package lego.checklist.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,7 +189,7 @@ public class DatabaseController {
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
 	@PostMapping("/addSetToList/previousPage={previousPage}")
-	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute("searchURL") String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
 		// This gets a list of sets belong to the logged in user
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -414,6 +415,44 @@ public class DatabaseController {
 		return "showSetList";
 	}
 
+	@PostMapping("/addNewSetList/previousPage={previousPage}")
+	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+		
+		// This creates a set_list with the name submitted for the new user with
+		// an empty list of sets and saves list to the database table SetLists
+		List<Set> sets = new ArrayList<>();
+		Set_list set_list = new Set_list(account, setListName, sets, sets.size());
+		set_listRepo.save(set_list);
+    	
+    	// This is used so the JSP page knows to inform the user that they have created a new
+    	// Set list and is added to redirectAttributes so it stays after the page redirect
+    	redirectAttributes.addFlashAttribute("setListCreated", true);
+    	redirectAttributes.addFlashAttribute("newSetListname", setListName);
+    	
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
+		
+    	if (previousPage.equals("set_lists")) {
+    		return "redirect:/set_lists";
+    	}
+    	else {
+    		// These are used so the JSP page knows the set and set list selected
+    		// and is added to redirectAttributes so it stays after the page redirect
+    		// so that the model knows which set the user was trying to add to a set
+    		// list before they created the new set list
+    		redirectAttributes.addFlashAttribute("set_number", set_number);
+    		
+    		// These returns the user back to the page that the user called the controller from
+    		if (previousPage.equals("search")) {
+    			return "redirect:" + searchURL;
+    		}
+    		else {
+    			return "redirect:/set/?set_number=" + set_number;
+    		}
+    	}
+	}
+	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
 	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id) {

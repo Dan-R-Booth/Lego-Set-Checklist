@@ -80,6 +80,11 @@
 				document.getElementById("minSetsBox").value = "${minSets}";
 				document.getElementById("maxSetsBox").value = "${maxSets}";
 
+				// This displays an alert bar informing the user the set list has been created
+				if ("${setListCreated}" == "true") {
+					document.getElementById("setListCreatedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
+				}
+
 				// This adds bootstrap styling to tooltips
 				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
@@ -147,40 +152,6 @@
 				var next = "${nextPage}";
 				
 				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minSets=${minSets}/maxSets=${maxSets}/theme_id=${theme_id}/uri/" + next;
-			}
-
-			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
-			// Or will inform them if the set number or set variant box is empty
-			function findSet() {
-				var set_number = document.getElementById("set_number").value;
-				var set_variant = document.getElementById("set_variant").value;
-				
-				if (set_number.length == 0) {
-					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-invalid");
-					document.getElementById("set_number").setAttribute("title", "List Name Cannot be Empty");
-					alert("List Name Cannot be Empty");
-				}
-				else {
-					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-valid");
-					document.getElementById("set_number").setAttribute("title", "List Name");
-				}
-				
-				if (set_variant.length == 0) {
-					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-invalid");
-					document.getElementById("set_variant").setAttribute("title", "Set Variant Number Cannot be Empty");
-					alert("Set Variant Cannot be Empty");
-				}
-				else {
-					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-valid");
-					document.getElementById("set_variant").setAttribute("title", "Set Variant Number");
-				}
-				
-				if ((set_number.length != 0) && (set_variant.length != 0)) {
-					// This starts the loading spinner so the user knows that the Lego Set is being loaded
-					openLoader();
-					
-					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
-				}
 			}
 
 			// This calls the the controller setting the sort parameter as name
@@ -376,8 +347,42 @@
 			// This asks the user to confirm they want logout and if they do the user is sent to the database controller to do this 
 			function logout() {
 				if (confirm("Are you sure you want to logout")) {
-					alert("You have been successfully logged out")
+					alert("You have been successfully logged out");
 					window.location = "/logout";
+				}
+			}
+
+			// This function is called everytime a change occurs in the password textboxes to check if the entered passwords match
+			function checkListName() {
+				var setListName = document.getElementById("setListNameTextBox").value;
+				var listNameFound = false;
+
+				// This checks if there is already a set list with the entered list name
+				<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+					if ("${set_list.listName}" == setListName) {
+						listNameFound = true;
+					}
+				</c:forEach>
+
+				// This checks if the entered passwords match
+				// If they don't match, this highlights the sign-up password textboxes so the user knows
+				// that the passwords don't match, as well as adding this error message to these textbox's
+				// tooltips, unhiding the error alert box that contains the error message and finally disabling
+				// the signUp button
+				if (listNameFound == true) {
+					document.getElementById("setListNameTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("setListNameTextBox").setAttribute("title", "List name must be Unique");
+					document.getElementById("addNewSetListHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("addNewSetListButton").disabled = true;
+				}
+				// If the passwords do match, this highlights the sign-up password textboxes are highlighted
+				// green to show the passwords do match, the error alert box that contains the error message
+				// "Passwords don't match" is set to hidden and finally enabling the signUp button
+				else {
+					document.getElementById("setListNameTextBox").setAttribute("class", "form-control is-valid");
+					document.getElementById("setListNameTextBox").removeAttribute("title");
+					document.getElementById("addNewSetListHelp").setAttribute("class", "d-none");
+					document.getElementById("addNewSetListButton").disabled = false;
 				}
 			}
 
@@ -410,24 +415,10 @@
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
 							<li class="nav-item mx-5">
-								<!-- This creates number boxes where users can enter a Lego set number and variant number (at least 1) and a button to find the Lego set -->
-								<form class="d-flex row">
-									<div class="col-auto">
-										<label class="text-white mt-2"> List Name: </label>
-									</div>
-									<div class="col-auto">
-										<input id="set_number" class="form-control col-xs-1" name="set_number" type="number" data-bs-toggle="tooltip" data-bs-placement="top" title="List Name"/>
-									</div>
-									<div class="col-auto">
-										<label class="text-white mt-2">-</label>
-									</div>
-									<div class="col-auto">
-										<input id="set_variant" class="form-control col-xs-1" name="set_variant" type="number" value="1" min="1" max="99" data-bs-toggle="tooltip" data-bs-placement="top" title="Set Variant Number"/>
-									</div>
-									<div class="col-auto">
-										<button class="btn btn-primary" type="button" onclick="findSet()" data-bs-toggle="tooltip" data-bs-placement="top" title="Find a Lego Set by Entering a List Name"> <i class="fa fa-search"></i> Find Set </button>
-									</div>
-								</form>
+								<a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addNewSetListModel"> <i class="fa fa-plus"></i> Add New Set List</a>
+							</li>
+							<li class="nav-item ms-5">
+								<a class="nav-link" id="viewSetListsLink" href="set_lists"> <i class="fa fa-trash"></i> Delete</a>
 							</li>
 						</ul>
 						<ul class="navbar-nav">
@@ -536,6 +527,12 @@
 				</div>
 			</nav>
 		
+			<!-- This alert will be display when a new set list is created -->
+			<div class="d-none" id="setListCreatedAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Added New Set List: "${newSetListname}"</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div class="container-fluid border bg-white">
 				<!-- This is the header for all the Lego sets, made using a bootstrap row and columns with column names -->
@@ -545,6 +542,8 @@
 					</div>
 					<div class="col">
 						<h6 style="cursor: pointer;" onclick="numSetsSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Number of Sets">Number of Sets: <i id="numSetsSortIcon" class="fa fa-sort"></i></h6>
+					</div>
+					<div class="col-1">
 					</div>
 				</div>
 			</div>
@@ -563,6 +562,10 @@
 						<div class="col">
 							${set_list.totalSets}
 						</div>
+						<div class="col-1">
+							<i class="fa fa-edit fa-lg mx-1" id="editLink_${set_list.setListId}" style="cursor: pointer;" onclick="editSetList()"></i>
+							<i class="fa fa-trash fa-lg" id="deleteLink_${set_list.setListId}" style="cursor: pointer;" onclick="deleteSetList()"></i>
+						</div>
 					</div>
 				</div>
 
@@ -579,6 +582,36 @@
 							<div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal to Create a New Set List -->
+		<div class="modal fade" id="addNewSetListModel" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addNewSetListModelLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addNewSetListModelLabel">Add Set to a List</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<form method="POST" id="addNewSetListForm" action="/addNewSetList/previousPage=set_lists">
+						<div class="modal-body">
+							<div class="mb-3">
+								<h5> Set List: </h5>
+								<div class="form-floating mb-3">
+									<input id="setListNameTextBox" class="form-control" name="setListName" type="text" oninput="checkListName()" placeholder="Input Unique List Name">
+									<label class="text-secondary" for="setListNameTextBox"> Input List Name </label>
+								</div>
+								
+								<div id="addNewSetListHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+								
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="submit" id="addNewSetListButton" class="btn btn-primary" disabled><i class="fa fa-plus"></i> Create Set</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
