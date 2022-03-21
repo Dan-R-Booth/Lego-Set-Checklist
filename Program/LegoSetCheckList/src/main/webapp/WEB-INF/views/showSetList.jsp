@@ -572,7 +572,7 @@
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
 					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
-                    <span class="navbar-text text-white"> ${set_list.listName} </span>
+                    <span class="navbar-text text-white"> List Name: ${set_list.listName} </span>
 
 					<ul class="navbar-nav">
 						<li class="nav-item dropdown">

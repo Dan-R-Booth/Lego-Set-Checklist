@@ -352,7 +352,8 @@
 				}
 			}
 
-			// This function is called everytime a change occurs in the password textboxes to check if the entered passwords match
+			// This function is called everytime a change occurs in the listName textbox
+			// to check if the user already has a list with entered list name
 			function checkListName() {
 				var setListName = document.getElementById("setListNameTextBox").value;
 				var listNameFound = false;
@@ -364,20 +365,19 @@
 					}
 				</c:forEach>
 
-				// This checks if the entered passwords match
-				// If they don't match, this highlights the sign-up password textboxes so the user knows
-				// that the passwords don't match, as well as adding this error message to these textbox's
-				// tooltips, unhiding the error alert box that contains the error message and finally disabling
-				// the signUp button
+				// If the list name has been found (meaning a list with that name already exists), the
+				// setListNameTextBox will be highlighted red to show there is an error, a tooltip will
+				// be added informing the user that the name is already in use along with an error alert
+				// box also containg this error message  and finally disabling the add new list button
 				if (listNameFound == true) {
 					document.getElementById("setListNameTextBox").setAttribute("class", "form-control is-invalid");
 					document.getElementById("setListNameTextBox").setAttribute("title", "List name must be Unique");
 					document.getElementById("addNewSetListHelp").setAttribute("class", "alert alert-danger");
 					document.getElementById("addNewSetListButton").disabled = true;
 				}
-				// If the passwords do match, this highlights the sign-up password textboxes are highlighted
-				// green to show the passwords do match, the error alert box that contains the error message
-				// "Passwords don't match" is set to hidden and finally enabling the signUp button
+				// If the list name is not found, this highlights the textbox green to show the name is
+				// valid, the tooltip is removed, the error alert box that contains the error message is
+				// hidden and finally enabling the add new list button
 				else {
 					document.getElementById("setListNameTextBox").setAttribute("class", "form-control is-valid");
 					document.getElementById("setListNameTextBox").removeAttribute("title");

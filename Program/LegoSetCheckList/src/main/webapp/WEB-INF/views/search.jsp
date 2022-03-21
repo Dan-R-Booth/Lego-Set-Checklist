@@ -109,6 +109,15 @@
 					$("#addSetToListModal_${set_number}").modal("show");
 				}
 
+				// This displays an alert bar informing the user the set list has
+				// been created on the addSetToListModal, which is also opened
+				if ("${setListCreated}" == "true") {
+					document.getElementById("setListCreatedAlert_${set_number}").setAttribute("class", "alert alert-success alert-dismissible fade show");
+
+					// This opens the addSetToListModal
+					$("#addSetToListModal_${set_number}").modal("show");
+				}
+
 				// This adds bootstrap styling to tooltips
 				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
@@ -580,6 +589,40 @@
 				}
 			}
 
+			// This function is called everytime a change occurs in the listName textbox
+			// to check if the user already has a list with entered list name
+			function checkListName(setNumber) {
+				var setListName = document.getElementById("setListNameTextBox_" + setNumber).value;
+				var listNameFound = false;
+
+				// This checks if there is already a set list with the entered list name
+				<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+					if ("${set_list.listName}" == setListName) {
+						listNameFound = true;
+					}
+				</c:forEach>
+
+				// If the list name has been found (meaning a list with that name already exists), the
+				// setListNameTextBox will be highlighted red to show there is an error, a tooltip will
+				// be added informing the user that the name is already in use along with an error alert
+				// box also containg this error message  and finally disabling the add new list button
+				if (listNameFound == true) {
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("class", "form-control is-invalid");
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("title", "List name must be Unique");
+					document.getElementById("addNewSetListHelp_" + setNumber).setAttribute("class", "alert alert-danger");
+					document.getElementById("addNewSetListButton_" + setNumber).disabled = true;
+				}
+				// If the list name is not found, this highlights the textbox green to show the name is
+				// valid, the tooltip is removed, the error alert box that contains the error message is
+				// hidden and finally enabling the add new list button
+				else {
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("class", "form-control is-valid");
+					document.getElementById("setListNameTextBox_" + setNumber).removeAttribute("title");
+					document.getElementById("addNewSetListHelp_" + setNumber).setAttribute("class", "d-none");
+					document.getElementById("addNewSetListButton_" + setNumber).disabled = false;
+				}
+			}
+		</script>
 		</script>
 		
 	</head>
@@ -886,6 +929,11 @@
 								</div>
 								<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=search">
 									<div class="modal-body">
+										<!-- This alert will be display when a new set list is created -->
+										<div class="d-none" id="setListCreatedAlert_${set.num}" role="alert">
+											<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetListname}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetListname}</a>"</strong>
+											<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+										</div>
 										<div class="mb-3">
 											<label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
 											<br>
@@ -897,13 +945,13 @@
 														<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
 													</c:forEach>
 												</select>
-												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
+												<button id="newListButton_${set.num}" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addNewSetListModel_${set.num}"><i class="fa fa-plus"></i>  New List</button>
 											</div>
 											
 											<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
 
 											<!-- This is a hidden input that adds the set number of the set selected to the form -->
-											<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
+											<input type="hidden" id="inputSetNumAddSetToList_${set.num}" name="set_number" value="${set.num}"/>
 										</div>
 									</div>
 									<div class="modal-footer">
@@ -914,98 +962,130 @@
 							</div>
 						</div>
 					</div>
+
+					<!-- Modal to Create a New Set List -->
+					<div class="modal fade" id="addNewSetListModel_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addNewSetListModelLabel_${set.num}" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="addNewSetListModelLabel_${set.num}">Add Set to a List</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<form method="POST" id="addNewSetListForm_${set.num}" action="/addNewSetList/previousPage=search">
+									<div class="modal-body">
+										<div class="mb-3">
+											<h5> Set List: </h5>
+											<div class="form-floating mb-3">
+												<input id="setListNameTextBox_${set.num}" class="form-control" name="setListName" type="text" oninput="checkListName('${set.num}')" placeholder="Input Unique List Name">
+												<label class="text-secondary" for="setListNameTextBox"> Input List Name </label>
+											</div>
+											
+											<div id="addNewSetListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+											
+											<!-- This is a hidden input that adds the set number of the set selected to the form -->
+											<input type="hidden" id="inputSetNumAddNewSetList_${set.num}" name="set_number" value="${set.num}"/>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+										<button type="submit" id="addNewSetListButton_${set.num}" class="btn btn-primary" disabled><i class="fa fa-plus"></i> Create Set</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
 				</c:if>
 
 			</c:forEach>
 
-			<!-- Modal to Login or Sign Up -->
-			<div class="modal fade" id="login-signUp-Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login-signUp-Modal" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header">
-							<ul class="nav nav-tabs" id="Login-SignUp-Tabs" role="tablist">
-								<li class="nav-item" role="presentation">
-							    	<button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
-								</li>
-							 	<li class="nav-item" role="presentation">
-							   		<button class="nav-link" id="signUp-tab" data-bs-toggle="tab" data-bs-target="#signUp" type="button" role="tab" aria-controls="signUp" aria-selected="false">Sign Up</button>
-							  	</li>
-							</ul>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="tab-content" id="login-signUp-tabContent">
-							<!-- Tab to display login information -->
-							<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
-								<form id="login_form_id" method="post" name="login_form">
-									<div class="modal-body">
-										<div class="text-center">
-											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
+		</div>
+		<!-- Modal to Login or Sign Up -->
+		<div class="modal fade" id="login-signUp-Modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="login-signUp-Modal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<ul class="nav nav-tabs" id="Login-SignUp-Tabs" role="tablist">
+							<li class="nav-item" role="presentation">
+								<button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
+							</li>
+							 <li class="nav-item" role="presentation">
+								   <button class="nav-link" id="signUp-tab" data-bs-toggle="tab" data-bs-target="#signUp" type="button" role="tab" aria-controls="signUp" aria-selected="false">Sign Up</button>
+							  </li>
+						</ul>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="tab-content" id="login-signUp-tabContent">
+						<!-- Tab to display login information -->
+						<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+							<form id="login_form_id" method="post" name="login_form">
+								<div class="modal-body">
+									<div class="text-center">
+										<button type="button" class="btn btn-outline-dark">Continue With Google</button>
+									</div>
+									<hr>
+									<div class="container-fluid">
+										<div class="mb-3">
+											<label>Email:</label>
+											<input type="text" class="form-control" id="emailTextBox-Login" aria-describedby="emailHelp" placeholder="Enter Email">
 										</div>
-										<hr>
-										<div class="container-fluid">
-											<div class="mb-3">
-												<label>Email:</label>
-												<input type="text" class="form-control" id="emailTextBox-Login" aria-describedby="emailHelp" placeholder="Enter Email">
-											</div>
-							
-											<div class="mb-3">
-												<label>Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox-Login" placeholder="Enter Password"></input>
-											</div>
-											
-											<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username and/or Password incorrect</div>
+						
+										<div class="mb-3">
+											<label>Password:</label>
+											<input type="password" class="form-control" id="passwordTextBox-Login" placeholder="Enter Password"></input>
+										</div>
+										
+										<div id="loginHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username and/or Password incorrect</div>
 
-											<button type="button" value="Login" id="submitLogin" onclick="validate()" class="btn btn-primary"> <i class="fa fa-sign-in"></i> Login</button>
+										<button type="button" value="Login" id="submitLogin" onclick="validate()" class="btn btn-primary"> <i class="fa fa-sign-in"></i> Login</button>
+									</div>
+									<hr>
+									<div class="text-center">
+										<!-- This calls a function to switch to the sign-up tab -->
+										Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- Tab to display sign-up information -->
+						<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
+							<form id="signUp_form_id" method="post" name="signUp_form">
+								<div class="modal-body">
+									<div class="text-center">
+										<button type="button" class="btn btn-outline-dark">Continue With Google</button>
+									</div>
+									<hr>
+									<div class="container-fluid">
+										<div class="mb-3">
+											<label>Email:</label>
+											<input type="text" class="form-control" id="emailTextBox-SignUp" aria-describedby="emailHelp" placeholder="Enter Email">
 										</div>
+						
+										<div id="emailTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username must be unique</div>
+										<div id="emailBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot be blank</div>
+										<div id="emailSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot contain spaces</div>
+						
+										<div class="mb-3">
+											<label>Password:</label>
+											<input type="password" class="form-control" id="passwordTextBox1-SignUp" placeholder="Enter password">
+										</div>
+										<div class="mb-3">
+											<label>Confirm Password:</label>
+											<input type="password" class="form-control" id="passwordTextBox2-SignUp" placeholder="Re-enter password">  
+										</div>
+										
+										<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
+										<div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords cannot be blank</div>
+										<div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div>
+						
+										<button type="button" value="SignUp" id="submitSignUp" onclick="validate()" class="btn btn-primary"> <i class="fa fa-user-plus"></i> Create an Account</button>
 										<hr>
 										<div class="text-center">
-											<!-- This calls a function to switch to the sign-up tab -->
-											Don't have an account? <a style="display: inline-block" href="#" onclick="signUpTab()">Sign Up</a>
+											<!-- This calls a function to switch to the login tab -->
+											Already have an account? <a style="display: inline-block" href="#" onclick="loginTab()">Login</a>
 										</div>
 									</div>
-								</form>
-							</div>
-							<!-- Tab to display sign-up information -->
-							<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
-								<form id="signUp_form_id" method="post" name="signUp_form">
-									<div class="modal-body">
-										<div class="text-center">
-											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
-										</div>
-										<hr>
-										<div class="container-fluid">
-											<div class="mb-3">
-												<label>Email:</label>
-												<input type="text" class="form-control" id="emailTextBox-SignUp" aria-describedby="emailHelp" placeholder="Enter Email">
-											</div>
-							
-											<div id="emailTakenHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username must be unique</div>
-											<div id="emailBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot be blank</div>
-											<div id="emailSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Username connot contain spaces</div>
-							
-											<div class="mb-3">
-												<label>Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox1-SignUp" placeholder="Enter password">
-											</div>
-											<div class="mb-3">
-												<label>Confirm Password:</label>
-												<input type="password" class="form-control" id="passwordTextBox2-SignUp" placeholder="Re-enter password">  
-											</div>
-											
-											<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
-											<div id="passwordBlankHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords cannot be blank</div>
-											<div id="passwordSpacesHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Password cannot contain spaces</div>
-							
-											<button type="button" value="SignUp" id="submitSignUp" onclick="validate()" class="btn btn-primary"> <i class="fa fa-user-plus"></i> Create an Account</button>
-											<hr>
-											<div class="text-center">
-												<!-- This calls a function to switch to the login tab -->
-												Already have an account? <a style="display: inline-block" href="#" onclick="loginTab()">Login</a>
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>

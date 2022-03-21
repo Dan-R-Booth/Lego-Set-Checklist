@@ -110,6 +110,15 @@
 					$("#addSetToListModal_${set_number}").modal("show");
 				}
 
+				// This displays an alert bar informing the user the set list has
+				// been created on the addSetToListModal, which is also opened
+				if ("${setListCreated}" == "true") {
+					document.getElementById("setListCreatedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
+
+					// This opens the addSetToListModal
+					$("#addSetToListModal_${set_number}").modal("show");
+				}
+
 				// This adds bootstrap styling to tooltips
 				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
@@ -184,6 +193,39 @@
 				}
 			}
 
+			// This function is called everytime a change occurs in the listName textbox
+			// to check if the user already has a list with entered list name
+			function checkListName() {
+				var setListName = document.getElementById("setListNameTextBox").value;
+				var listNameFound = false;
+
+				// This checks if there is already a set list with the entered list name
+				<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+					if ("${set_list.listName}" == setListName) {
+						listNameFound = true;
+					}
+				</c:forEach>
+
+				// If the list name has been found (meaning a list with that name already exists), the
+				// setListNameTextBox will be highlighted red to show there is an error, a tooltip will
+				// be added informing the user that the name is already in use along with an error alert
+				// box also containg this error message  and finally disabling the add new list button
+				if (listNameFound == true) {
+					document.getElementById("setListNameTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("setListNameTextBox").setAttribute("title", "List name must be Unique");
+					document.getElementById("addNewSetListHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("addNewSetListButton").disabled = true;
+				}
+				// If the list name is not found, this highlights the textbox green to show the name is
+				// valid, the tooltip is removed, the error alert box that contains the error message is
+				// hidden and finally enabling the add new list button
+				else {
+					document.getElementById("setListNameTextBox").setAttribute("class", "form-control is-valid");
+					document.getElementById("setListNameTextBox").removeAttribute("title");
+					document.getElementById("addNewSetListHelp").setAttribute("class", "d-none");
+					document.getElementById("addNewSetListButton").disabled = false;
+				}
+			}
 		</script>
 	</head>
 	
@@ -331,6 +373,11 @@
 						</div>
 						<form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=set">
 							<div class="modal-body">
+								<!-- This alert will be display when a new set list is created -->
+								<div class="d-none" id="setListCreatedAlert" role="alert">
+									<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetListname}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetListname}</a>"</strong>
+									<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+								</div>
 								<div class="mb-3">
 									<label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
 									<br>
@@ -339,10 +386,10 @@
 										<!-- This creates a select box using bootstrap, for every List of Lego Sets belonging to the logged in user -->
 										<select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}">
 											<c:forEach items="${set_lists}" var="set_list">
-												<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
+												<option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}" > ${set_list.listName} </option>
 											</c:forEach>
 										</select>
-										<button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
+										<button id="newListButton_${set.num}" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addNewSetListModel"><i class="fa fa-plus"></i>  New List</button>
 									</div>
 									
 									<div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
@@ -375,6 +422,38 @@
 			</div>
 		</div>
 
+		<!-- Modal to Create a New Set List -->
+		<div class="modal fade" id="addNewSetListModel" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addNewSetListModelLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addNewSetListModelLabel">Add Set to a List</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<form method="POST" id="addNewSetListForm" action="/addNewSetList/previousPage=set">
+						<div class="modal-body">
+							<div class="mb-3">
+								<h5> Set List: </h5>
+								<div class="form-floating mb-3">
+									<input id="setListNameTextBox" class="form-control" name="setListName" type="text" oninput="checkListName()" placeholder="Input Unique List Name">
+									<label class="text-secondary" for="setListNameTextBox"> Input List Name </label>
+								</div>
+								
+								<div id="addNewSetListHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+								
+								<!-- This is a hidden input that adds the set number of the set selected to the form -->
+								<input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="submit" id="addNewSetListButton" class="btn btn-primary" disabled><i class="fa fa-plus"></i> Create Set</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
 			<div class="container-fluid">
 	            <ol class="breadcrumb bg-dark">
