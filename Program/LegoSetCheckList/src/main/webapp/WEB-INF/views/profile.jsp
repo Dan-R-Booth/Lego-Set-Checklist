@@ -204,7 +204,7 @@
 				</div>
 			</div>
 
-            <!-- Modal to confirm logout-->
+            <!-- Modal to confirm logout -->
             <div class="modal fade" id="logoutModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">

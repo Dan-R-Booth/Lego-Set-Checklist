@@ -591,7 +591,7 @@
 								<a class="nav-link" id="editLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-edit"></i> Edit</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="nav-link" id="deleteLink" style="cursor: pointer;" onclick="deleteSetList()"> <i class="fa fa-trash"></i> Delete</a>
+								<a class="nav-link" id="deleteLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal"> <i class="fa fa-trash"></i> Delete</a>
 							</li>
 						</ul>
 						<ul class="navbar-nav">
@@ -899,7 +899,7 @@
 			</div>
 		</div>
 
-        <!-- Modal to confirm logout-->
+        <!-- Modal to confirm logout -->
         <div class="modal fade" id="logoutModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -913,6 +913,25 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
                         <button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal to confirm setlist deletion-->
+        <div class="modal fade" id="deleteSetListModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteSetListModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fa fa-sign-out"></i> Delete Set List: "${set_list.listName}"</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete the set list: "${set_list.listName}"? </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+                        <button type="" class="btn btn-primary" onclick="window.location = '/set_list=${set_list.listName}/delete'"><i class="fa fa-trash"></i> Delete</button>
                     </div>
                 </div>
             </div>

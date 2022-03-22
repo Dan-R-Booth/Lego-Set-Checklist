@@ -45,16 +45,6 @@
 				if (screen.width < 550) {
 					document.getElementById("viewport").setAttribute("content", "width=550, initial-scale=0.5");
 				}
-
-				// The following disables the previous button if their is not a previous page of results
-				// and the next button if their is not another page of results				
-				if ("${previousPage}" == "") {	
-					document.getElementById("previousPageButton").disabled = true;
-				}
-				
-				if ("${nextPage}" == "") {
-					document.getElementById("nextPageButton").disabled = true;
-				}
 				
 				// This adds the previously adds the text search previously entered to the search box
 				document.getElementById("text_search").value = "${searchText}";
@@ -139,19 +129,6 @@
 					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
 					document.getElementById("sortSelect3").value = "List Name (desc)";
 				}
-			}
-
-			// The following two functions call the api with the either the previous or next page uri
-			function previousPage() {
-				var previous = "${previousPage}";
-				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minSets=${minSets}/maxSets=${maxSets}/theme_id=${theme_id}/uri/" + previous;
-			}
-			
-			function nextPage() {
-				var next = "${nextPage}";
-				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minSets=${minSets}/maxSets=${maxSets}/theme_id=${theme_id}/uri/" + next;
 			}
 
 			// This calls the the controller setting the sort parameter as name
@@ -547,7 +524,7 @@
 			</div>
 		</div>
 	    
-		<div class="mb-5" id="sets">
+		<div class="mb-5" id="set_lists">
 			<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
 			<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
@@ -566,7 +543,6 @@
 						</div>
 					</div>
 				</div>
-
 			</c:forEach>
 		</div>
 
@@ -614,7 +590,7 @@
 			</div>
 		</div>
 
-		<!-- Modal to confirm logout-->
+		<!-- Modal to confirm logout -->
 		<div class="modal fade" id="logoutModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				  <div class="modal-content">
@@ -639,10 +615,6 @@
 	                <li class="breadcrumb-item"><a href="/">Home</a></li>
 	                <li class="breadcrumb-item text-white" aria-current="page">Set Lists</li>
 	            </ol>
-				<div class="mx-2 my-2">
-					<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> <i class="fa fa-arrow-left"></i> Previous </button>
-					<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next <i class="fa fa-arrow-right"></i> </button>
-				</div>
 		    </div>
         </nav>
 	</body>

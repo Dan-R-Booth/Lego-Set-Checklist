@@ -420,7 +420,8 @@ public class DatabaseController {
 		
 		return "showSetList";
 	}
-
+	
+	// This create a new set list for a logged in user, using the entered list name
 	@PostMapping("/addNewSetList/previousPage={previousPage}")
 	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
@@ -430,8 +431,9 @@ public class DatabaseController {
 		Set_list set_list = new Set_list(account, setListName, sets, sets.size());
 		set_listRepo.save(set_list);
     	
-    	// This is used so the JSP page knows to inform the user that they have created a new
-    	// Set list and is added to redirectAttributes so it stays after the page redirect
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
     	redirectAttributes.addFlashAttribute("setListCreated", true);
     	redirectAttributes.addFlashAttribute("newSetListname", setListName);
     	
@@ -457,6 +459,18 @@ public class DatabaseController {
     			return "redirect:/set/?set_number=" + set_number;
     		}
     	}
+	}
+
+	@GetMapping("/set_list={listName}/delete")
+	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName) {
+		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
+		set_listRepo.delete(set_list);
+		
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+				List<Set_list> set_lists = set_listRepo.findByAccount(account);
+		    	model.addAttribute("set_lists", set_lists);
+		
+		return "redirect:/set_lists";
 	}
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user

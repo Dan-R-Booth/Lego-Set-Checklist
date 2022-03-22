@@ -44,16 +44,6 @@
 				if (screen.width < 550) {
 					document.getElementById("viewport").setAttribute("content", "width=550, initial-scale=0.5");
 				}
-
-				// The following disables the previous button if their is not a previous page of results
-				// and the next button if their is not another page of results				
-				if ("${previousPage}" == "") {	
-					document.getElementById("previousPageButton").disabled = true;
-				}
-				
-				if ("${nextPage}" == "") {
-					document.getElementById("nextPageButton").disabled = true;
-				}
 				
 				// This adds the previously adds the text search previously entered to the search box
 				document.getElementById("text_search").value = "${searchText}";
@@ -225,19 +215,6 @@
 					document.getElementById("numSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
 					document.getElementById("sortSelect3").value = "Set Number (desc)";
 				}
-			}
-
-			// The following two functions call the api with the either the previous or next page uri
-			function previousPage() {
-				var previous = "${previousPage}";
-				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
-			}
-			
-			function nextPage() {
-				var next = "${nextPage}";
-				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
 			}
 
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
@@ -897,7 +874,7 @@
 			</div>
 		</div>
 
-        <!-- Modal to confirm logout-->
+        <!-- Modal to confirm logout -->
         <div class="modal fade" id="logoutModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -922,10 +899,6 @@
 	                <li class="breadcrumb-item"><a href="/">Home</a></li>
 	                <li class="breadcrumb-item text-white" aria-current="page">Sets in Progress</li>
 	            </ol>
-				<div class="mx-2 my-2">
-					<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> <i class="fa fa-arrow-left"></i> Previous </button>
-					<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next <i class="fa fa-arrow-right"></i> </button>
-				</div>
 		    </div>
         </nav>
 	</body>
