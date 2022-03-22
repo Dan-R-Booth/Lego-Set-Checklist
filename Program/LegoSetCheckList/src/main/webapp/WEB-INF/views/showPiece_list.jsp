@@ -333,7 +333,7 @@
 				$.post("/set/${set.num}/pieces/save/?" + "quantityChecked=" + array);
 
 				// This displays an alert bar informing the user the checklist has been saved
-				document.getElementById("checklistSavedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
+				document.getElementById("checklistSavedAlert").setAttribute("class", "alert alert-info alert-dismissible fade show");
 			}
 			
 			// This calls a controller to export the checklist as a csv file

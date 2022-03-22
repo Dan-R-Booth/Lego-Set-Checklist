@@ -426,12 +426,12 @@
 							<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
 								<form:form id="login_form" action="/login" modelAttribute="account">
 									<div class="modal-body">
+										<!-- This alert will be display when an account has just been created -->
+										<div class="d-none" id="accountCreatedAlert" role="alert">
+											<i class="fa fa-check-circle"></i> <strong>Account Successfully Created</strong>
+											<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+										</div>
 										<div class="text-center">
-											<!-- This alert will be display when an account has just been created -->
-											<div class="d-none" id="accountCreatedAlert" role="alert">
-												<i class="fa fa-check-circle"></i> <strong>Account Successfully Created</strong>
-												<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-											</div>
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
 										</div>
 										<div class="container-fluid">
