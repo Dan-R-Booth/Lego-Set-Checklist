@@ -59,7 +59,7 @@
 				// If the user successfully created an account a popup informs the user of this
 				// It then opens the login form so the user can log into their account
 				if ("${accountCreated}" == "true") {
-					alert("Account Successfully Created");
+					document.getElementById("accountCreatedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 					
 					// This opens the login_SignUp_Modal
 					$("#login_SignUp_Modal").modal("show");
@@ -427,6 +427,11 @@
 								<form:form id="login_form" action="/login" modelAttribute="account">
 									<div class="modal-body">
 										<div class="text-center">
+											<!-- This alert will be display when an account has just been created -->
+											<div class="d-none" id="accountCreatedAlert" role="alert">
+												<i class="fa fa-check-circle"></i> <strong>Account Successfully Created</strong>
+												<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+											</div>
 											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
 										</div>
 										<div class="container-fluid">
