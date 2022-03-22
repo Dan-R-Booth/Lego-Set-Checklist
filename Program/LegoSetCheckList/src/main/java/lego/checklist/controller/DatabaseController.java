@@ -435,7 +435,7 @@ public class DatabaseController {
     	// Set list and what its name is and are both added to redirectAttributes so they stay
 		// after the page redirect
     	redirectAttributes.addFlashAttribute("setListCreated", true);
-    	redirectAttributes.addFlashAttribute("newSetListname", setListName);
+    	redirectAttributes.addFlashAttribute("newSetListName", setListName);
     	
 		// This gets a list of sets belong to the logged in user, and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
@@ -462,14 +462,20 @@ public class DatabaseController {
 	}
 
 	@GetMapping("/set_list={listName}/delete")
-	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName) {
+	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, RedirectAttributes redirectAttributes) {
 		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
 		set_listRepo.delete(set_list);
 		
 		// This gets a list of sets belong to the logged in user, and adds these to the model
-				List<Set_list> set_lists = set_listRepo.findByAccount(account);
-		    	model.addAttribute("set_lists", set_lists);
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
 		
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
+    	redirectAttributes.addFlashAttribute("setListDeleted", true);
+    	redirectAttributes.addFlashAttribute("deletedSetListName", listName);
+    	
 		return "redirect:/set_lists";
 	}
 	

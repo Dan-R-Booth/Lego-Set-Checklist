@@ -70,9 +70,13 @@
 				document.getElementById("minSetsBox").value = "${minSets}";
 				document.getElementById("maxSetsBox").value = "${maxSets}";
 
-				// This displays an alert bar informing the user the set list has been created
+				// This displays an alert bar informing the user if a set list has been created,
+				// or it displays that if a set list has been deleted
 				if ("${setListCreated}" == "true") {
 					document.getElementById("setListCreatedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
+				}
+				else if ("${setListDeleted}" == "true") {
+					document.getElementById("setListDeletedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
 				}
 
 				// This adds bootstrap styling to tooltips
@@ -504,7 +508,13 @@
 		
 			<!-- This alert will be display when a new set list is created -->
 			<div class="d-none" id="setListCreatedAlert" role="alert">
-				<i class="fa fa-check-circle"></i> <strong>Added New Set List: "${newSetListname}"</strong>
+				<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetListName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetListName}</a>"</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+
+			<!-- This alert will be display when a set list is deleted -->
+			<div class="d-none" id="setListDeletedAlert" role="alert">
+				<i class="fa fa-trash-o"></i> <strong>Deleted Set List: "${deletedSetListName}"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 
@@ -539,7 +549,26 @@
 						</div>
 						<div class="col-1">
 							<i class="fa fa-edit fa-lg mx-1" id="editLink_${set_list.setListId}" style="cursor: pointer;" onclick="editSetList()"></i>
-							<i class="fa fa-trash fa-lg" id="deleteLink_${set_list.setListId}" style="cursor: pointer;" onclick="deleteSetList()"></i>
+							<i class="fa fa-trash fa-lg" id="deleteLink_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal_${set_list.setListId}"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Modal to confirm setlist deletion-->
+				<div class="modal fade" id="deleteSetListModal_${set_list.setListId}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteSetListModalLabel_${set_list.setListId}" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><i class="fa fa-sign-out"></i> Delete Set List: "${set_list.listName}"</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<p>Are you sure you want to delete the set list: "<a href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>"? </p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+								<button type="" class="btn btn-primary" onclick="window.location = '/set_list=${set_list.listName}/delete'"><i class="fa fa-trash"></i> Delete</button>
+							</div>
 						</div>
 					</div>
 				</div>
