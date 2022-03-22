@@ -372,11 +372,11 @@
 		
 		<div class="container-fluid mb-5">
 			<div id="loggedOutDiv" class="d-none">
-				hi
+				
 			</div>
 
 			<div id="loggedInDiv" class="d-none">
-				Hi ${accountLoggedIn.email}
+				
 			</div>
 
 			<!-- Modal to Import a Lego Checklist -->
