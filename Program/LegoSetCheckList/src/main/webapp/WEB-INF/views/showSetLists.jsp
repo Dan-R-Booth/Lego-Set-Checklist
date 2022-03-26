@@ -585,7 +585,7 @@
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="addNewSetListModelLabel">Add Set to a List</h5>
+						<h5 class="modal-title" id="addNewSetListModelLabel">Create a New Lego Set List</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<form method="POST" id="addNewSetListForm" action="/addNewSetList/previousPage=set_lists">
@@ -594,7 +594,7 @@
 								<h5> Set List: </h5>
 								<div class="form-floating mb-3">
 									<input id="setListNameTextBox" class="form-control" name="setListName" type="text" oninput="checkListName()" placeholder="Input Unique List Name">
-									<label class="text-secondary" for="setListNameTextBox"> Input List Name </label>
+									<label class="text-secondary" for="setListNameTextBox"> Input Unique List Name </label>
 								</div>
 								
 								<div id="addNewSetListHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
@@ -603,7 +603,7 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" id="addNewSetListButton" class="btn btn-primary" disabled><i class="fa fa-plus"></i> Create Set</button>
+							<button type="submit" id="addNewSetListButton" class="btn btn-primary" disabled><i class="fa fa-plus"></i> Create List</button>
 						</div>
 					</form>
 				</div>
