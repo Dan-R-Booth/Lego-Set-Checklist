@@ -390,9 +390,6 @@
 							<li class="nav-item mx-5">
 								<a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addNewSetListModel"> <i class="fa fa-plus"></i> Add New Set List</a>
 							</li>
-							<li class="nav-item ms-5">
-								<a class="nav-link" id="viewSetListsLink" href="set_lists"> <i class="fa fa-trash"></i> Delete</a>
-							</li>
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
