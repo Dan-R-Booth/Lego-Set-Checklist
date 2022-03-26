@@ -65,11 +65,6 @@
 					$("#login_SignUp_Modal").modal("show");
 				}
 				
-				// If the user successfully logged into their account a popup informs the user of this
-				if ("${loggedIn}" == "true") {
-					alert("You have been logged in");
-				}
-				
 				// As there was an error in login or signUp the appropriate function is run
 				if ("${login_signUpErrors}" == "login") {
 					LoginErrors();
@@ -293,7 +288,7 @@
 		<div class="sticky-top" data-toggle="affix">
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand"> Lego: Set Checklist Creator </a>
+					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
 
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
