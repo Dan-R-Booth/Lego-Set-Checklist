@@ -529,12 +529,6 @@
 				$("#loadingModal").modal("show");
 			}
 
-			// This asks the user to confirm they want logout and if they do the user is sent to the database controller to do this 
-			function logout() {
-                alert("You have been successfully logged out")
-                window.location = "/logout";
-			}
-
 		</script>
 		
 	</head>
@@ -887,7 +881,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
-                        <button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+                        <button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="window.location.href='/logout'"><i class="fa fa-sign-out"></i> Logout</button>
                     </div>
                 </div>
             </div>

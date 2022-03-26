@@ -581,14 +581,6 @@
 				$("#loadingModal").modal("show");
 			}
 
-			// This asks the user to confirm they want logout and if they do the user is sent to the database controller to do this 
-			function logout() {
-				if (confirm("Are you sure you want to logout")) {
-					alert("You have been successfully logged out")
-					window.location = "/logout";
-				}
-			}
-
 			// This function is called everytime a change occurs in the listName textbox
 			// to check if the user already has a list with entered list name
 			function checkListName(setNumber) {
@@ -1119,7 +1111,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
-                        <button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+						<button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="window.location.href='/logout'"><i class="fa fa-sign-out"></i> Logout</button>
                     </div>
                 </div>
             </div>
