@@ -26,11 +26,13 @@ import lego.checklist.domain.Piece;
 import lego.checklist.domain.PieceFound;
 import lego.checklist.domain.Set;
 import lego.checklist.domain.SetInProgress;
+import lego.checklist.domain.SetInSetList;
 import lego.checklist.domain.Set_list;
 import lego.checklist.domain.Theme;
 import lego.checklist.repository.PieceFoundRepository;
 import lego.checklist.repository.SetInProgressRepository;
 import lego.checklist.repository.SetInSetListRepository;
+import lego.checklist.repository.SetInfoRepository;
 import lego.checklist.repository.Set_listRepository;
 
 @Controller
@@ -41,10 +43,13 @@ public class DatabaseController {
 	private Set_listRepository set_listRepo;
 
 	@Autowired
-	private SetInSetListRepository setRepo;
+	private SetInSetListRepository setInSetListRepo;
 
 	@Autowired
 	private SetInProgressRepository setInProgessRepo;
+	
+	@Autowired
+	private SetInfoRepository setInfoRepo;
 	
 	@Autowired
 	private PieceFoundRepository pieceFoundRepo;
@@ -54,138 +59,7 @@ public class DatabaseController {
 	
 	// The api key used to access the Rebrickable api
 	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
-	/*
-	// This will create an new account for a user, as long as the entered details are valid
-	@PostMapping("/signUp")
-	public String signUp(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
-		// This creates an instance of the AccountValidator and calls the validate function
-		// with an Account generated using values entered in the signUp form. This function
-		// then checks if there are any errors with the accounts details and if there are
-		// adds these to the BindingResult result
-		AccountValidator accountValidator = new AccountValidator(accountRepo);
-		accountValidator.validate(account, result);
-		
-		// This function will run if there are any errors returned by the AccountValidator class
-		if (result.hasErrors()) {			
-			// This are used and added to the model so the JSP knows where the error occurs
-			boolean emailValid = true;
-			boolean passwordValid = true;
-			
-			// This loop goes through all the errors comparing their error code with the certain
-			// error codes, so that the boolean values can be updated to show there is an error
-			// and adding this errors message to the model of that error code type 
-			for (ObjectError error : result.getAllErrors()) {
-				if (error.getCode().equals("email")) {
-					emailValid = false;
-					model.addAttribute("emailErrorMessage_SignUp", error.getDefaultMessage());
-				}
-				else if (error.getCode().equals("password")) {
-					passwordValid = false;
-					System.out.println(error.getDefaultMessage());
-					model.addAttribute("passwordErrorMessage_SignUp", error.getDefaultMessage());
-				}
-			}
-			
-			model.addAttribute("emailValid_SignUp", emailValid);
-			model.addAttribute("passwordValid_SignUp", passwordValid);
-			
-			// This is used so that the index page knows that the sign-up returned errors
-			model.addAttribute("login_signUpErrors", "signUp");
-			
-			return "index";
-		}
-		// This adds the created account to the database table Accounts
-		accountRepo.save(account);
-		
-		// This creates a set_list called setsOwnedList for the new user with
-		// an empty list of sets and saves list to the database table SetLists
-		List<Set> sets = new ArrayList<>();
-		Set_list set_list = new Set_list(account, "Sets Owned List", sets, sets.size());
-		set_listRepo.save(set_list);
-		
-		// This then creates a setsOwnedList with the new set_list
-		// and saves this to the database table setsOwnedLists
-		SetsOwnedList setsOwnedList = new SetsOwnedList(set_list, account);
-		setsOwnedListRepo.save(setsOwnedList);
-		
-		// This is used so the JSP page knows to inform the user that they have successfully created
-		// an account and is added to redirectAttributes so it stays after the page redirect
-		redirectAttributes.addFlashAttribute("accountCreated", true);
-				
-		// This redirects the user back to the index page
-		return "redirect:/";
-	}
 	
-	// This will sign a user into their account, as long as the entered details are valid
-	@PostMapping("/login")
-	public String login(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
-		// This creates an instance of the AccountValidator and calls the validateLogin function
-		// with an Account generated using values entered in the login form. This function
-		// then checks if there are any errors with the accounts details and if there are
-		// adds these to the BindingResult result
-		AccountValidator accountValidator = new AccountValidator(accountRepo);
-		accountValidator.validateLogin(account, result);
-		
-		// This function will run if there are any errors returned by the AccountValidator class
-		if (result.hasErrors()) {
-			// This are used and added to the model so the JSP knows where the error occurs
-			boolean emailValid = true;
-			boolean passwordValid = true;
-			boolean email_passwordValid = true;
-			
-			// This loop goes through all the errors comparing their error code with the certain
-			// error codes, so that the boolean values can be updated to show there is an error
-			// and adding this errors message to the model of that error code type 
-			for (ObjectError error : result.getAllErrors()) {
-				if (error.getCode().equals("email")) {
-					emailValid = false;
-					model.addAttribute("emailErrorMessage_Login", error.getDefaultMessage());
-				}
-				else if (error.getCode().equals("password")) {
-					passwordValid = false;
-					model.addAttribute("passwordErrorMessage_Login", error.getDefaultMessage());
-				}
-				else if (error.getCode().equals("email_password")) {
-					email_passwordValid = false;
-					model.addAttribute("email_passwordErrorMessage", error.getDefaultMessage());
-				}
-			}
-			
-			model.addAttribute("emailValid_Login", emailValid);
-			model.addAttribute("passwordValid_Login", passwordValid);
-			model.addAttribute("email_passwordValid", email_passwordValid);
-			
-			// This is used so that the index page knows that the login returned errors
-			model.addAttribute("login_signUpErrors", "login");
-			
-			return "index";
-		}
-		
-		// This is used so the JSP page knows to inform the user that they have been
-		// logged in and is added to redirectAttributes so it stays after the page redirect
-		redirectAttributes.addFlashAttribute("loggedIn", true);
-		
-		model.addAttribute("accountLoggedIn", account);
-		
-		// This gets a list of sets belong to the logged in user, and adds these to the model
-		List<Set_list> set_lists = set_listRepo.findByAccount(account);
-    	model.addAttribute("set_lists", set_lists);
-		
-		// This redirects the user back to the index page
-		return "redirect:/";
-	}
-	
-	// This logs the user out of their account and returns them to the index page
-	@GetMapping("/logout")
-	public String logout(SessionStatus status) {
-		// This removes the Session attributes accountLogedIn, and Set_lists thus logging the user out of their account
-		status.setComplete();
-		
-		// This redirects the user back to the index page
-		return "redirect:/";
-	}
-
-	*/
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
 	@PostMapping("/addSetToList/previousPage={previousPage}")
@@ -199,7 +73,65 @@ public class DatabaseController {
 		// so that the user can be informed that their set was added to which list
 		// or to display that the set was not found
 		redirectAttributes.addFlashAttribute("set_number", set_number);
-		redirectAttributes.addFlashAttribute("set_list", set_list);
+		redirectAttributes.addFlashAttribute("set_listSelected", set_list);
+		
+		// This is the uri to a specific set in the Rebrickable API
+		String set_uri = rebrickable_uri + "sets/" + set_number + "/?key=" + rebrickable_api_key;
+		
+		// The rest template created above is used to fetch the Lego set every time the website is loaded
+		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
+		String set_JSON = restTemplate.getForObject(set_uri, String.class);
+		
+		// Set's default values in case the following try catch statement fails
+		String num = "";
+		String name = "";
+		int year = -1;
+		String theme_name = "";
+		int num_pieces = -1;
+		String img_url = "";
+		
+        // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
+        try {
+        	// This provides functionality for reading and writing JSON
+        	ObjectMapper mapper = new ObjectMapper();
+			
+        	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
+        	JsonNode setNode = mapper.readTree(set_JSON);
+			
+        	// The following search search for a path on the setNode Tree and return the node that matches this
+        	JsonNode numNode = setNode.path("set_num");
+        	JsonNode nameNode = setNode.path("name");
+        	JsonNode yearNode = setNode.path("year");
+        	JsonNode theme_idNode = setNode.path("theme_id");
+        	JsonNode num_piecesNode = setNode.path("num_parts");
+        	JsonNode img_urlNode = setNode.path("set_img_url");
+        	
+        	// These return the data stored in the JsonNodes
+        	num = numNode.textValue();
+    		name = nameNode.textValue();
+    		year = yearNode.intValue();
+			
+    		// This return the int stored in the JsonNode theme_idNode
+        	int theme_id = theme_idNode.asInt();
+        	
+        	// This gets the Theme relating to the theme_id from the HashMap themes set on start up in the theme_controller
+        	// and then uses this theme to display the theme name to the user
+        	Theme theme = ThemeController.themes.get(theme_id);
+        	theme_name = theme.getName();
+        	
+        	// These return the data stored in JsonNodes
+        	num_pieces = num_piecesNode.intValue();
+        	img_url = img_urlNode.textValue();
+        	
+		}
+        catch (JsonMappingException e) {
+			e.printStackTrace();
+		}
+        catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		Set set = new Set(num, name, year, theme_name, num_pieces, img_url);
 		
       	// This checks if the Lego set is already in the set list
 		if (set_list.contains(set_number)) {
@@ -208,12 +140,18 @@ public class DatabaseController {
 			redirectAttributes.addFlashAttribute("setAddedError", true);
 		}
 		else {
-			// This creates a Set that is added to the set_lists List of sets
-        	Set set = new Set(set_number);
-        	set_list.addSet(set);
+			// This checks if the set being added to a list already has its info saved to the database,
+			// and if it does not this adds that sets information to the database table SetInfo
+	    	if (setInfoRepo.findByNum(set_number) == null) {
+	    		setInfoRepo.save(set);
+	    	}
+			
+	    	// This creates a SetInSetList that is added to the set_lists List of sets
+	    	SetInSetList setInSetList = new SetInSetList(set);	    	
+        	set_list.addSet(setInSetList);
         	
         	// This saves the Lego set to the database table SetsInSetList
-        	setRepo.save(set);
+        	setInSetListRepo.save(setInSetList);
         	
         	// This then saves the updated set_list to the database table SetLists
         	set_listRepo.save(set_list);
@@ -248,28 +186,34 @@ public class DatabaseController {
 	public void saveChecklist(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable String set_number, @SessionAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, RedirectAttributes redirectAttributes) {
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
-    	
-    	// This updates the quantity checked for each piece in the Lego set
-    	for (int i = 0; i < piece_list.size(); i++) {
-    		Piece piece = piece_list.get(i);
-    		piece.setQuantity_checked(quantityChecked.get(i));
-    	}
+		
+		// This updates the quantity checked for each piece in the Lego set
+		for (int i = 0; i < piece_list.size(); i++) {
+			Piece piece = piece_list.get(i);
+			piece.setQuantity_checked(quantityChecked.get(i));
+		}
     	
     	// This then creates a setsOwnedList with the new set_list
 		// and saves this to the database table setsOwnedLists
-    	SetInProgress setInProgress = new SetInProgress(account, set_number, set.getName(), set.getYear(), set.getTheme(), set.getNum_pieces(), set.getImg_url());
+    	SetInProgress setInProgress = new SetInProgress(account, set);
     	
-    	// If the user already has saved the set to the database, this sets the set saved
-    	// in the database table to setInProgress, and then deletes all the pieces saved
-    	// in the database so that these can then be replaced with the new updated pieces
-    	// Otherwise a new setInProgress is saved to the database
-    	if (setInProgessRepo.findByAccountAndSetNumber(account, set_number) != null) {
-    		setInProgress = setInProgessRepo.findByAccountAndSetNumber(account, set_number);
-    		pieceFoundRepo.deleteBySetInProgress(setInProgress);
+    	// This checks if the set being added to a list already has its info saved to the database,
+		// and if it does not this adds that sets information to the database table SetInfo
+    	if (setInfoRepo.findByNum(set_number) == null) {
+    		setInfoRepo.save(set);
     	}
-    	else {
-	    	setInProgessRepo.save(setInProgress);
-    	}
+    	
+		// If the user already has saved the set to the database, this sets the set saved
+		// in the database table to setInProgress, and then deletes all the pieces saved
+		// in the database so that these can then be replaced with the new updated pieces
+		// Otherwise a new setInProgress is saved to the database
+		if (setInProgessRepo.findByAccountAndSet(account, set) != null) {
+			setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
+			pieceFoundRepo.deleteBySetInProgress(setInProgress);
+		}
+		else {
+			setInProgessRepo.save(setInProgress);
+		}
     	
     	// For each piece in the Lego set if its quantity is above zero, this adds a piece's number, colour name
 		// and if its a spare as a line to the database with the setInProgress, as these values uniquely identity
@@ -281,10 +225,11 @@ public class DatabaseController {
     		}
     	}
 	}
+	
 
 	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
 	@GetMapping("/set_list={listName}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id, RestTemplate restTemplate) {
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id) {
 		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
 		model.addAttribute("set_list", set_list);
 		
@@ -340,75 +285,15 @@ public class DatabaseController {
 			model.addAttribute("theme_id", filteredTheme_id);
 		}
 		
-		List<Set> sets = set_list.getSets();
+		List<SetInSetList> setsInSetList = set_list.getSets();
 		
-		for (int i = 0; i < sets.size(); i++) {
-			Set set = sets.get(i);
-			
-			// This is the uri to a specific set in the Rebrickable API
-			String set_uri = rebrickable_uri + "sets/" + set.getNum() + "/?key=" + rebrickable_api_key;
-			
-			// The rest template created above is used to fetch the Lego set every time the website is loaded
-			// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
-			String set_JSON = restTemplate.getForObject(set_uri, String.class);
-			
-			// Sets default values in case the following try catch statement fails
-			String num = "";
-			String name = "";
-			int year = -1;
-			String theme_name = "";
-			int num_pieces = -1;
-			String img_url = "";
-			
-	        // This is wrapped in a try catch in case the string given to readTree() is not a JSON string
-	        try {
-	        	// This provides functionality for reading and writing JSON
-	        	ObjectMapper mapper = new ObjectMapper();
-				
-	        	// This provides the root node of the JSON string as a Tree and stores it in the class JsonNode
-	        	JsonNode setNode = mapper.readTree(set_JSON);
-				
-	        	// The following search search for a path on the setNode Tree and return the node that matches this
-	        	JsonNode numNode = setNode.path("set_num");
-	        	JsonNode nameNode = setNode.path("name");
-	        	JsonNode yearNode = setNode.path("year");
-	        	JsonNode theme_idNode = setNode.path("theme_id");
-	        	JsonNode num_piecesNode = setNode.path("num_parts");
-	        	JsonNode img_urlNode = setNode.path("set_img_url");
-	        	
-	        	// These return the data stored in the JsonNodes
-	        	num = numNode.textValue();
-	    		name = nameNode.textValue();
-	    		year = yearNode.intValue();
-				
-	    		// This return the int stored in the JsonNode theme_idNode
-	        	int theme_id = theme_idNode.asInt();
-	        	
-	        	// This gets the Theme relating to the theme_id from the HashMap themes set on start up in the theme_controller
-	        	// and then uses this theme to display the theme name to the user
-	        	Theme theme = ThemeController.themes.get(theme_id);
-	        	theme_name = theme.getName();
-	        	
-	        	// These return the data stored in JsonNodes
-	        	num_pieces = num_piecesNode.intValue();
-	        	img_url = img_urlNode.textValue();
-			}
-	        catch (JsonMappingException e) {
-				e.printStackTrace();
-			}
-	        catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-			
-			set = new Set(num, name, year, theme_name, num_pieces, img_url);
-			
-			sets.set(i, set);
-			
-			// This makes the program wait one second before making an API call to stop a Too Many Requests error and timeout from the API
-			try {
-				Thread.sleep(1000);
-			}
-			catch (Exception e) {}
+		List<Set> sets = new ArrayList<>();
+		
+		// This gets all the set info for all the sets the user has in progress
+		// and adds these to a list of sets that are then added to the model
+		for (SetInSetList setInSetList : setsInSetList) {
+			Set set = setInSetList.getSet();
+			sets.add(set);
 		}
 		
 		model.addAttribute("sets", sets);
@@ -427,8 +312,8 @@ public class DatabaseController {
 		
 		// This creates a set_list with the name submitted for the new user with
 		// an empty list of sets and saves list to the database table SetLists
-		List<Set> sets = new ArrayList<>();
-		Set_list set_list = new Set_list(account, setListName, sets, sets.size());
+		List<SetInSetList> setsInSetList = new ArrayList<>();
+		Set_list set_list = new Set_list(account, setListName, setsInSetList, setsInSetList.size());
 		set_listRepo.save(set_list);
     	
     	// These are used so the JSP page knows to inform the user that they have created a new
@@ -470,6 +355,8 @@ public class DatabaseController {
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
     	model.addAttribute("set_lists", set_lists);
 		
+    	removeUneededSetInfo();
+    	
     	// These are used so the JSP page knows to inform the user that they have created a new
     	// Set list and what its name is and are both added to redirectAttributes so they stay
 		// after the page redirect
@@ -483,10 +370,52 @@ public class DatabaseController {
 	@GetMapping("/setsInProgress")
 	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id) {
 		List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
-		model.addAttribute("setsInProgress", setsInProgress);
+		
+		List<Set> sets = new ArrayList<>();
+		
+		// This gets all the set info for all the sets the user has in progress
+		for (SetInProgress setInProgress : setsInProgress) {
+			Set set = setInProgress.getSet();
+			sets.add(set);
+		}
+		
+		model.addAttribute("sets", sets);
 		
 		model.addAttribute("themeList", ThemeController.themeList);
 		
 		return "showSetsInProgress";
+	}
+	
+	// This function goes through all rows in the SetInfo table and checking if that set number
+	// is in any row of either SetsInProgress or SetsInSetList, if it is in neither it is removed
+	// from the database 
+	private void removeUneededSetInfo() {
+		List<Set> setsInDB = (List<Set>) setInfoRepo.findAll();;
+    	List<SetInProgress> setsInProgress = (List<SetInProgress>) setInProgessRepo.findAll();
+    	List<SetInSetList> setsInSetLists = (List<SetInSetList>) setInSetListRepo.findAll();
+    	
+    	for (Set set : setsInDB) {
+    		boolean inSetsInProgress = false;
+    		
+    		for (SetInProgress setInProgress : setsInProgress) {
+    			if (setInProgress.getSet() == set) {
+    				inSetsInProgress = true;
+    				break;
+    			}
+    		}
+    		
+			boolean inSetsInSetLists = false;
+    		
+    		for (SetInSetList setInSetList : setsInSetLists) {
+    			if (setInSetList.getSet() == set) {
+    				inSetsInSetLists = true;
+    				break;
+    			}
+    		}
+    		
+    		if (!inSetsInProgress && !inSetsInSetLists) {
+    			setInfoRepo.delete(set);
+    		}
+    	}
 	}
 }

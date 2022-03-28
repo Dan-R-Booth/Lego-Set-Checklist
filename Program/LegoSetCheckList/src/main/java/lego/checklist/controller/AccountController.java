@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lego.checklist.domain.Account;
 import lego.checklist.domain.Set;
+import lego.checklist.domain.SetInSetList;
 import lego.checklist.domain.Set_list;
 import lego.checklist.domain.SetsOwnedList;
 import lego.checklist.repository.AccountRepository;
@@ -81,8 +82,8 @@ public class AccountController {
 		
 		// This creates a set_list called setsOwnedList for the new user with
 		// an empty list of sets and saves list to the database table SetLists
-		List<Set> sets = new ArrayList<>();
-		Set_list set_list = new Set_list(account, "Sets Owned List", sets, sets.size());
+		List<SetInSetList> setsInSetList = new ArrayList<>();
+		Set_list set_list = new Set_list(account, "Sets Owned List", setsInSetList, setsInSetList.size());
 		set_listRepo.save(set_list);
 		
 		// This then creates a setsOwnedList with the new set_list

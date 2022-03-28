@@ -4,34 +4,30 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "SetsInSetList")
+@Table(name = "SetInfo")
 public class Set {
-	@Id
-	@GeneratedValue
-	private int setInSetListId;
-	
+	@Id	
 	@Column(name = "setNumber", nullable = false)
 	private String num;
 	
-	@Transient
+//	@Transient
 	private String name;
 
-	@Transient
+//	@Transient
 	private int year;
 
-	@Transient
+//	@Transient
 	private String theme;
 
-	@Transient
+//	@Transient
 	private int num_pieces;
 
-	@Transient
+//	@Transient
 	private String img_url;
 
 	@Transient

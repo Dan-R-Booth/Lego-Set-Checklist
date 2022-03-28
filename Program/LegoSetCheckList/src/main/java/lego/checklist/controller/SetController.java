@@ -252,7 +252,7 @@ public class SetController {
 		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
 		String set_JSON = restTemplate.getForObject(set_uri, String.class);
 		
-		// Sets default values in case the following try catch statement fails
+		// Set's default values in case the following try catch statement fails
 		String num = "";
 		String name = "";
 		int year = -1;

@@ -86,8 +86,8 @@ public class PieceController {
 		}
 		// Otherwise, if the user is logged in and the sets progress is saved to the database this updates
 		// every piece's quantity in the set, to match the quantity that is stored in the database
-		else if ((account != null) && (setInProgessRepo.findByAccountAndSetNumber(account, set_number) != null)) {
-    		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSetNumber(account, set_number);
+		else if ((account != null) && (setInProgessRepo.findByAccountAndSet(account, set) != null)) {
+    		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
     		List<PieceFound> piecesFound = pieceFoundRepo.findBySetInProgress(setInProgress);
     		
     		for (Piece piece : piece_list) {

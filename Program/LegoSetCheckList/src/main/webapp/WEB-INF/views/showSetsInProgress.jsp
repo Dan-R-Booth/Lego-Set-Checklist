@@ -65,11 +65,11 @@
 				
 				sortSelectChange();
 
-				// These add the current min year and max year filters to their number boxes
+				// These add the current min year and max year filters to their num boxes
 				document.getElementById("minYearBox").value = "${minYear}";
 				document.getElementById("maxYearBox").value = "${maxYear}";
 				
-				// These add the current min pieces and max pieces filters to their number boxes
+				// These add the current min pieces and max pieces filters to their num boxes
 				document.getElementById("minPiecesBox").value = "${minPieces}";
 				document.getElementById("maxPiecesBox").value = "${maxPieces}";
 
@@ -96,7 +96,7 @@
 			// If sorts are applied to the page this adds visuals for the user so it is clear which columns are being filtered
 			function applySortVisuals() {
 				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number 
+				// and if their isn't a sort or it's set num, it sorts it by set num 
 				if ("${sort1}" == "name") {
 					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-asc");
 					document.getElementById("sortSelect1").value = "Set Name (asc)";
@@ -139,7 +139,7 @@
 				}
 				
 				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number
+				// and if their isn't a sort or it's set num, it sorts it by set num
 				if ("${sort2}" == "name") {
 					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-asc");
 					document.getElementById("sortSelect2").value = "Set Name (asc)";
@@ -178,7 +178,7 @@
 				}
 				
 				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number
+				// and if their isn't a sort or it's set num, it sorts it by set num
 				if ("${sort3}" == "name") {
 					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-asc");
 					document.getElementById("sortSelect3").value = "Set Name (asc)";
@@ -217,8 +217,8 @@
 				}
 			}
 
-			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
-			// Or will inform them if the set number or set variant box is empty
+			// This will take the users to the set page for the Lego Set that matches the entered set num and variant
+			// Or will inform them if the set num or set variant box is empty
 			function findSet() {
 				var set_number = document.getElementById("set_number").value;
 				var set_variant = document.getElementById("set_variant").value;
@@ -609,19 +609,19 @@
 									</div>
 									<div class="col-auto">
 										<label class="text-white" for="minYearBox">	Minimum Year: </label>
-										<input id="minYearBox" class="form-control" name="minYearBox" type="number" min=0 max="9999"/>
+										<input id="minYearBox" class="form-control" name="minYearBox" type="num" min=0 max="9999"/>
 									</div>
 									<div class="col-auto">
 										<label class="text-white" for="maxYearBox">	Maximum Year: </label>
-										<input id="maxYearBox" class="form-control col-xs-1" name="maxYearBox" type="number" min=0 max="9999"/>
+										<input id="maxYearBox" class="form-control col-xs-1" name="maxYearBox" type="num" min=0 max="9999"/>
 									</div>
 									<div class="col-auto">
 										<label class="text-white" for="minPiecesBox"> Minimum Pieces: </label>
-										<input id="minPiecesBox" class="form-control col-xs-1" name="minPiecesBox" type="number" min=0 max="9999"/>
+										<input id="minPiecesBox" class="form-control col-xs-1" name="minPiecesBox" type="num" min=0 max="9999"/>
 									</div>
 									<div class="col-auto">
 										<label class="text-white" for="maxPiecesBox"> Maximum Pieces: </label>
-										<input id="maxPiecesBox" class="form-control" name="maxPiecesBox" type="number" min=0 max="9999"/>
+										<input id="maxPiecesBox" class="form-control" name="maxPiecesBox" type="num" min=0 max="9999"/>
 									</div>
 									<div class="col-auto">
 										<button class="btn btn-primary mt-4" type="button" onclick="filter()"> <i class="fa fa-filter"></i> Filter </button>
@@ -747,104 +747,104 @@
 
             <!-- This alert will be display when a set is added to a set list -->
 			<div class="d-none" id="setAddedToListAlert" role="alert">
-				<i class="fa fa-check-circle"></i> <strong>Set: "<a href="/set?set_number=${set_number}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_number}</a>" added to list: "<a href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>"</strong>
+				<i class="fa fa-check-circle"></i> <strong>Set: "<a href="/set?set_number=${set_number}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_number}</a>" added to list: "<a href="/set_list=${set_listSelected.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_listSelected.listName}</a>"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 		</div>
 	    
 		<div class="mb-5" id="sets">
-			<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
-			<c:forEach items="${setsInProgress}" var="setInProgress" varStatus="loop">
+			<!-- This creates a container using bootstrap, for every set in the set list and display the set image, num, name, year, theme and num of pieces -->
+			<c:forEach items="${sets}" var="set" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 				<div id="set_${loop.index}" class="container-fluid border">
 					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
-						<div class="col" data-bs-toggle="tooltip" title="Image of the Lego Set '${setInProgress.setName}' (Click to enlarge)">
+						<div class="col" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)">
 							<!-- The style width sets the percentage size the image will be on any screen -->
 							<!-- When clicked this will display a Model with the image enlarged within -->
-							<img class="m-2" src="${setInProgress.setImg_url}" alt="Image of the Lego Set ${setInProgress.setName}" style="width: 80%; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#setModal_${setInProgress.setNumber}">
+							<img class="m-2" src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
 						</div>
 						<!-- This code will only display this button if the user is logged in -->
 						<c:if test="${not empty accountLoggedIn}">
 							<div class="col-1">
-								<i class="fa fa-plus fa-lg" id="addSetToListModelButton_${setInProgress.setNumber}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${setInProgress.setNumber}" data-bs-toggle="tooltip" title="Add Lego Set: '${setInProgress.setName}' to a List"></i>
+								<i class="fa fa-plus fa-lg" id="addSetToListModelButton_${set.num}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set: '${set.name}' to a List"></i>
 							</div>
 							<script>
 								// This adds bootstrap styling to this tooltip, as because its in a c:if it is not added with the other tooltips
 								$(document).ready(function(){ 
-									$('#addSetToListModelButton_${setInProgress.setNumber}').tooltip();
+									$('#addSetToListModelButton_${set.num}').tooltip();
 								});
 							</script>
 						</c:if>
 						<div class="col">
-							<a href="/set?set_number=${setInProgress.setNumber}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${setInProgress.setNumber}</a>
+							<a href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
 						</div>
 						<div class="col">
-							${setInProgress.setName}
+							${set.name}
 						</div>
 						<div class="col">
-							${setInProgress.setYear}
+							${set.year}
 						</div>
 						<div class="col">
-							${setInProgress.setTheme}
+							${set.theme}
 						</div>
 						<div class="col">
-							${setInProgress.setNum_pieces}
+							${set.num_pieces}
 						</div>
                         <div class="col-1">
-							<i class="fa fa-trash fa-lg" id="deleteLink_${setInProgress.setNumber}" style="cursor: pointer;" onclick="deleteSet()"></i>
+							<i class="fa fa-trash fa-lg" id="deleteLink_${set.num}" style="cursor: pointer;" onclick="deleteSet()"></i>
 						</div>
 					</div>
 				</div>
 
 				<!-- Lego Set Modal Image Viewer -->
-				<div class="modal fade" id="setModal_${setInProgress.setNumber}" tabindex="-1" aria-labelledby="setModalLabel_${setInProgress.setNumber}" aria-hidden="true">
+				<div class="modal fade" id="setModal_${set.num}" tabindex="-1" aria-labelledby="setModalLabel_${set.num}" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="setModalLabel_${setInProgress.setNumber}">Lego Set: ${setInProgress.setName}</h5>
+								<h5 class="modal-title" id="setModalLabel_${set.num}">Lego Set: ${set.name}</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<img src="${setInProgress.setImg_url}" alt="Image of the Lego Set: ${setInProgress.setName}" style="width: 100%">
+								<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 100%">
 							</div>
 						</div>
 					</div>
 				</div>
 
                 <!-- Modal to Add a Lego Set to a List -->
-                <div class="modal fade" id="addSetToListModal_${setInProgress.setNumber}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${setInProgress.setNumber}" aria-hidden="true">
+                <div class="modal fade" id="addSetToListModal_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addSetToListModelLabel_${set.num}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="addSetToListModalLabel_${setInProgress.setNumber}">Add Set to a List</h5>
+                                <h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="POST" id="addSetToListForm_${setInProgress.setNumber}" action="/addSetToList/previousPage=setsInProgress">
+                            <form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=sets">
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label class="form-label">Add Set: "${setInProgress.setNumber}/${setInProgress.setName}" to a list</label>
+                                        <label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
                                         <br>
                                         <h5> Set List: </h5>
                                         <div class="input-group mb-3">
                                             <!-- This creates a select box using bootstrap, for every List of Lego Sets belonging to the logged in user -->
-                                            <select class="form-select" id="selectList_${setInProgress.setNumber}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${setInProgress.setNumber}"  data-bs-toggle="tooltip" title="Select a list to add the set to">
+                                            <select class="form-select" id="selectList_${set.num}" name="setListId" style="max-height: 50vh; overflow-y: auto;" aria-label="Default select example" aria-describedby="newListButton_${set.num}"  data-bs-toggle="tooltip" title="Select a list to add the set to">
                                                 <c:forEach items="${set_lists}" var="set_list">
                                                     <option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
                                                 </c:forEach>
                                             </select>
-                                            <button id="newListButton_${setInProgress.setNumber}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
+                                            <button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
                                         </div>
                                         
-                                        <div id="addSetToListHelp_${setInProgress.setNumber}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
+                                        <div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_listSelected.listName}"</div>
 
-                                        <!-- This is a hidden input that adds the set number of the set selected to the form -->
-                                        <input type="hidden" id="inputSetNum_${setInProgress.setNumber}" name="set_number" value="${setInProgress.setNumber}"/>
+                                        <!-- This is a hidden input that adds the set num of the set selected to the form -->
+                                        <input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" id="addSetToListButton_${setInProgress.setNumber}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
+                                    <button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
                                 </div>
                             </form>
                         </div>

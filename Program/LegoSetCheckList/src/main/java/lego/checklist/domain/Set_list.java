@@ -32,17 +32,17 @@ public class Set_list {
 	
 	@OneToMany(orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "setListId", nullable = false)
-	private List<Set> sets;
+	private List<SetInSetList> setsInSetList;
 	
 	@Column(nullable = false)
 	private int totalSets;
 
 	public Set_list() {}
 	
-	public Set_list(Account account, String listName, List<Set> sets, int totalSets) {
+	public Set_list(Account account, String listName, List<SetInSetList> setsInSetList, int totalSets) {
 		this.account = account;
 		this.listName = listName;
-		this.sets = sets;
+		this.setsInSetList = setsInSetList;
 		this.totalSets = totalSets;
 	}
 
@@ -58,8 +58,8 @@ public class Set_list {
 		return listName;
 	}
 	
-	public List<Set> getSets() {
-		return sets;
+	public List<SetInSetList> getSets() {
+		return setsInSetList;
 	}
 
 	public int getTotalSets() {
@@ -70,19 +70,19 @@ public class Set_list {
 		this.listName = listName;
 	}
 	
-	public void addSet(Set set) {
-		sets.add(set);
+	public void addSet(SetInSetList setInSetList) {
+		setsInSetList.add(setInSetList);
 		totalSets++;
 	}
 	
-	public void removeSet(Set set) {
-		sets.remove(set);
+	public void removeSet(SetInSetList setInSetList) {
+		setsInSetList.remove(setInSetList);
 		totalSets--;
 	}
 	
 	public boolean contains(String set_number) {
-		for (Set set : sets) {
-			if (set_number.equals(set.getNum())) {
+		for (SetInSetList setInSetList : setsInSetList) {
+			if (set_number.equals(setInSetList.getSet().getNum())) {
 				return true;
 			}
 		}

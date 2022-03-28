@@ -776,7 +776,7 @@
 
             <!-- This alert will be display when a set is added to a set list -->
 			<div class="d-none" id="setAddedToListAlert" role="alert">
-				<i class="fa fa-check-circle"></i> <strong>Set: "<a href="/set?set_number=${set_number}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_number}</a>" added to list: "<a href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>"</strong>
+				<i class="fa fa-check-circle"></i> <strong>Set: "<a href="/set?set_number=${set_number}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_number}</a>" added to list: "<a href="/set_list=${set_listSelected.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_listSelected.listName}</a>"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 		</div>
@@ -865,7 +865,7 @@
                                             <button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
                                         </div>
                                         
-                                        <div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_list.listName}"</div>
+                                        <div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_listSelected.listName}"</div>
 
                                         <!-- This is a hidden input that adds the set number of the set selected to the form -->
                                         <input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
