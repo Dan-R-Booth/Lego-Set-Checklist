@@ -16,7 +16,6 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lego.checklist.domain.Account;
-import lego.checklist.domain.Set;
 import lego.checklist.domain.SetInSetList;
 import lego.checklist.domain.Set_list;
 import lego.checklist.domain.SetsOwnedList;

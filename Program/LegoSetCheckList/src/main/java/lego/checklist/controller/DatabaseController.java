@@ -355,7 +355,7 @@ public class DatabaseController {
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
     	model.addAttribute("set_lists", set_lists);
 		
-    	removeUneededSetInfo();
+    	removeUnneededSetInfo();
     	
     	// These are used so the JSP page knows to inform the user that they have created a new
     	// Set list and what its name is and are both added to redirectAttributes so they stay
@@ -389,7 +389,7 @@ public class DatabaseController {
 	// This function goes through all rows in the SetInfo table and checking if that set number
 	// is in any row of either SetsInProgress or SetsInSetList, if it is in neither it is removed
 	// from the database 
-	private void removeUneededSetInfo() {
+	private void removeUnneededSetInfo() {
 		List<Set> setsInDB = (List<Set>) setInfoRepo.findAll();;
     	List<SetInProgress> setsInProgress = (List<SetInProgress>) setInProgessRepo.findAll();
     	List<SetInSetList> setsInSetLists = (List<SetInSetList>) setInSetListRepo.findAll();

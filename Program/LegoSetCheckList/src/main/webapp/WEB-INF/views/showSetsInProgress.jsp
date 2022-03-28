@@ -820,7 +820,7 @@
                                 <h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=sets">
+                            <form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=setsInProgress">
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>

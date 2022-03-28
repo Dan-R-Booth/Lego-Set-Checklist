@@ -15,19 +15,14 @@ public class Set {
 	@Column(name = "setNumber", nullable = false)
 	private String num;
 	
-//	@Transient
 	private String name;
 
-//	@Transient
 	private int year;
 
-//	@Transient
 	private String theme;
 
-//	@Transient
 	private int num_pieces;
 
-//	@Transient
 	private String img_url;
 
 	@Transient
