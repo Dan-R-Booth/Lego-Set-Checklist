@@ -528,10 +528,10 @@
 						document.getElementById("piece_" + id).style.display = "none";
 					}
 					else if (pieceTypesFiltered.indexOf(pieceType) > -1 && coloursFiltered.indexOf(pieceColour) > -1) {
-							document.getElementById("piece_" + id).style.display = "block";
+						document.getElementById("piece_" + id).style.display = "block";
 					}
 					else {
-							document.getElementById("piece_" + id).style.display = "none";
+						document.getElementById("piece_" + id).style.display = "none";
 					}
 				}
 			}

@@ -482,19 +482,104 @@
 				}
 			}
 
-			// This calls the controller with all the filters that the user wants to apply to the list
+            // This filters the list by filters selected
 			function filter() {
-				var text = document.getElementById("text_search").value;
+                var text = document.getElementById("text_search").value;
 				var minYear = document.getElementById("minYearBox").value;
 				var maxYear = document.getElementById("maxYearBox").value;
+				var themeName = document.getElementById("themeFilter").value;
 				var minPieces = document.getElementById("minPiecesBox").value;
 				var maxPieces = document.getElementById("maxPiecesBox").value;
-				
-				var theme_id = document.getElementById("themeFilter").value;
-				
-				window.location = "/search/text=" + text + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/minPieces=" + minPieces + "/maxPieces=" + maxPieces + "/theme_id=" + theme_id + "/uri/";
+               	
+               	// This runs displaying only the sets that match the filters selected
+				for (let id = 0; id < "${num_sets}"; id++) {
+                    var setName = document.getElementById("name_" + id).innerText;
+					var setYear = parseInt(document.getElementById("year_" + id).innerHTML);
+					var setTheme = document.getElementById("theme_" + id).innerText;
+                    var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
+					
+					// This will hide all pieces that do not fall into the categories that the list is being filtered by
+					if (((setName.search(text) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
+                        document.getElementById("set_" + id).style.display = "none";
+					}
+					else {
+							document.getElementById("set_" + id).style.display = "block";
+					}
+				}
 			}
 			
+			// This returns a colour filter if there is one currently active, this is used when getting this information
+			// to return to the controller
+			function getColourFilter() {
+				var colourFilter = "";
+				
+				if (document.getElementById("All_Colours").checked == false) {
+					colourFilter = "&colourFilter=";
+					
+	                // This goes through all the colour checkboxes and adds those checkbox ids of ones that are checked to a list
+	                // if it has no length the colourFilter string is set to equal none. Overwise the values are then added to the
+	                // colourFilter string This string is to be sent to the controller so that the filters are not forgot when the
+	                // page is reloaded
+	                var colourCheckboxes = document.getElementsByName("colourFilter");
+	                var coloursFiltered = [];
+	                for (let i = 0; i < colourCheckboxes.length; i++) {
+						if (colourCheckboxes[i].checked) {
+							
+							if (colourCheckboxes[i].id == "[No Color/Any Color]") {
+								coloursFiltered.push("No Color Any Color");
+							}
+							else {	
+								coloursFiltered.push(colourCheckboxes[i].id);
+							}
+	                   }
+	                }
+	                
+	                if (coloursFiltered.length == 0) {
+	                	colourFilter += "none";
+	                }
+	                else {
+	                	for (let i = 0; i < coloursFiltered.length; i++) {
+                			colourFilter += coloursFiltered[i] + ">";
+		                }
+	                }
+				}
+				
+				return colourFilter;
+			}
+			
+			// This returns a pieceType filter if there is one currently active, this is used when getting this information
+			// to return to the controller
+			function getPieceTypeFilter() {
+				var pieceTypeFilter = "";
+				
+				if (document.getElementById("All_PieceTypes").checked == false) {
+					pieceTypeFilter = "&pieceTypeFilter=";
+					
+	                // This goes through all the piece type checkboxes and adds those checkbox ids of ones that are checked to a list
+	                // if it has no length the pieceTypeFilter string is set to equal none. Overwise the values are then added to the
+	                // pieceTypeFilter string This string is to be sent to the controller so that the filters are not forgot when the
+	                // page is reloaded
+	                var pieceTypeCheckboxes = document.getElementsByName("pieceTypeFilter");
+	                var pieceTypesFiltered = [];
+	                for (let i = 0; i < pieceTypeCheckboxes.length; i++) {
+						if (pieceTypeCheckboxes[i].checked) {
+							pieceTypesFiltered.push(pieceTypeCheckboxes[i].id);
+	                   }
+	                }
+	                
+	                if (pieceTypesFiltered.length == 0) {
+	                	pieceTypeFilter += "none";
+	                }
+	                else {
+	                	for (let i = 0; i < pieceTypesFiltered.length; i++) {
+	                		pieceTypeFilter += pieceTypesFiltered[i] + ">";
+		                }
+	                }
+				}
+				
+				return pieceTypeFilter;
+			}
+
 			// This will minimise or maximise the filter bar, and if the sort bar is maximised this will also minimise it
 			function minimiseFilterBar() {
 				var filterBar = document.getElementById("filterBar").style.display;
@@ -627,10 +712,10 @@
 											<c:forEach items="${themeList}" var="theme">
 												<c:choose>
 													<c:when test="${theme.id == theme_id}">
-														<option class="form-check-label" value="${theme.id}" data-tokens="${theme.name}" selected> ${theme.name} </option>
+														<option class="form-check-label" value="${theme.name}" data-tokens="${theme.name}" selected> ${theme.name} </option>
 													</c:when>
 													<c:otherwise>
-														<option class="form-check-label" value="${theme.id}" data-tokens="${theme.name}"> ${theme.name} </option>
+														<option class="form-check-label" value="${theme.name}" data-tokens="${theme.name}"> ${theme.name} </option>
 													</c:otherwise>
 												</c:choose>
 											</c:forEach>
@@ -809,16 +894,16 @@
 							<a href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
 						</div>
 						<div class="col">
-							${set.name}
+                            <label id="name_${loop.index}">${set.name}</label>
 						</div>
 						<div class="col">
-							${set.year}
+                            <label id="year_${loop.index}">${set.year}</label>
 						</div>
 						<div class="col">
-							${set.theme}
+                            <label id="theme_${loop.index}">${set.theme}</label>
 						</div>
 						<div class="col">
-							${set.num_pieces}
+                            <label id="num_pieces_${loop.index}">${set.num_pieces}</label>
 						</div>
                         <div class="col-1">
 							<i class="fa fa-trash fa-lg" id="deleteLink_${set_list.setListId}" style="cursor: pointer;" onclick="deleteSetList()"></i>

@@ -302,7 +302,8 @@ public class DatabaseController {
         model.addAttribute("searchText", searchText);
         model.addAttribute("sets", sets);
         model.addAttribute("themeList", ThemeController.themeList);
-		
+        model.addAttribute("num_sets", sets.size());
+        
 		return "showSetList";
 	}
 	
@@ -380,8 +381,8 @@ public class DatabaseController {
 		}
 		
 		model.addAttribute("sets", sets);
-		
 		model.addAttribute("themeList", ThemeController.themeList);
+		model.addAttribute("num_sets", sets.size());
 		
 		return "showSetsInProgress";
 	}
