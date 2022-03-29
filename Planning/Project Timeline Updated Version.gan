@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2022-02-19" view-index="0" gantt-divider-location="431" resource-divider-location="300" version="3.1.3103" locale="en_GB">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2022-03-02" view-index="0" gantt-divider-location="431" resource-divider-location="300" version="3.1.3103" locale="en_GB">
     <description/>
     <view zooming-state="default:3" id="gantt-chart">
         <field id="tpd3" name="Name" width="325" order="0"/>
         <field id="tpd4" name="Begin date" width="45" order="1"/>
         <field id="tpd5" name="End date" width="42" order="2"/>
+        <option id="taskLabelRight" value="resources"/>
         <timeline>
-            <![CDATA[575,573,579,588,584,3,586]]>
+            <![CDATA[588,586,579,584,573,575,3]]>
         </timeline>
         <option id="color.recent">
             <![CDATA[#0000ff #ff00cc #ff9900 #00ff00 #ff0000 #eeeeee #0099ff #00cc33 #ff6600]]>
@@ -201,10 +202,10 @@
         <task id="458" name="Implement feature to make set lists and save them to the database" color="#8cb6ce" meeting="false" start="2022-03-18" duration="3" complete="0" thirdDate="2022-03-14" thirdDate-constraint="0" expand="true">
             <depend id="459" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="459" name="Add the search feature to user’s lists of sets" color="#8cb6ce" meeting="false" start="2022-03-23" duration="3" complete="0" thirdDate="2022-03-17" thirdDate-constraint="0" expand="true">
+        <task id="459" name="Add the search feature to user’s lists of sets" color="#8cb6ce" meeting="false" start="2022-03-23" duration="5" complete="0" thirdDate="2022-03-17" thirdDate-constraint="0" expand="true">
             <depend id="540" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="540" name="Design and Implement any other optional features that have not yet been completed" color="#8cb6ce" meeting="false" start="2022-03-28" duration="5" complete="0" thirdDate="2022-03-22" thirdDate-constraint="0" expand="true">
+        <task id="540" name="Design and Implement any other optional features that have not yet been completed" color="#8cb6ce" meeting="false" start="2022-03-30" duration="3" complete="0" thirdDate="2022-03-22" thirdDate-constraint="0" expand="true">
             <depend id="571" type="2" difference="0" hardness="Strong"/>
         </task>
         <task id="584" name="Deadline for feature development" color="#0000ff" meeting="true" start="2022-04-04" duration="0" complete="0" thirdDate="2022-03-04" thirdDate-constraint="0" expand="true"/>
