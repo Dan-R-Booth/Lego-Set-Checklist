@@ -232,7 +232,7 @@ public class DatabaseController {
 	
 	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
 	@GetMapping("/set_list={listName}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
 		model.addAttribute("setListUrl", url);
 		
@@ -315,27 +315,32 @@ public class DatabaseController {
 	    	model.addAttribute("sort1", sort);
 		}
 		
-		// If there is a min year the user would like to filter by this is added to the uri and the model
-		if (minYear != null){
+		// If there is a text search being parsed this will add it to the model
+		if (searchText != null) {
+			model.addAttribute("searchText", searchText);
+		}
+		
+		// If there is a min year being parsed this will add it to the model
+		if (minYear != null) {
 			model.addAttribute("minYear", minYear);
 		}
 		
-		// If there is a max year the user would like to filter by this is added to the uri and the model
+		// If there is a max year being parsed this will add it to the model
 		if (maxYear != null) {
 			model.addAttribute("maxYear", maxYear);
 		}
 		
-		// If there is a minimum number of pieces the user would like to filter by this is added to the uri and the model
+		// If there is a minimum number of pieces being parsed this will add it to the model
 		if (minPieces != null){
 			model.addAttribute("minPieces", minPieces);
 		}
 		
-		// If there is a maximum number of pieces the user would like to filter by this is added to the uri and the model
+		// If there is a maximum number of pieces being parsed this will add it to the model
 		if (maxPieces != null) {
 			model.addAttribute("maxPieces", maxPieces);
 		}
 		
-		// If there is a theme_id the user would like to filter by this is added to the uri and the model
+		// If there is a theme_id being parsed this will add it to the model
 		if (filteredTheme_name != null) {
 			model.addAttribute("theme_name", filteredTheme_name);
 		}
@@ -423,7 +428,7 @@ public class DatabaseController {
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
-	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
+	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
 		model.addAttribute("setsInProgressUrl", url);
 		
@@ -505,27 +510,32 @@ public class DatabaseController {
 	    	model.addAttribute("sort1", sort);
 		}
 		
-		// If there is a min year the user would like to filter by this is added to the uri and the model
-		if (minYear != null){
+		// If there is a text search being parsed this will add it to the model
+		if (searchText != null) {
+			model.addAttribute("searchText", searchText);
+		}
+		
+		// If there is a min year being parsed this will add it to the model
+		if (minYear != null) {
 			model.addAttribute("minYear", minYear);
 		}
 		
-		// If there is a max year the user would like to filter by this is added to the uri and the model
+		// If there is a max year being parsed this will add it to the model
 		if (maxYear != null) {
 			model.addAttribute("maxYear", maxYear);
 		}
 		
-		// If there is a minimum number of pieces the user would like to filter by this is added to the uri and the model
+		// If there is a minimum number of pieces being parsed this will add it to the model
 		if (minPieces != null){
 			model.addAttribute("minPieces", minPieces);
 		}
 		
-		// If there is a maximum number of pieces the user would like to filter by this is added to the uri and the model
+		// If there is a maximum number of pieces being parsed this will add it to the model
 		if (maxPieces != null) {
 			model.addAttribute("maxPieces", maxPieces);
 		}
 		
-		// If there is a theme_id the user would like to filter by this is added to the uri and the model
+		// If there is a theme_id being parsed this will add it to the model
 		if (filteredTheme_name != null) {
 			model.addAttribute("theme_name", filteredTheme_name);
 		}

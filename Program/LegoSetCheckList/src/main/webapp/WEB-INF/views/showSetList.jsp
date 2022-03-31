@@ -231,8 +231,7 @@
 
 			// This reapplies any filters that where open when the page reloads
 			function applyFiltersOnReload() {
-				var text = "";
-
+				var text = "${searchText}";
 				var minYear = parseInt(${minYear});
 				var maxYear = parseInt(${maxYear});
 				var minPieces = parseInt(${minPieces});
@@ -254,7 +253,7 @@
                     var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
 					
 					// This will hide all pieces that do not fall into the categories that the list is being filtered by
-					if (((setName.search(text) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
+					if (((setName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
                         document.getElementById("set_" + id).style.display = "none";
 					}
 					else {
@@ -372,7 +371,12 @@
 
 			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
 			function sortBy(sort) {
-                		
+				
+				var text = "";
+				if (document.getElementById("text_search").value.length != 0) {
+					text = "&searchText=" + document.getElementById("text_search").value;
+				}
+
 				var minYear = "";
 				if (document.getElementById("minYearBox").value.length != 0) {
 					minYear = "&minYear=" + document.getElementById("minYearBox").value;
@@ -399,7 +403,7 @@
 					theme = "&theme_name=" + themeName;
 				}
 
-				window.location = "/set_list=${set_list.listName}/?sort=" + sort + "&barOpen=" + getBarOpen() + minYear + maxYear + minPieces + maxPieces + theme;
+				window.location = "/set_list=${set_list.listName}/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minYear + maxYear + minPieces + maxPieces + theme;
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
@@ -562,11 +566,11 @@
                     var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
 					
 					// This will hide all pieces that do not fall into the categories that the list is being filtered by
-					if (((setName.search(text) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
+					if (((setName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
                         document.getElementById("set_" + id).style.display = "none";
 					}
 					else {
-							document.getElementById("set_" + id).style.display = "block";
+						document.getElementById("set_" + id).style.display = "block";
 					}
 				}
 			}

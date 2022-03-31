@@ -615,7 +615,6 @@
 				}
 			}
 		</script>
-		</script>
 		
 	</head>
 
