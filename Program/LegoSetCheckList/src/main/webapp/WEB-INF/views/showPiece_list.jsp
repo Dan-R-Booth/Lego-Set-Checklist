@@ -705,6 +705,9 @@
 							<li class="nav-item mx-5">
 								<a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
 							</li>
+							<li class="nav-item mx-5">
+								<a class="nav-link" href="/set?set_number=${set.num}"> <i class="fa fa-arrow-left"></i> Return to Set View</a>
+							</li>
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
