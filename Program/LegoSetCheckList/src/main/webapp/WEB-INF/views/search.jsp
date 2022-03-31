@@ -250,12 +250,16 @@
 			function previousPage() {
 				var previous = "${previousPage}";
 				
+				openLoader();
+
 				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
+				openLoader();
+
 				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
 			}
 
@@ -355,6 +359,8 @@
 
 			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
 			function sortBy(sort) {
+				openLoader();
+
 				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 			}
 			
@@ -374,6 +380,8 @@
 					sort += ", " + sortValue(sort3);
 				}
 				
+				openLoader();
+
 				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
 			}
 
@@ -418,12 +426,17 @@
 				var sort2 = document.getElementById("sortSelect2");
 				var sort3 = document.getElementById("sortSelect3");
 
-				if (sort1.value == sort2.value) {
+				var sortType = sort1.value.split(" (")[0];
+
+				// If sort 2 is the same sort type (ascending or descending) as sort
+				// 1 this sets sort 2 and sort 3 to none, as sort types cannot match
+				// similarly if sort 3 is the same sort type it is set to none
+				if (sort2.value.match(sortType)) {
 					sort2.value = "None";
 					sort3.value = "None";
 					sort3.disabled = true;
 				}
-				else if (sort1.value == sort3.value) {
+				else if (sort3.value.match(sortType)) {
 					sort3.value = "None";
 				}
 
@@ -435,6 +448,14 @@
 				}
 				else {
 					sort3.disabled = false;
+
+					var sortType = sort2.value.split(" (")[0];
+
+					// If sort 3 is the same type of sort type (ascending or descending) as sort
+					// 2 this sets sort 3 to none, as sort types cannot match
+					if (sort3.value.match(sortType)) {
+						sort3.value = "None";
+					}
 
 					sortDisableSelectedSortOptions(sort2, sort3);
 
@@ -511,6 +532,8 @@
 				
 				var theme_id = document.getElementById("themeFilter").value;
 				
+				openLoader();
+
 				window.location = "/search/text=" + text + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/minPieces=" + minPieces + "/maxPieces=" + maxPieces + "/theme_id=" + theme_id + "/uri/";
 			}
 			

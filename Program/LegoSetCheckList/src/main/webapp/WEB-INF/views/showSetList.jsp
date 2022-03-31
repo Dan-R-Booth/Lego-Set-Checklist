@@ -149,7 +149,7 @@
 					document.getElementById("numSortIcon").setAttribute("class", "fa fa-sort-numeric-asc");
 					document.getElementById("sortSelect1").value = "Set Number (asc)";
 				}
-				
+
 				// If their is a sort this sets the correct column to the correct sort symbol,
 				// and if their isn't a sort or it's set number, it sorts it by set number
 				if ("${sort2}" == "name") {
@@ -165,6 +165,7 @@
 					document.getElementById("sortSelect2").value = "Theme (asc)";
 				}
 				else if ("${sort2}" == "-theme") {
+					alert("${sort2}");
 					document.getElementById("themeSortIcon").setAttribute("class", "fa fa-sort-up");
 					document.getElementById("sortSelect2").value = "Theme (desc)";
 				}
@@ -403,6 +404,8 @@
 					theme = "&theme_name=" + themeName;
 				}
 
+				openLoader();
+
 				window.location = "/set_list=${set_list.listName}/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minYear + maxYear + minPieces + maxPieces + theme;
 			}
 			
@@ -422,7 +425,7 @@
 					sort += ", " + sortValue(sort3);
 				}
 				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+				sortBy(sort);
 			}
 
 			// This gets the value needed to be added to the Rebrickable API uri request, to sort a list of Lego Sets, depending on the value selected
@@ -446,16 +449,16 @@
 					return "-year";
 				}
 				else if (sort == "Theme (asc)") {
-					return "theme_id";
+					return "theme";
 				}
 				else if (sort == "Theme (desc)") {
-					return "-theme_id";
+					return "-theme";
 				}
 				else if (sort == "Number of Pieces (asc)") {
-					return "num_parts";
+					return "numPieces";
 				}
 				else if (sort == "Number of Pieces (desc)") {
-					return "-num_parts";
+					return "-numPieces";
 				}
 			}
 			
@@ -466,12 +469,17 @@
 				var sort2 = document.getElementById("sortSelect2");
 				var sort3 = document.getElementById("sortSelect3");
 
-				if (sort1.value == sort2.value) {
+				var sortType = sort1.value.split(" (")[0];
+
+				// If sort 2 is the same sort type (ascending or descending) as sort
+				// 1 this sets sort 2 and sort 3 to none, as sort types cannot match
+				// similarly if sort 3 is the same sort type it is set to none
+				if (sort2.value.match(sortType)) {
 					sort2.value = "None";
 					sort3.value = "None";
 					sort3.disabled = true;
 				}
-				else if (sort1.value == sort3.value) {
+				else if (sort3.value.match(sortType)) {
 					sort3.value = "None";
 				}
 
@@ -483,6 +491,14 @@
 				}
 				else {
 					sort3.disabled = false;
+
+					var sortType = sort2.value.split(" (")[0];
+
+					// If sort 3 is the same type of sort type (ascending or descending) as sort
+					// 2 this sets sort 3 to none, as sort types cannot match
+					if (sort3.value.match(sortType)) {
+						sort3.value = "None";
+					}
 
 					sortDisableSelectedSortOptions(sort2, sort3);
 

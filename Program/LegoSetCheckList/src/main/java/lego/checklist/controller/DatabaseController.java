@@ -245,74 +245,34 @@ public class DatabaseController {
 		
 		// If their is a sort to be applied to the Set List, then the following is ran to apply this sort
 		if (sort != null) {
-
-			if (sort.equals("set_num") || sort.equals("-set_num")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Set Number
-	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
-	    			@Override
-	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
-	    				return setInSetList1.getSet().getNum().compareTo(setInSetList2.getSet().getNum());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-set_num")) {
-	    			Collections.reverse(setsInSetList);
-	    		}
-	    	}
-			else if (sort.equals("name") || sort.equals("-name")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Set Name
-	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
-	    			@Override
-	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
-	    				return setInSetList1.getSet().getName().compareTo(setInSetList2.getSet().getName());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-name")) {
-	    			Collections.reverse(setsInSetList);
-	    		}
-	    	}
-			else if (sort.equals("year") || sort.equals("-year")) {
-	    		// This sorts the list of pieces so they are in numerical order by Year
-	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
-	    			@Override
-	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
-	    				return setInSetList1.getSet().getYear() - setInSetList2.getSet().getYear();
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-year")) {
-	    			Collections.reverse(setsInSetList);
-	    		}
-	    	}
-	    	else if (sort.equals("theme") || sort.equals("-theme")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Theme
-	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
-	    			@Override
-	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
-	    				return setInSetList1.getSet().getTheme().compareTo(setInSetList2.getSet().getTheme());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-theme")) {
-	    			Collections.reverse(setsInSetList);
-	    		}
-	    	}
-	    	else if (sort.equals("numPieces") || sort.equals("-numPieces")) {
-	    		// This sorts the list of pieces so they are in numerical order by Number of Pieces
-	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
-	    			@Override
-	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
-	    				return setInSetList1.getSet().getNum_pieces() - setInSetList2.getSet().getNum_pieces();
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-numPieces")) {
-	    			Collections.reverse(setsInSetList);
-	    		}
-	    	}
-	    	
-	    	model.addAttribute("sort1", sort);
+			String[] sorts = sort.split(", ");
+			
+			model.addAttribute("sort1", sorts[0]);
+			if (sorts.length >= 2) {
+				model.addAttribute("sort2", sorts[1]);
+			}
+			
+			if (sorts.length == 3) {
+				model.addAttribute("sort3", sorts[2]);
+			}
+			
+			// This sorts the list of pieces so they are in alphabetical order by Set Number
+			Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
+				@Override
+				public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
+					int sortValue = getSortValue(sorts[0], setInSetList1, setInSetList2);
+					
+					if (sortValue == 0 && sorts.length >= 2) {
+						sortValue = getSortValue(sorts[1], setInSetList1, setInSetList2);
+					}
+					
+					if (sortValue == 0 && sorts.length == 3) {
+						sortValue = getSortValue(sorts[2], setInSetList1, setInSetList2);
+					}
+					
+					return sortValue;
+				}
+			});
 		}
 		
 		// If there is a text search being parsed this will add it to the model
@@ -364,6 +324,50 @@ public class DatabaseController {
         set_list.setSetsInSetList(setsInSetList);
         model.addAttribute("set_list", set_list);
 		return "showSetList";
+	}
+	
+	// Compares two sets by the sort entered and returns the value of the comparison
+	private int getSortValue(String sort, SetInSetList setInSetList1, SetInSetList setInSetList2) {
+		if (sort.equals("set_num")) {
+			// This sorts the list of pieces so they are in numerical order by Set Number ascending
+			return setInSetList1.getSet().getNum().compareTo(setInSetList2.getSet().getNum());
+		}
+		else if (sort.equals("-set_num")) {
+			// This sorts the list of pieces so they are in numerical order by Set Number descending
+			return setInSetList2.getSet().getNum().compareTo(setInSetList1.getSet().getNum());
+		}
+		else if (sort.equals("name")) {
+    		// This sorts the list of pieces so they are in alphabetical order by Set Name ascending
+			return setInSetList1.getSet().getName().compareTo(setInSetList2.getSet().getName());
+    	}
+		else if (sort.equals("-name")) {
+    		// This sorts the list of pieces so they are in alphabetical order by Set Name descending
+			return setInSetList2.getSet().getName().compareTo(setInSetList1.getSet().getName());
+    	}
+		else if (sort.equals("year")) {
+    		// This sorts the list of pieces so they are in numerical order by Year ascending
+			return setInSetList1.getSet().getYear() - setInSetList2.getSet().getYear();
+    	}
+		else if (sort.equals("-year")) {
+    		// This sorts the list of pieces so they are in numerical order by Year descending
+			return setInSetList2.getSet().getYear() - setInSetList1.getSet().getYear();
+    	}
+    	else if (sort.equals("theme")) {
+    		// This sorts the list of pieces so they are in alphabetical order by Theme ascending
+			return setInSetList1.getSet().getTheme().compareTo(setInSetList2.getSet().getTheme());
+    	}
+    	else if (sort.equals("-theme")) {
+    		// This sorts the list of pieces so they are in alphabetical order by Theme descending
+			return setInSetList2.getSet().getTheme().compareTo(setInSetList1.getSet().getTheme());
+    	}
+    	else if (sort.equals("numPieces")) {
+    		// This sorts the list of pieces so they are in numerical order by Number of Pieces ascending
+			return setInSetList1.getSet().getNum_pieces() - setInSetList2.getSet().getNum_pieces();
+    	}
+    	else {
+    		// This sorts the list of pieces so they are in numerical order by Number of Pieces descending
+			return setInSetList2.getSet().getNum_pieces() - setInSetList1.getSet().getNum_pieces();
+    	}
 	}
 	
 	// This create a new set list for a logged in user, using the entered list name

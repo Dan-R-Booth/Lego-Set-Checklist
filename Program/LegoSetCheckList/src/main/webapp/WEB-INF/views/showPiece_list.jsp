@@ -432,6 +432,8 @@
 					hidePiecesNotFound = "&hidePiecesNotFound=true";
 				}
 
+				openLoader();
+
 				window.location = "/set/${set_number}/pieces/?sort=" + sort + "&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound + hidePiecesNotFound;
 			}
 
