@@ -165,7 +165,6 @@
 					document.getElementById("sortSelect2").value = "Theme (asc)";
 				}
 				else if ("${sort2}" == "-theme") {
-					alert("${sort2}");
 					document.getElementById("themeSortIcon").setAttribute("class", "fa fa-sort-up");
 					document.getElementById("sortSelect2").value = "Theme (desc)";
 				}
