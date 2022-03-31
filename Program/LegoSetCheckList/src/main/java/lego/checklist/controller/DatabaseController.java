@@ -1,7 +1,11 @@
 package lego.checklist.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -226,63 +230,114 @@ public class DatabaseController {
     	}
 	}
 	
-
 	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
 	@GetMapping("/set_list={listName}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id) {
-		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
-		model.addAttribute("set_list", set_list);
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
+		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
+		model.addAttribute("setListUrl", url);
 		
-		String set_list_uri = "";
+		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
+		List<SetInSetList> setInSetLists = set_list.getSets();
 		
 		// This is used so that if the filter or sort bar was open or no bar was open on the search page
 		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
 		model.addAttribute("barOpen", barOpen);
 		
-		// If there is a attribute the user would like to sort by this is added to the uri and the model
+		// If their is a sort to be applied to the Set List, then the following is ran to apply this sort
 		if (sort != null) {
-			String[] sorts = sort.split(",");
-			
-			set_list_uri += "&ordering=" + sort;
-			
-			model.addAttribute("sort1", sorts[0]);
-			if (sorts.length >= 2) {
-				model.addAttribute("sort2", sorts[1]);
-			}
-			
-			if (sorts.length == 3) {
-				model.addAttribute("sort3", sorts[2]);
-			}
+
+			if (sort.equals("set_num") || sort.equals("-set_num")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Set Number
+	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    			@Override
+	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
+	    				return SetInSetList1.getSet().getNum().compareTo(SetInSetList2.getSet().getNum());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-set_num")) {
+	    			Collections.reverse(setInSetLists);
+	    		}
+	    	}
+			else if (sort.equals("name") || sort.equals("-name")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Set Name
+	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    			@Override
+	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
+	    				return SetInSetList1.getSet().getName().compareTo(SetInSetList2.getSet().getName());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-name")) {
+	    			Collections.reverse(setInSetLists);
+	    		}
+	    	}
+			else if (sort.equals("year") || sort.equals("-year")) {
+	    		// This sorts the list of pieces so they are in numerical order by Year
+	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    			@Override
+	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
+	    				return SetInSetList1.getSet().getYear() - SetInSetList2.getSet().getYear();
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-year")) {
+	    			Collections.reverse(setInSetLists);
+	    		}
+	    	}
+	    	else if (sort.equals("theme") || sort.equals("-theme")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Theme
+	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    			@Override
+	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
+	    				return SetInSetList1.getSet().getTheme().compareTo(SetInSetList2.getSet().getTheme());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-theme")) {
+	    			Collections.reverse(setInSetLists);
+	    		}
+	    	}
+	    	else if (sort.equals("numPieces") || sort.equals("-numPieces")) {
+	    		// This sorts the list of pieces so they are in numerical order by Number of Pieces
+	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    			@Override
+	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
+	    				return SetInSetList1.getSet().getNum_pieces() - SetInSetList2.getSet().getNum_pieces();
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-numPieces")) {
+	    			Collections.reverse(setInSetLists);
+	    		}
+	    	}
+	    	
+	    	model.addAttribute("sort1", sort);
 		}
 		
 		// If there is a min year the user would like to filter by this is added to the uri and the model
 		if (minYear != null){
-			set_list_uri += "&min_year=" + minYear;
 			model.addAttribute("minYear", minYear);
 		}
 		
 		// If there is a max year the user would like to filter by this is added to the uri and the model
 		if (maxYear != null) {
-			set_list_uri += "&max_year=" + maxYear;
 			model.addAttribute("maxYear", maxYear);
 		}
 		
 		// If there is a minimum number of pieces the user would like to filter by this is added to the uri and the model
 		if (minPieces != null){
-			set_list_uri += "&min_parts=" + minPieces;
 			model.addAttribute("minPieces", minPieces);
 		}
 		
 		// If there is a maximum number of pieces the user would like to filter by this is added to the uri and the model
 		if (maxPieces != null) {
-			set_list_uri += "&max_parts=" + maxPieces;
 			model.addAttribute("maxPieces", maxPieces);
 		}
 		
 		// If there is a theme_id the user would like to filter by this is added to the uri and the model
-		if (filteredTheme_id != null) {
-			set_list_uri += "&theme_id=" + filteredTheme_id;
-			model.addAttribute("theme_id", filteredTheme_id);
+		if (filteredTheme_name != null) {
+			model.addAttribute("theme_name", filteredTheme_name);
 		}
 		
 		List<SetInSetList> setsInSetList = set_list.getSets();
@@ -298,12 +353,13 @@ public class DatabaseController {
 		
 		model.addAttribute("sets", sets);
 		
-//		model.addAttribute("current", set_list_uri);
         model.addAttribute("searchText", searchText);
         model.addAttribute("sets", sets);
         model.addAttribute("themeList", ThemeController.themeList);
         model.addAttribute("num_sets", sets.size());
         
+        set_list.setSetsInSetList(setsInSetList);
+        model.addAttribute("set_list", set_list);
 		return "showSetList";
 	}
 	
@@ -369,7 +425,7 @@ public class DatabaseController {
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
-	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_id", required = false) String filteredTheme_id) {
+	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name) {
 		List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
 		
 		List<Set> sets = new ArrayList<>();

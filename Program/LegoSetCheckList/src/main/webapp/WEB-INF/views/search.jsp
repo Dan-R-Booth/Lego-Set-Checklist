@@ -293,7 +293,7 @@
 				}
 			}
 
-			// This calls the the controller setting the sort parameter as name
+			// This calls the the controller setting the sort parameter as set number
 			function numSort() {
 				var iconClass = document.getElementById("numSortIcon").className;
 				

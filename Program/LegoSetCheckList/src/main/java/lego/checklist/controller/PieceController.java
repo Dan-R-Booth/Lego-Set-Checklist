@@ -157,7 +157,7 @@ public class PieceController {
 	    		}
 	    	}
 	    	else if (sort.equals("quantity") || sort.equals("-quantity")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Quantity
+	    		// This sorts the list of pieces so they are in numerical order by Quantity
 	    		Collections.sort(piece_list, new Comparator<Piece>() {
 	    			@Override
 	    			public int compare(Piece piece1, Piece piece2) {
@@ -170,11 +170,11 @@ public class PieceController {
 	    		}
 	    	}
 	    	else if (sort.equals("quantityFound") || sort.equals("-quantityFound")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Quantity Found
+	    		// This sorts the list of pieces so they are in numerical order by Quantity Found
 	    		Collections.sort(piece_list, new Comparator<Piece>() {
 	    			@Override
 	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getQuantity_checked() - (piece2.getQuantity_checked());
+	    				return piece1.getQuantity_checked() - piece2.getQuantity_checked();
 	    			}
 	    		});
 	    		

@@ -70,6 +70,10 @@ public class Set_list {
 		this.listName = listName;
 	}
 	
+	public void setSetsInSetList(List<SetInSetList> setsInSetList) {
+		this.setsInSetList = setsInSetList;
+	}
+
 	public void addSet(SetInSetList setInSetList) {
 		setsInSetList.add(setInSetList);
 		totalSets++;
