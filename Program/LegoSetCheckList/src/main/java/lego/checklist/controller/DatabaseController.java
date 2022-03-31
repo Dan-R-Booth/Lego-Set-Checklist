@@ -237,7 +237,7 @@ public class DatabaseController {
 		model.addAttribute("setListUrl", url);
 		
 		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
-		List<SetInSetList> setInSetLists = set_list.getSets();
+		List<SetInSetList> setsInSetList = set_list.getSets();
 		
 		// This is used so that if the filter or sort bar was open or no bar was open on the search page
 		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
@@ -248,67 +248,67 @@ public class DatabaseController {
 
 			if (sort.equals("set_num") || sort.equals("-set_num")) {
 	    		// This sorts the list of pieces so they are in alphabetical order by Set Number
-	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
 	    			@Override
-	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
-	    				return SetInSetList1.getSet().getNum().compareTo(SetInSetList2.getSet().getNum());
+	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
+	    				return setInSetList1.getSet().getNum().compareTo(setInSetList2.getSet().getNum());
 	    			}
 	    		});
 	    		
 	    		if (sort.equals("-set_num")) {
-	    			Collections.reverse(setInSetLists);
+	    			Collections.reverse(setsInSetList);
 	    		}
 	    	}
 			else if (sort.equals("name") || sort.equals("-name")) {
 	    		// This sorts the list of pieces so they are in alphabetical order by Set Name
-	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
 	    			@Override
-	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
-	    				return SetInSetList1.getSet().getName().compareTo(SetInSetList2.getSet().getName());
+	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
+	    				return setInSetList1.getSet().getName().compareTo(setInSetList2.getSet().getName());
 	    			}
 	    		});
 	    		
 	    		if (sort.equals("-name")) {
-	    			Collections.reverse(setInSetLists);
+	    			Collections.reverse(setsInSetList);
 	    		}
 	    	}
 			else if (sort.equals("year") || sort.equals("-year")) {
 	    		// This sorts the list of pieces so they are in numerical order by Year
-	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
 	    			@Override
-	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
-	    				return SetInSetList1.getSet().getYear() - SetInSetList2.getSet().getYear();
+	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
+	    				return setInSetList1.getSet().getYear() - setInSetList2.getSet().getYear();
 	    			}
 	    		});
 	    		
 	    		if (sort.equals("-year")) {
-	    			Collections.reverse(setInSetLists);
+	    			Collections.reverse(setsInSetList);
 	    		}
 	    	}
 	    	else if (sort.equals("theme") || sort.equals("-theme")) {
 	    		// This sorts the list of pieces so they are in alphabetical order by Theme
-	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
 	    			@Override
-	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
-	    				return SetInSetList1.getSet().getTheme().compareTo(SetInSetList2.getSet().getTheme());
+	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
+	    				return setInSetList1.getSet().getTheme().compareTo(setInSetList2.getSet().getTheme());
 	    			}
 	    		});
 	    		
 	    		if (sort.equals("-theme")) {
-	    			Collections.reverse(setInSetLists);
+	    			Collections.reverse(setsInSetList);
 	    		}
 	    	}
 	    	else if (sort.equals("numPieces") || sort.equals("-numPieces")) {
 	    		// This sorts the list of pieces so they are in numerical order by Number of Pieces
-	    		Collections.sort(setInSetLists, new Comparator<SetInSetList>() {
+	    		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
 	    			@Override
-	    			public int compare(SetInSetList SetInSetList1, SetInSetList SetInSetList2) {
-	    				return SetInSetList1.getSet().getNum_pieces() - SetInSetList2.getSet().getNum_pieces();
+	    			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
+	    				return setInSetList1.getSet().getNum_pieces() - setInSetList2.getSet().getNum_pieces();
 	    			}
 	    		});
 	    		
 	    		if (sort.equals("-numPieces")) {
-	    			Collections.reverse(setInSetLists);
+	    			Collections.reverse(setsInSetList);
 	    		}
 	    	}
 	    	
@@ -339,8 +339,6 @@ public class DatabaseController {
 		if (filteredTheme_name != null) {
 			model.addAttribute("theme_name", filteredTheme_name);
 		}
-		
-		List<SetInSetList> setsInSetList = set_list.getSets();
 		
 		List<Set> sets = new ArrayList<>();
 		
@@ -425,8 +423,112 @@ public class DatabaseController {
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
-	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name) {
+	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(value = "text", required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
+		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
+		model.addAttribute("setsInProgressUrl", url);
+		
 		List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
+		
+		// This is used so that if the filter or sort bar was open or no bar was open on the search page
+		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+		model.addAttribute("barOpen", barOpen);
+		
+		// If their is a sort to be applied to the Set List, then the following is ran to apply this sort
+		if (sort != null) {
+
+			if (sort.equals("set_num") || sort.equals("-set_num")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Set Number
+	    		Collections.sort(setsInProgress, new Comparator<SetInProgress>() {
+	    			@Override
+	    			public int compare(SetInProgress SetInProgress1, SetInProgress SetInProgress2) {
+	    				return SetInProgress1.getSet().getNum().compareTo(SetInProgress2.getSet().getNum());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-set_num")) {
+	    			Collections.reverse(setsInProgress);
+	    		}
+	    	}
+			else if (sort.equals("name") || sort.equals("-name")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Set Name
+	    		Collections.sort(setsInProgress, new Comparator<SetInProgress>() {
+	    			@Override
+	    			public int compare(SetInProgress SetInProgress1, SetInProgress SetInProgress2) {
+	    				return SetInProgress1.getSet().getName().compareTo(SetInProgress2.getSet().getName());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-name")) {
+	    			Collections.reverse(setsInProgress);
+	    		}
+	    	}
+			else if (sort.equals("year") || sort.equals("-year")) {
+	    		// This sorts the list of pieces so they are in numerical order by Year
+	    		Collections.sort(setsInProgress, new Comparator<SetInProgress>() {
+	    			@Override
+	    			public int compare(SetInProgress SetInProgress1, SetInProgress SetInProgress2) {
+	    				return SetInProgress1.getSet().getYear() - SetInProgress2.getSet().getYear();
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-year")) {
+	    			Collections.reverse(setsInProgress);
+	    		}
+	    	}
+	    	else if (sort.equals("theme") || sort.equals("-theme")) {
+	    		// This sorts the list of pieces so they are in alphabetical order by Theme
+	    		Collections.sort(setsInProgress, new Comparator<SetInProgress>() {
+	    			@Override
+	    			public int compare(SetInProgress SetInProgress1, SetInProgress SetInProgress2) {
+	    				return SetInProgress1.getSet().getTheme().compareTo(SetInProgress2.getSet().getTheme());
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-theme")) {
+	    			Collections.reverse(setsInProgress);
+	    		}
+	    	}
+	    	else if (sort.equals("numPieces") || sort.equals("-numPieces")) {
+	    		// This sorts the list of pieces so they are in numerical order by Number of Pieces
+	    		Collections.sort(setsInProgress, new Comparator<SetInProgress>() {
+	    			@Override
+	    			public int compare(SetInProgress SetInProgress1, SetInProgress SetInProgress2) {
+	    				return SetInProgress1.getSet().getNum_pieces() - SetInProgress2.getSet().getNum_pieces();
+	    			}
+	    		});
+	    		
+	    		if (sort.equals("-numPieces")) {
+	    			Collections.reverse(setsInProgress);
+	    		}
+	    	}
+	    	
+	    	model.addAttribute("sort1", sort);
+		}
+		
+		// If there is a min year the user would like to filter by this is added to the uri and the model
+		if (minYear != null){
+			model.addAttribute("minYear", minYear);
+		}
+		
+		// If there is a max year the user would like to filter by this is added to the uri and the model
+		if (maxYear != null) {
+			model.addAttribute("maxYear", maxYear);
+		}
+		
+		// If there is a minimum number of pieces the user would like to filter by this is added to the uri and the model
+		if (minPieces != null){
+			model.addAttribute("minPieces", minPieces);
+		}
+		
+		// If there is a maximum number of pieces the user would like to filter by this is added to the uri and the model
+		if (maxPieces != null) {
+			model.addAttribute("maxPieces", maxPieces);
+		}
+		
+		// If there is a theme_id the user would like to filter by this is added to the uri and the model
+		if (filteredTheme_name != null) {
+			model.addAttribute("theme_name", filteredTheme_name);
+		}
 		
 		List<Set> sets = new ArrayList<>();
 		

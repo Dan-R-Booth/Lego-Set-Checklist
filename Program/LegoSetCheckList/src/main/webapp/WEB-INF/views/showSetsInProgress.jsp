@@ -64,6 +64,8 @@
 				applySortVisuals()
 				
 				sortSelectChange();
+				
+				applyFiltersOnReload();
 
 				// These add the current min year and max year filters to their num boxes
 				document.getElementById("minYearBox").value = "${minYear}";
@@ -217,6 +219,40 @@
 				}
 			}
 
+			// This reapplies any filters that where open when the page reloads
+			function applyFiltersOnReload() {
+				var text = "";
+
+				var minYear = parseInt(${minYear});
+				var maxYear = parseInt(${maxYear});
+				var minPieces = parseInt(${minPieces});
+				var maxPieces = parseInt(${maxPieces});
+
+				var themeName = "";
+				if ("${theme_name}" != "") {
+					themeName = "${theme_name}";
+				}
+				else {
+					themeName = "All Themes";
+				}
+               	
+               	// This runs displaying only the sets that match the filters selected
+				for (let id = 0; id < "${num_sets}"; id++) {
+                    var setName = document.getElementById("name_" + id).innerText;
+					var setYear = parseInt(document.getElementById("year_" + id).innerHTML);
+					var setTheme = document.getElementById("theme_" + id).innerText;
+                    var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
+					
+					// This will hide all pieces that do not fall into the categories that the list is being filtered by
+					if (((setName.search(text) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
+                        document.getElementById("set_" + id).style.display = "none";
+					}
+					else {
+							document.getElementById("set_" + id).style.display = "block";
+					}
+				}
+			}
+
 			// This will take the users to the set page for the Lego Set that matches the entered set num and variant
 			// Or will inform them if the set num or set variant box is empty
 			function findSet() {
@@ -280,10 +316,10 @@
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					sortBy("theme_id");
+					sortBy("theme");
 				}
 				else if (iconClass == "fa fa-sort-down") {
-					sortBy("-theme_id");
+					sortBy("-theme");
 				}
 			}
 			
@@ -299,21 +335,48 @@
 				}
 			}
 			
-			// This calls the the controller setting the sort parameter as num_pieces
+			// This calls the the controller setting the sort parameter as number of pieces
 			function numPiecesSort() {
 				var iconClass = document.getElementById("numPiecesSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
-					sortBy("num_parts");
+					sortBy("numPieces");
 				}
 				else if (iconClass == "fa fa-sort-amount-asc") {
-					sortBy("-num_parts");
+					sortBy("-numPieces");
 				}
 			}
 
 			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
 			function sortBy(sort) {
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/";
+				
+				var minYear = "";
+				if (document.getElementById("minYearBox").value.length != 0) {
+					minYear = "&minYear=" + document.getElementById("minYearBox").value;
+				}
+
+				var maxYear = "";
+				if (document.getElementById("maxYearBox").value.length != 0) {
+					maxYear = "&maxYear=" + document.getElementById("maxYearBox").value;
+				}
+
+				var minPieces = "";
+				if (document.getElementById("minPiecesBox").value.length != 0) {
+					minPieces = "&minPieces=" + document.getElementById("minPiecesBox").value;
+				}
+
+				var maxPieces = "";
+				if (document.getElementById("maxPiecesBox").value.length != 0) {
+					maxPieces = "&maxPieces=" + document.getElementById("maxPiecesBox").value;
+				}
+
+				var theme = "";
+				var themeName = document.getElementById("themeFilter").value;
+				if (themeName != "All Themes") {
+					theme = "&theme_name=" + themeName;
+				}
+
+				window.location = "/setsInProgress/?sort=" + sort + "&barOpen=" + getBarOpen() + minYear + maxYear + minPieces + maxPieces + theme;
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
@@ -610,7 +673,7 @@
 										<select class="form-select" id="themeFilter" style="max-height: 50vh; overflow-y: auto; cursor: pointer;">
 											<c:forEach items="${themeList}" var="theme">
 												<c:choose>
-													<c:when test="${theme.id == theme_id}">
+													<c:when test="${theme.name == theme_name}">
 														<option class="form-check-label" value="${theme.name}" data-tokens="${theme.name}" selected> ${theme.name} </option>
 													</c:when>
 													<c:otherwise>
