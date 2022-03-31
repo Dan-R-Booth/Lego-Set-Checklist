@@ -71,8 +71,16 @@
 				document.getElementById("minYearBox").value = "${minYear}";
 				document.getElementById("maxYearBox").value = "${maxYear}";
 				
-				// These add the current min pieces and max pieces filters to their num boxes
-				document.getElementById("minPiecesBox").value = "${minPieces}";
+				// This adds the current min pieces filter to its number box,
+				// or if no min set number parsed it is set to 0
+				if ("${minPieces}" != "") {
+					document.getElementById("minPiecesBox").value = "${minPieces}";
+				}
+				else {
+					document.getElementById("minPiecesBox").value = 0;
+				}
+
+				// This adds the current max pieces filter to its number box
 				document.getElementById("maxPiecesBox").value = "${maxPieces}";
 
 				// If a Lego set has just been added to a list, this will open an alert bar to inform the user of this
@@ -237,12 +245,12 @@
                	
                	// This runs displaying only the sets that match the filters selected
 				for (let id = 0; id < "${num_sets}"; id++) {
-                    var setName = document.getElementById("name_" + id).innerText;
+                    var setName = document.getElementById("name_" + id).innerHTML;
 					var setYear = parseInt(document.getElementById("year_" + id).innerHTML);
 					var setTheme = document.getElementById("theme_" + id).innerText;
                     var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
 					
-					// This will hide all pieces that do not fall into the categories that the list is being filtered by
+					// This will hide all sets that do not fall into the categories that the list is being filtered by
 					if (((setName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
                         document.getElementById("set_" + id).style.display = "none";
 					}
@@ -550,12 +558,12 @@
                	
                	// This runs displaying only the sets that match the filters selected
 				for (let id = 0; id < "${num_sets}"; id++) {
-                    var setName = document.getElementById("name_" + id).innerText;
+                    var setName = document.getElementById("name_" + id).innerHTML;
 					var setYear = parseInt(document.getElementById("year_" + id).innerHTML);
 					var setTheme = document.getElementById("theme_" + id).innerText;
                     var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
 					
-					// This will hide all pieces that do not fall into the categories that the list is being filtered by
+					// This will hide all sets that do not fall into the categories that the list is being filtered by
 					if (((setName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
                         document.getElementById("set_" + id).style.display = "none";
 					}

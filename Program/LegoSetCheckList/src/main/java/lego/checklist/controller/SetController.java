@@ -30,6 +30,7 @@ import com.opencsv.CSVReader;
 import lego.checklist.domain.Account;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Set;
+import lego.checklist.domain.Set_list;
 import lego.checklist.domain.Theme;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
@@ -495,7 +496,9 @@ public class SetController {
 	
 	// This displays the page to display a logged in users set lists
 	@GetMapping("/set_lists")
-	public String showSetLists() {
+	public String showSetLists(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "set_lists", required = true) List<Set_list> set_lists) {
+		model.addAttribute("num_setLists", set_lists.size());
+		
 		return "showSetLists";
 	}
 }

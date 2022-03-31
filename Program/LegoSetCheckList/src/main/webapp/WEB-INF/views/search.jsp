@@ -79,8 +79,16 @@
 				document.getElementById("minYearBox").value = "${minYear}";
 				document.getElementById("maxYearBox").value = "${maxYear}";
 				
-				// These add the current min pieces and max pieces filters to their number boxes
-				document.getElementById("minPiecesBox").value = "${minPieces}";
+				// This adds the current min pieces filter to its number box,
+				// or if no min set number parsed it is set to 0
+				if ("${minPieces}" != "") {
+					document.getElementById("minPiecesBox").value = "${minPieces}";
+				}
+				else {
+					document.getElementById("minPiecesBox").value = 0;
+				}
+
+				// This adds the current max pieces filter to its number box
 				document.getElementById("maxPiecesBox").value = "${maxPieces}";
 
 				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in

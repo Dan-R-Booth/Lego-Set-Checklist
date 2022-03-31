@@ -66,8 +66,16 @@
 				
 				sortSelectChange();
 				
-				// These add the current min pieces and max pieces filters to their number boxes
-				document.getElementById("minSetsBox").value = "${minSets}";
+				// This adds the current min sets filter to its number box,
+				// or if no min set number parsed it is set to 0
+				if ("${minSets}" != "") {
+					document.getElementById("minSetsBox").value = "${minSets}";
+				}
+				else {
+					document.getElementById("minSetsBox").value = 0;
+				}
+
+				// This adds the current max sets filter to its number box
 				document.getElementById("maxSetsBox").value = "${maxSets}";
 
 				// This displays an alert bar informing the user if a set list has been created,
@@ -132,6 +140,27 @@
 				else if ("${sort3}" == "-setList_name") {
 					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
 					document.getElementById("sortSelect3").value = "List Name (desc)";
+				}
+			}
+		
+			// This reapplies any filters that where open when the page reloads
+			function applyFiltersOnReload() {
+				var text = "${searchText}";
+				var minYear = parseInt(${minSets});
+				var maxYear = parseInt(${maxSets});
+               	
+               	// This runs displaying only the set lists that match the filters selected
+				for (let id = 0; id < "${num_setLists}"; id++) {
+                    var listName = document.getElementById("name_" + id).innerHTML;
+                    var listNum_sets = parseInt(document.getElementById("num_sets_" + id).innerHTML);
+					
+					// This will hide all set lists that do not fall into the categories that the list is being filtered by
+					if (((listName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((listNum_sets < minSets) && (minSets.length != 0)) || ((listNum_sets > maxSets) && (maxSets.length != 0))) {
+                        document.getElementById("setList_" + id).style.display = "none";
+					}
+					else {
+						document.getElementById("setList_" + id).style.display = "block";
+					}
 				}
 			}
 
@@ -259,13 +288,25 @@
 				}
 			}
 
-			// This calls the controller with all the filters that the user wants to apply to the list
+			// This filters the list by filters selected
 			function filter() {
 				var text = document.getElementById("text_search").value;
 				var minSets = document.getElementById("minSetsBox").value;
 				var maxSets = document.getElementById("maxSetsBox").value;
-				
-				window.location = "/search/text=" + text + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=" + minYear + "/maxYear=" + maxYear + "/minSets=" + minSets + "/maxSets=" + maxSets + "/theme_id=" + theme_id + "/uri/";
+
+				// This runs displaying only the set lists that match the filters selected
+				for (let id = 0; id < "${num_setLists}"; id++) {
+                    var listName = document.getElementById("name_" + id).innerHTML;
+                    var listNum_sets = parseInt(document.getElementById("num_sets_" + id).innerHTML);
+					
+					// This will hide all set lists that do not fall into the categories that the list is being filtered by
+					if (((listName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((listNum_sets < minSets) && (minSets.length != 0)) || ((listNum_sets > maxSets) && (maxSets.length != 0))) {
+                        document.getElementById("setList_" + id).style.display = "none";
+					}
+					else {
+						document.getElementById("setList_" + id).style.display = "block";
+					}
+				}
 			}
 			
 			// This will minimise or maximise the filter bar, and if the sort bar is maximised this will also minimise it
@@ -529,14 +570,14 @@
 			<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
 			<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
-				<div id="set_${loop.index}" class="container-fluid border">
+				<div id="setList_${loop.index}" class="container-fluid border">
 					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
 						<div class="col">
-							<a href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>
+							<a id="name_${loop.index}" href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>
 						</div>
 						<div class="col">
-							${set_list.totalSets}
+							<label id="num_sets_${loop.index}">${set_list.totalSets}</label>
 						</div>
 						<div class="col-1">
 							<i class="fa fa-edit fa-lg mx-1" id="editLink_${set_list.setListId}" style="cursor: pointer;" onclick="editSetList()"></i>
