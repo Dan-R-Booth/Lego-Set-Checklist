@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -496,9 +498,82 @@ public class SetController {
 	
 	// This displays the page to display a logged in users set lists
 	@GetMapping("/set_lists")
-	public String showSetLists(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "set_lists", required = true) List<Set_list> set_lists) {
+	public String showSetLists(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "set_lists", required = true) List<Set_list> set_lists, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, HttpServletRequest request) {
+		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
+		model.addAttribute("setListsUrl", url);
+		
+		// This is used so that if the filter or sort bar was open or no bar was open on the search page
+		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+		model.addAttribute("barOpen", barOpen);
+		
+		// If their is a sort to be applied to the Sets in Progress, then the following is ran to apply this sort
+		// (by default if no sort entered will be sorted by set_number ascending)
+		// -- Start of Sort --
+		if (sort == null) {
+			sort = "listName";
+		}
+		
+		String[] sorts = sort.split(", ");
+		
+		model.addAttribute("sort1", sorts[0]);
+		if (sorts.length == 2) {
+			model.addAttribute("sort2", sorts[1]);
+		}
+		
+		// This sorts the sets in progress by the sorts selected, it compares each set in the list
+		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists).
+		// This calls a function to do the comparison of each Set and the sort in use too
+		Collections.sort(set_lists, new Comparator<Set_list>() {
+			@Override
+			public int compare(Set_list setList1, Set_list setList2) {
+				int sortValue = getSortValue(sorts[0], setList1, setList2);
+				
+				if (sortValue == 0 && sorts.length == 2) {
+					sortValue = getSortValue(sorts[1], setList1, setList2);
+				}
+				
+				return sortValue;
+			}
+		});
+		// -- End of Sort --
+		
+		// If there is a text search being parsed this will add it to the model
+		if (searchText != null) {
+			model.addAttribute("searchText", searchText);
+		}
+		
+		// If there is a min sets being parsed this will add it to the model
+		if (minSets != null) {
+			model.addAttribute("minYear", minSets);
+		}
+		
+		// If there is a max sets being parsed this will add it to the model
+		if (maxSets != null) {
+			model.addAttribute("maxSets", maxSets);
+		}
+		
 		model.addAttribute("num_setLists", set_lists.size());
 		
 		return "showSetLists";
+	}
+	
+	// Compares two set lists by a sort and returns the value of the comparison
+	private int getSortValue(String sort, Set_list setList1, Set_list setList2) {
+		if (sort.equals("numSets")) {
+    		// This compares the sets by Number of Sets ascending
+			return setList1.getTotalSets() - setList2.getTotalSets();
+    	}
+    	else if (sort.equals("-numSets")) {
+    		// This compares the sets by Number of Sets descending
+			return setList2.getTotalSets() - setList1.getTotalSets();
+    	}
+    	else if (sort.equals("-listName")) {
+    		// This compares the sets by List Name descending
+    		return setList2.getListName().toUpperCase().compareTo(setList1.getListName().toUpperCase());
+    	}
+    	else {
+			// This compares the sets by List Name ascending
+			return setList1.getListName().toUpperCase().compareTo(setList2.getListName().toUpperCase());
+		}
 	}
 }

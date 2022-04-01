@@ -148,8 +148,7 @@
 					document.getElementById("sortSelect1").value = "Set Number (asc)";
 				}
 
-				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number
+				// If their is a second sort this sets the correct column to the correct sort symbol
 				if ("${sort2}" == "name") {
 					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-asc");
 					document.getElementById("sortSelect2").value = "Set Name (asc)";
@@ -186,9 +185,12 @@
 					document.getElementById("numSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
 					document.getElementById("sortSelect2").value = "Set Number (desc)";
 				}
+				else if ("${sort2}" == "set_num") {
+					document.getElementById("numSortIcon").setAttribute("class", "fa fa-sort-numeric-asc");
+					document.getElementById("sortSelect2").value = "Set Number (asc)";
+				}
 				
-				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number
+				// If their is a second sort this sets the correct column to the correct sort symbol
 				if ("${sort3}" == "name") {
 					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-asc");
 					document.getElementById("sortSelect3").value = "Set Name (asc)";
@@ -224,6 +226,10 @@
 				else if ("${sort3}" == "-set_num") {
 					document.getElementById("numSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
 					document.getElementById("sortSelect3").value = "Set Number (desc)";
+				}
+				else if ("${sort3}" == "set_num") {
+					document.getElementById("numSortIcon").setAttribute("class", "fa fa-sort-numeric-asc");
+					document.getElementById("sortSelect3").value = "Set Number (asc)";
 				}
 			}
 

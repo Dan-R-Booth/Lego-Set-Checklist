@@ -62,9 +62,11 @@
 					document.getElementById("sortBar").style.display = "block";
 				}
 
-				applySortVisuals()
+				applySortVisuals();
 				
 				sortSelectChange();
+
+				applyFiltersOnReload();
 				
 				// This adds the current min sets filter to its number box,
 				// or if no min set number parsed it is set to 0
@@ -94,60 +96,48 @@
 			// If sorts are applied to the page this adds visuals for the user so it is clear which columns are being filtered
 			function applySortVisuals() {
 				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number 
-				if ("${sort1}" == "num_sets") {
+				// and if their isn't a sort or it's list name, it sorts it by list name
+				if ("${sort1}" == "numSets") {
 					document.getElementById("numSetsSortIcon").setAttribute("class", "fa fa-sort-amount-asc");
 					document.getElementById("sortSelect1").value = "Number of Sets (asc)";
 				}
-				else if ("${sort1}" == "-num_sets") {
+				else if ("${sort1}" == "-numSets") {
 					document.getElementById("numSetsSortIcon").setAttribute("class", "fa fa-sort-amount-desc");
 					document.getElementById("sortSelect1").value = "Number of Sets (desc)";
 				}
-				else if ("${sort1}" == "-setList_name") {
-					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
+				else if ("${sort1}" == "-listName") {
+					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-desc");
 					document.getElementById("sortSelect1").value = "List Name (desc)";
 				}
 				else {
-					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-numeric-asc");
+					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-asc");
 					document.getElementById("sortSelect1").value = "List Name (asc)";
 				}
-				
-				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number
-				if ("${sort2}" == "num_sets") {
+
+				// If their is a second sort this sets the correct column to the correct sort symbol
+				if ("${sort2}" == "numSets") {
 					document.getElementById("numSetsSortIcon").setAttribute("class", "fa fa-sort-amount-asc");
 					document.getElementById("sortSelect2").value = "Number of Sets (asc)";
 				}
-				else if ("${sort2}" == "-num_sets") {
+				else if ("${sort2}" == "-numSets") {
 					document.getElementById("numSetsSortIcon").setAttribute("class", "fa fa-sort-amount-desc");
 					document.getElementById("sortSelect2").value = "Number of Sets (desc)";
 				}
-				else if ("${sort2}" == "-setList_name") {
-					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
+				else if ("${sort2}" == "-listName") {
+					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-desc");
 					document.getElementById("sortSelect2").value = "List Name (desc)";
 				}
-				
-				// If their is a sort this sets the correct column to the correct sort symbol,
-				// and if their isn't a sort or it's set number, it sorts it by set number
-				if ("${sort3}" == "num_sets") {
-					document.getElementById("numSetsSortIcon").setAttribute("class", "fa fa-sort-amount-asc");
-					document.getElementById("sortSelect3").value = "Number of Sets (asc)";
-				}
-				else if ("${sort3}" == "-num_sets") {
-					document.getElementById("numSetsSortIcon").setAttribute("class", "fa fa-sort-amount-desc");
-					document.getElementById("sortSelect3").value = "Number of Sets (desc)";
-				}
-				else if ("${sort3}" == "-setList_name") {
-					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-numeric-desc");
-					document.getElementById("sortSelect3").value = "List Name (desc)";
+				else if ("${sort2}" == "listName") {
+					document.getElementById("nameSortIcon").setAttribute("class", "fa fa-sort-alpha-asc");
+					document.getElementById("sortSelect2").value = "List Name (asc)";
 				}
 			}
 		
 			// This reapplies any filters that where open when the page reloads
 			function applyFiltersOnReload() {
 				var text = "${searchText}";
-				var minYear = parseInt(${minSets});
-				var maxYear = parseInt(${maxSets});
+				var minSets = parseInt(${minSets});
+				var maxSets = parseInt(${maxSets});
                	
                	// This runs displaying only the set lists that match the filters selected
 				for (let id = 0; id < "${num_setLists}"; id++) {
@@ -181,23 +171,40 @@
 				var iconClass = document.getElementById("numSetsSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
-					sortBy("num_sets");
+					sortBy("numSets");
 				}
 				else if (iconClass == "fa fa-sort-amount-asc") {
-					sortBy("-num_sets");
+					sortBy("-numSets");
 				}
 			}
 
 			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
 			function sortBy(sort) {
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minSets=${minSets}/maxSets=${maxSets}/theme_id=${theme_id}/uri/";
+				
+				var text = "";
+				if (document.getElementById("text_search").value.length != 0) {
+					text = "&searchText=" + document.getElementById("text_search").value;
+				}
+
+				var minSets = "";
+				if (document.getElementById("minSetsBox").value.length != 0) {
+					minSets = "&minSets=" + document.getElementById("minSetsBox").value;
+				}
+
+                var maxSets = "";
+				if (document.getElementById("maxSetsBox").value.length != 0) {
+					maxSets = "&maxSets=" + document.getElementById("maxSetsBox").value;
+				}
+
+				openLoader();
+
+				window.location = "/set_lists/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minSets + maxSets;
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
 			function sort() {
 				var sort1 = document.getElementById("sortSelect1").value;
 				var sort2 = document.getElementById("sortSelect2").value;
-				var sort3 = document.getElementById("sortSelect3").value;
 				
 				var sort = sortValue(sort1);
 				
@@ -205,26 +212,22 @@
 					sort += ", " + sortValue(sort2);
 				}
 				
-				if (sort3 != "None") {
-					sort += ", " + sortValue(sort3);
-				}
-				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=" + sort + "/minYear=${minYear}/maxYear=${maxYear}/minSets=${minSets}/maxSets=${maxSets}/theme_id=${theme_id}/uri/";
+				sortBy(sort);
 			}
 
 			// This gets the value needed to be added to the Rebrickable API uri request, to sort a list of Lego Sets, depending on the value selected
 			function sortValue(sort) {
 				if (sort == "List Name (asc)") {
-					return "setList_name";
+					return "listName";
 				}
 				else if (sort == "List Name (desc)") {
-					return "-setList_name";
+					return "-listName";
 				}
 				else if (sort == "Number of Sets (asc)") {
-					return "num_sets";
+					return "numSets";
 				}
 				else if (sort == "Number of Sets (desc)") {
-					return "-num_sets";
+					return "-numSets";
 				}
 			}
 			
@@ -233,39 +236,16 @@
 			function sortSelectChange() {
 				var sort1 = document.getElementById("sortSelect1");
 				var sort2 = document.getElementById("sortSelect2");
-				var sort3 = document.getElementById("sortSelect3");
 
-				if (sort1.value == sort2.value) {
+				var sortType = sort1.value.split(" (")[0];
+
+				// If sort 2 is the same type of sort type (ascending or descending) as sort
+				// 1 this sets sort 2 to none, as sort types cannot match
+				if (sort2.value.match(sortType)) {
 					sort2.value = "None";
-					sort3.value = "None";
-					sort3.disabled = true;
-				}
-				else if (sort1.value == sort3.value) {
-					sort3.value = "None";
 				}
 
-				sortDisableSelectedSortOptions(sort1, sort2);
-				
-				if (sort2.value == "None") {
-					sort3.value = "None";
-					sort3.disabled = true;
-				}
-				else {
-					sort3.disabled = false;
-
-					sortDisableSelectedSortOptions(sort2, sort3);
-
-					// This disables the same otions that have already been disabled for sort2
-					for (var i = 0; i < sort2.length; i++) {
-						if (sort2.options[i].disabled == true) {
-							sort3.options[i].disabled = true;
-						}
-					}
-				}
-			}
-			
-			// This disables the certain options on a select if the previous select has used that options asc or desc option
-			function sortDisableSelectedSortOptions(sort1, sort2) {
+				// This disables the certain options on a select if the previous select has used that options asc or desc option
 				if (sort1.value.match("List Name ")) {
 					for (var i = 0; i < sort2.length; i++) {
 						if (sort2.options[i].value.match("List Name ")) {
@@ -513,18 +493,6 @@
 										</select>
 									</div>
 									<div class="col-auto">
-										<label class="text-white mt-2"> Then By: </label>
-									</div>
-									<div class="col-auto mt-1">
-										<select class="form-select" id="sortSelect3" style="cursor: pointer;" onchange="sortSelectChange()" disabled>
-											<option selected> None </option>
-											<option> List Name (asc) </option>
-											<option> List Name (desc) </option>
-											<option> Number of Sets (asc) </option>
-											<option> Number of Sets (desc) </option>
-										</select>
-									</div>
-									<div class="col-auto">
 										<button class="btn btn-primary mt-1" type="button" onclick="sort()"> <i class="fa fa-sort"></i> Sort </button>
 									</div>
 								</form>
@@ -599,7 +567,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
-								<button type="" class="btn btn-primary" onclick="window.location = '/set_list=${set_list.listName}/delete'"><i class="fa fa-trash"></i> Delete</button>
+								<button type="button" class="btn btn-primary" onclick="window.location = '/set_list=${set_list.listName}/delete/${set_list.setListId}'"><i class="fa fa-trash"></i> Delete</button>
 							</div>
 						</div>
 					</div>

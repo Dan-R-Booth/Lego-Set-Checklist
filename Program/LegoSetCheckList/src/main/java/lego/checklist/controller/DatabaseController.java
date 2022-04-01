@@ -261,7 +261,7 @@ public class DatabaseController {
 			model.addAttribute("sort3", sorts[2]);
 		}
 		
-		// This sorts the list of pieces by the sorts selected, it compares each set in the list
+		// This sorts the list of sets by the sorts selected, it compares each set in the list
 		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists)
 		// and if they match again sort 3 (if exists). This calls a function to do the comparison
 		// of each Set and ther sort in use too
@@ -374,9 +374,9 @@ public class DatabaseController {
     	}
 	}
 
-	@GetMapping("/set_list={listName}/delete")
-	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, RedirectAttributes redirectAttributes) {
-		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
+	@GetMapping("/set_list={listName}/delete/{setListId}")
+	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, RedirectAttributes redirectAttributes) {
+		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		set_listRepo.delete(set_list);
 		
 		// This gets a list of sets belong to the logged in user, and adds these to the model
@@ -424,7 +424,7 @@ public class DatabaseController {
 			model.addAttribute("sort3", sorts[2]);
 		}
 		
-		// This sorts the list of pieces by the sorts selected, it compares each set in the list
+		// This sorts the sets in progress by the sorts selected, it compares each set in the list
 		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists)
 		// and if they match again sort 3 (if exists). This calls a function to do the comparison
 		// of each Set and the sort in use too
@@ -495,11 +495,11 @@ public class DatabaseController {
 	private int getSortValue(String sort, Set set1, Set set2) {
 		if (sort.equals("name")) {
 			// This compares the sets by Set Name ascending
-			return set1.getName().compareTo(set2.getName());
+			return set1.getName().toUpperCase().compareTo(set2.getName().toUpperCase());
     	}
 		else if (sort.equals("-name")) {
 			// This compares the sets by Set Name descending
-			return set2.getName().compareTo(set1.getName());
+			return set2.getName().toUpperCase().compareTo(set1.getName().toUpperCase());
     	}
 		else if (sort.equals("year")) {
 			// This compares the sets by Year ascending
@@ -511,11 +511,11 @@ public class DatabaseController {
     	}
     	else if (sort.equals("theme")) {
     		// This compares the sets by Theme ascending
-			return set1.getTheme().compareTo(set2.getTheme());
+			return set1.getTheme().toUpperCase().compareTo(set2.getTheme().toUpperCase());
     	}
     	else if (sort.equals("-theme")) {
     		// This compares the sets by Theme descending
-			return set2.getTheme().compareTo(set1.getTheme());
+			return set2.getTheme().toUpperCase().compareTo(set1.getTheme().toUpperCase());
     	}
     	else if (sort.equals("numPieces")) {
     		// This compares the sets by Number of Pieces ascending

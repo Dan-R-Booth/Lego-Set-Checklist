@@ -104,84 +104,61 @@ public class PieceController {
 		// If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
 		if (sort != null) {
 			
-			if (sort.equals("pieceNumber") || sort.equals("-pieceNumber")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Piece Number
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getNum().compareTo(piece2.getNum());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-pieceNumber")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-			else if (sort.equals("pieceName") || sort.equals("-pieceName")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Piece Name
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getName().compareTo(piece2.getName());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-pieceName")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-			else if (sort.equals("colour") || sort.equals("-colour")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Colour
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getColour_name().compareTo(piece2.getColour_name());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-colour")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-	    	else if (sort.equals("type") || sort.equals("-type")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Piece Type
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getPieceType().compareTo(piece2.getPieceType());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-type")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-	    	else if (sort.equals("quantity") || sort.equals("-quantity")) {
-	    		// This sorts the list of pieces so they are in numerical order by Quantity
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getQuantity() - piece2.getQuantity();
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-quantity")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-	    	else if (sort.equals("quantityFound") || sort.equals("-quantityFound")) {
-	    		// This sorts the list of pieces so they are in numerical order by Quantity Found
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getQuantity_checked() - piece2.getQuantity_checked();
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-quantityFound")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
+    		// This sorts the list of pieces so they are in alphabetical order by Piece Number
+    		Collections.sort(piece_list, new Comparator<Piece>() {
+    			@Override
+    			public int compare(Piece piece1, Piece piece2) {
+    				
+    				if (sort.equals("pieceNumber")) {
+    					// This compares the pieces by Piece Number ascending
+    					return piece1.getNum().compareTo(piece2.getNum());
+    		    	}
+    				else if (sort.equals("-pieceNumber")) {
+    					// This compares the pieces by Piece Number descending
+    					return piece2.getNum().compareTo(piece1.getNum());
+    		    	}
+    				else if (sort.equals("pieceName")) {
+    					// This compares the pieces by Piece Name ascending
+    					return piece1.getName().toUpperCase().compareTo(piece2.getName().toUpperCase());
+    		    	}
+    				else if (sort.equals("-pieceName")) {
+    					// This compares the pieces by Piece Name descending
+    					return piece2.getName().toUpperCase().compareTo(piece1.getName().toUpperCase());
+    		    	}
+    				else if (sort.equals("colour")) {
+    					// This compares the pieces by Colour ascending
+    					return piece1.getColour_name().toUpperCase().compareTo(piece2.getColour_name().toUpperCase());
+    		    	}
+    				else if (sort.equals("-colour")) {
+    					// This compares the pieces by Colour descending
+    					return piece2.getColour_name().toUpperCase().compareTo(piece1.getColour_name().toUpperCase());
+    		    	}
+    				else if (sort.equals("type")) {
+    					// This compares the pieces by Piece Type ascending
+    					return piece1.getColour_name().toUpperCase().compareTo(piece2.getColour_name().toUpperCase());
+    		    	}
+    				else if (sort.equals("-type")) {
+    					// This compares the pieces by Piece Type descending
+    					return piece2.getPieceType().toUpperCase().compareTo(piece1.getPieceType().toUpperCase());
+    		    	}
+    				else if (sort.equals("quantity")) {
+    					// This compares the pieces by Quantity ascending
+    					return piece1.getQuantity() - piece2.getQuantity();
+    		    	}
+    				else if (sort.equals("-quantity")) {
+    					// This compares the pieces by Quantity Found descending
+    					return piece2.getQuantity() - piece1.getQuantity();
+    		    	}
+    				else if (sort.equals("quantityFound")) {
+    					// This compares the pieces by Quantity Found ascending
+    					return piece1.getQuantity_checked() - piece2.getQuantity_checked();
+    		    	}
+    				else {
+    					// This compares the pieces by Quantity descending
+    					return piece2.getQuantity_checked() - piece1.getQuantity_checked();
+    		    	}
+    			}
+    		});
 	    	
 	    	model.addAttribute("sort", sort);
 		}
