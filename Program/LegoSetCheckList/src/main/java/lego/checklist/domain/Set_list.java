@@ -79,8 +79,7 @@ public class Set_list {
 		totalSets++;
 	}
 	
-	public void removeSet(SetInSetList setInSetList) {
-		setsInSetList.remove(setInSetList);
+	public void removeSet() {
 		totalSets--;
 	}
 	

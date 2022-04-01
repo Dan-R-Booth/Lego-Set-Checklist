@@ -27,8 +27,9 @@ public class SetInSetList {
 	
 	public SetInSetList() {}
 	
-	public SetInSetList(Set set) {
+	public SetInSetList(Set set, Set_list set_list) {
 		this.set = set;
+		this.listOfSets = set_list;
 	}
 	
 	public Set getSet() {

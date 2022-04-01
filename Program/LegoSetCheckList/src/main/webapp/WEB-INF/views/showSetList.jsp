@@ -437,7 +437,7 @@
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
-			function sort() {
+			function multi_sort() {
 				var sort1 = document.getElementById("sortSelect1").value;
 				var sort2 = document.getElementById("sortSelect2").value;
 				var sort3 = document.getElementById("sortSelect3").value;
@@ -681,6 +681,57 @@
                 window.location = "/logout";
 			}
 
+			function deleteSet(set_num, set_name) {
+				var sort1 = document.getElementById("sortSelect1").value;
+				var sort2 = document.getElementById("sortSelect2").value;
+				var sort3 = document.getElementById("sortSelect3").value;
+				
+				var sort = sortValue(sort1);
+				
+				if (sort2 != "None") {
+					sort += ", " + sortValue(sort2);
+				}
+				
+				if (sort3 != "None") {
+					sort += ", " + sortValue(sort3);
+				}
+
+				var text = "";
+				if (document.getElementById("text_search").value.length != 0) {
+					text = "&searchText=" + document.getElementById("text_search").value;
+				}
+
+				var minYear = "";
+				if (document.getElementById("minYearBox").value.length != 0) {
+					minYear = "&minYear=" + document.getElementById("minYearBox").value;
+				}
+
+                var maxYear = "";
+				if (document.getElementById("maxYearBox").value.length != 0) {
+					maxYear = "&maxYear=" + document.getElementById("maxYearBox").value;
+				}
+
+                var minPieces = "";
+				if (document.getElementById("minPiecesBox").value.length != 0) {
+					minPieces = "&minPieces=" + document.getElementById("minPiecesBox").value;
+				}
+
+                var maxPieces = "";
+				if (document.getElementById("maxPiecesBox").value.length != 0) {
+					maxPieces = "&maxPieces=" + document.getElementById("maxPiecesBox").value;
+				}
+
+                var theme = "";
+                var themeName = document.getElementById("themeFilter").value;
+				if (themeName != "All Themes") {
+					theme = "&theme_name=" + themeName;
+				}
+
+				openLoader();
+
+				window.location = "/set_list=${set_list.listName}/delete/${set_list.setListId}/set=" + set_num + "/" + set_name + "/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minYear + maxYear + minPieces + maxPieces + theme;
+			}
+
 		</script>
 		
 	</head>
@@ -852,7 +903,7 @@
 										</select>
 									</div>
 									<div class="col-auto">
-										<button class="btn btn-primary mt-1" type="button" onclick="sort()"> <i class="fa fa-sort"></i> Sort </button>
+										<button class="btn btn-primary mt-1" type="button" onclick="multi_sort()"> <i class="fa fa-sort"></i> Sort </button>
 									</div>
 								</form>
 							</li>
@@ -905,7 +956,7 @@
 
 			<!-- This alert will be display when a set is deleted from the list -->
 			<div class="d-none" id="setDeletedAlert" role="alert">
-				<i class="fa fa-trash-o"></i> <strong>Deleted Set: "${deletedSetName}"</strong>
+				<i class="fa fa-trash-o"></i> <strong>Deleted Set: "<a href="/set?set_number=${deletedSetNumber}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${deletedSetName}</a>"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 		</div>
@@ -967,7 +1018,7 @@
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
-									<button type="button" class="btn btn-primary" onclick="window.location = '/set_list=${set_list.listName}/delete/${set_list.setListId}/set=${set.num}/${set.name}'"><i class="fa fa-trash"></i> Delete</button>
+									<button type="button" class="btn btn-primary" onclick="deleteSet('${set.num}', '${set.name}')"><i class="fa fa-trash"></i> Delete</button>
 								</div>
 							</div>
 						</div>

@@ -151,7 +151,7 @@ public class DatabaseController {
 	    	}
 			
 	    	// This creates a SetInSetList that is added to the set_lists List of sets
-	    	SetInSetList setInSetList = new SetInSetList(set);	    	
+	    	SetInSetList setInSetList = new SetInSetList(set, set_list);	    	
         	set_list.addSet(setInSetList);
         	
         	// This saves the Lego set to the database table SetsInSetList
@@ -232,10 +232,7 @@ public class DatabaseController {
 	
 	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
 	@GetMapping("/set_list={listName}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
-		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
-		model.addAttribute("setListUrl", url);
-		
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
 		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
 		List<SetInSetList> setsInSetList = set_list.getSets();
 		
@@ -397,12 +394,16 @@ public class DatabaseController {
 
 	// This deletes a Lego Set in a list from the database
 	@GetMapping("/set_list={listName}/delete/{setListId}/set={set_num}/{set_name}")
-	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, RedirectAttributes redirectAttributes) {		
+	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {		
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		Set set = new Set(set_num);
 		
 		SetInSetList setInSetList = setInSetListRepo.findByListOfSetsAndSet(set_list, set);
 		setInSetListRepo.delete(setInSetList);
+		
+		// This decreases the total number of sets in the set_list and saves this to the db
+		set_list.removeSet();
+		set_listRepo.save(set_list);
 		
 		// This gets a list of sets belong to the logged in user, and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
@@ -415,13 +416,16 @@ public class DatabaseController {
 		// after the page redirect
     	redirectAttributes.addFlashAttribute("setDeleted", true);
     	redirectAttributes.addFlashAttribute("deletedSetName", set_name);
+    	redirectAttributes.addFlashAttribute("deletedSetNumber", set_num);
     	
-		return "redirect:/set_list={listName}";
+    	// This adds the request query containing the which bar was open, sorts and filters parsed so these are added to the model in the showSetList class
+		return "redirect:/set_list={listName}/?" + request.getQueryString();
 	}
+	
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
-	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
+	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
 		model.addAttribute("setsInProgressUrl", url);
 		
