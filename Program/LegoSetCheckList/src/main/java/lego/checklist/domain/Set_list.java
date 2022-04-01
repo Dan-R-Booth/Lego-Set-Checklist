@@ -30,8 +30,8 @@ public class Set_list {
 	@Column(nullable = false)
 	private String listName;
 	
-	@OneToMany(orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "setListId", nullable = false)
+	@OneToMany(mappedBy = "listOfSets", orphanRemoval = true, fetch = FetchType.LAZY)
+//	@JoinColumn(name = "setListId", nullable = false)
 	private List<SetInSetList> setsInSetList;
 	
 	@Column(nullable = false)

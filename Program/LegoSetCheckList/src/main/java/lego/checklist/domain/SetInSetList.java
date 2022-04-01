@@ -20,6 +20,11 @@ public class SetInSetList {
 	@JoinColumn(name = "setNumber", referencedColumnName = "setNumber", nullable = false)
 	private Set set;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "setListId", nullable = false)
+	// Called this as if called set_list the repo would look for variable list in type Set
+	private Set_list listOfSets;
+	
 	public SetInSetList() {}
 	
 	public SetInSetList(Set set) {

@@ -1,5 +1,6 @@
 package lego.checklist.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class SetInProgress {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Account account;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
 	@JoinColumn(name = "setNumber", referencedColumnName = "setNumber", nullable = false)
 	private Set set;
 

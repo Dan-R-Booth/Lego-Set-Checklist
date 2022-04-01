@@ -100,7 +100,6 @@
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 				}
 
-				
 				// If a Lego set has just been added to a list, this will open an alert bar to inform the user of this
 				if("${setAdded}" == "true") {
 					document.getElementById("setAddedToListAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
