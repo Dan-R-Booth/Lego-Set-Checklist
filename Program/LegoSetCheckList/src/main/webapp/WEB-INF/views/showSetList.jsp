@@ -112,7 +112,7 @@
 					document.getElementById("setDeletedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
 				}
 
-				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				// If there was an error adding the set this will display this to the user
 				if("${setAddedError}" == "true") {
 					document.getElementById("selectList_${set_number}").setAttribute("class", "form-select is-invalid");
 					document.getElementById("addSetToListHelp_${set_number}").setAttribute("class", "alert alert-danger mt-2s");
@@ -294,13 +294,13 @@
 			function previousPage() {
 				var previous = "${previousPage}";
 				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
+				window.location = "/search/text=${searchText}/" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
 			}
 			
 			function nextPage() {
 				var next = "${nextPage}";
 				
-				window.location = "/search/text=${searchText}" + "/barOpen=" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
+				window.location = "/search/text=${searchText}/" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
 			}
 
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
@@ -433,11 +433,15 @@
 
 				openLoader();
 
-				window.location = "/set_list=${set_list.listName}/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minYear + maxYear + minPieces + maxPieces + theme;
+				window.location = "/set_list=${set_list.listName}/?sort=" + sort + "&" + getBarOpen() + getFilters();
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
 			function multi_sort() {
+				sortBy(getMulti_SortValues());
+			}
+
+			function getMulti_SortValues() {
 				var sort1 = document.getElementById("sortSelect1").value;
 				var sort2 = document.getElementById("sortSelect2").value;
 				var sort3 = document.getElementById("sortSelect3").value;
@@ -445,14 +449,14 @@
 				var sort = sortValue(sort1);
 				
 				if (sort2 != "None") {
-					sort += ", " + sortValue(sort2);
+					sort += "," + sortValue(sort2);
 				}
 				
 				if (sort3 != "None") {
-					sort += ", " + sortValue(sort3);
+					sort += "," + sortValue(sort3);
 				}
-				
-				sortBy(sort);
+
+				return sort;
 			}
 
 			// This gets the value needed to be added to the Rebrickable API uri request, to sort a list of Lego Sets, depending on the value selected
@@ -660,13 +664,13 @@
 				var sortBar = document.getElementById("sortBar").style.display;
 
 				if (filterBar != "none") {
-					return "filter";
+					return "barOpen=filter";
 				}
 				else if (sortBar != "none") {
-					return "sort";
+					return "barOpen=sort";
 				}
 				else {
-					return "none";
+					return "barOpen=none";
 				}
 			}
 
@@ -681,55 +685,48 @@
                 window.location = "/logout";
 			}
 
+			// This adds the sorts and filters active to a URL, that along with the
+			// set number and name of a set to be deleted to sent to the controller
 			function deleteSet(set_num, set_name) {
-				var sort1 = document.getElementById("sortSelect1").value;
-				var sort2 = document.getElementById("sortSelect2").value;
-				var sort3 = document.getElementById("sortSelect3").value;
-				
-				var sort = sortValue(sort1);
-				
-				if (sort2 != "None") {
-					sort += ", " + sortValue(sort2);
-				}
-				
-				if (sort3 != "None") {
-					sort += ", " + sortValue(sort3);
-				}
+				window.location = "/set_list=${set_list.listName}/delete/${set_list.setListId}/set=" + set_num + "/" + set_name + "/?sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+			}
 
-				var text = "";
+			// This gets all the filters active and adds returns them all as a string 
+			function getFilters() {
+				var filters = "";
+
 				if (document.getElementById("text_search").value.length != 0) {
-					text = "&searchText=" + document.getElementById("text_search").value;
+					filters += "&searchText=" + document.getElementById("text_search").value;
 				}
 
-				var minYear = "";
 				if (document.getElementById("minYearBox").value.length != 0) {
-					minYear = "&minYear=" + document.getElementById("minYearBox").value;
+					filters += "&minYear=" + document.getElementById("minYearBox").value;
 				}
 
-                var maxYear = "";
 				if (document.getElementById("maxYearBox").value.length != 0) {
-					maxYear = "&maxYear=" + document.getElementById("maxYearBox").value;
+					filters += "&maxYear=" + document.getElementById("maxYearBox").value;
 				}
 
-                var minPieces = "";
-				if (document.getElementById("minPiecesBox").value.length != 0) {
-					minPieces = "&minPieces=" + document.getElementById("minPiecesBox").value;
+				if (document.getElementById("minPiecesBox").value.length != 0 && document.getElementById("minPiecesBox").value != 0) {
+					filters += "&minPieces=" + document.getElementById("minPiecesBox").value;
 				}
 
-                var maxPieces = "";
 				if (document.getElementById("maxPiecesBox").value.length != 0) {
-					maxPieces = "&maxPieces=" + document.getElementById("maxPiecesBox").value;
+					filters += "&maxPieces=" + document.getElementById("maxPiecesBox").value;
 				}
 
-                var theme = "";
                 var themeName = document.getElementById("themeFilter").value;
 				if (themeName != "All Themes") {
-					theme = "&theme_name=" + themeName;
+					filters += "&theme_name=" + themeName;
 				}
 
-				openLoader();
+				return filters;
+			}
 
-				window.location = "/set_list=${set_list.listName}/delete/${set_list.setListId}/set=" + set_num + "/" + set_name + "/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minYear + maxYear + minPieces + maxPieces + theme;
+			function addSetToList(set_num, setListName) {
+				var setListId = document.getElementById("selectList_" + set_num).value;
+
+				window.location = "/addSetToList/previousPage=set_list/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=" + setListName + "&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
 		</script>
@@ -1048,7 +1045,7 @@
                                 <h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=set_list">
+                            <form method="POST" id="addSetToListForm_${set.num}">
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
@@ -1065,17 +1062,11 @@
                                         </div>
                                         
                                         <div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_listSelected.listName}"</div>
-
-                                        <!-- This is a hidden input that adds the set number of the set selected to the form -->
-                                        <input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
-
-                                        <!-- This is a hidden input that adds the set number of the set selected to the form -->
-                                        <input type="hidden" id="inputSetListName_${set.num}" name="setListName" value="${set_list.listName}"/>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
+                                    <button type="button" id="addSetToListButton_${set.num}" class="btn btn-primary" onclick="addSetToList('${set.num}','${set_list.listName}')"><i class="fa fa-plus"></i> Add Set</button>
                                 </div>
                             </form>
                         </div>

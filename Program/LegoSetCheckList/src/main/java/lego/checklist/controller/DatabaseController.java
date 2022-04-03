@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
@@ -66,8 +67,8 @@ public class DatabaseController {
 	
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
-	@PostMapping("/addSetToList/previousPage={previousPage}")
-	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, @RequestParam(required = false) String setListName, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	@RequestMapping("/addSetToList/previousPage={previousPage}")
+	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, @RequestParam(required = false) String setListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
 		// This gets a list of sets belong to the logged in user
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -177,7 +178,37 @@ public class DatabaseController {
 			return "redirect:/setsInProgress";
 		}
 		else if (previousPage.equals("set_list")) {
-			return "redirect:/set_list=" + setListName;
+			// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
+			if (searchText != null) {
+				redirectAttributes.addFlashAttribute("searchText", searchText);
+			}
+			
+			// If there is a min year being parsed this will add it to redirectAttributes so it stays after the page redirect
+			if (minYear != null) {
+				redirectAttributes.addFlashAttribute("minYear", minYear);
+			}
+			
+			// If there is a max year being parsed this will add it to redirectAttributes so it stays after the page redirect
+			if (maxYear != null) {
+				redirectAttributes.addFlashAttribute("maxYear", maxYear);
+			}
+			
+			// If there is a minimum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
+			if (minPieces != null){
+				redirectAttributes.addFlashAttribute("minPieces", minPieces);
+			}
+			
+			// If there is a maximum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
+			if (maxPieces != null) {
+				redirectAttributes.addFlashAttribute("maxPieces", maxPieces);
+			}
+			
+			// If there is a theme_id being parsed this will add it to redirectAttributes so it stays after the page redirect
+			if (filteredTheme_name != null) {
+				redirectAttributes.addFlashAttribute("theme_name", filteredTheme_name);
+			}
+			
+			return "redirect:/set_list=" + setListName + "/?sort=" + sort + "&barOpen=" + barOpen;
 		}
 		else {
 			return "redirect:/set/?set_number=" + set_number;
@@ -246,8 +277,7 @@ public class DatabaseController {
 		if (sort == null) {
 			sort = "set_num";
 		}
-		
-		String[] sorts = sort.split(", ");
+		String[] sorts = sort.split(",");
 		
 		model.addAttribute("sort1", sorts[0]);
 		if (sorts.length >= 2) {
@@ -394,7 +424,7 @@ public class DatabaseController {
 
 	// This deletes a Lego Set in a list from the database
 	@GetMapping("/set_list={listName}/delete/{setListId}/set={set_num}/{set_name}")
-	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {		
+	public String deleteSetFromSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {		
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		Set set = new Set(set_num);
 		
