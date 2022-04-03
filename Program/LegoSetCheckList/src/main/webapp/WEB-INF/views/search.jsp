@@ -650,6 +650,7 @@
 					document.getElementById("addNewSetListButton_" + setNumber).disabled = false;
 				}
 			}
+			
 		</script>
 		
 	</head>

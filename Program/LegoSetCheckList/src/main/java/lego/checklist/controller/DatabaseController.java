@@ -178,35 +178,7 @@ public class DatabaseController {
 			return "redirect:/setsInProgress";
 		}
 		else if (previousPage.equals("set_list")) {
-			// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
-			if (searchText != null) {
-				redirectAttributes.addFlashAttribute("searchText", searchText);
-			}
-			
-			// If there is a min year being parsed this will add it to redirectAttributes so it stays after the page redirect
-			if (minYear != null) {
-				redirectAttributes.addFlashAttribute("minYear", minYear);
-			}
-			
-			// If there is a max year being parsed this will add it to redirectAttributes so it stays after the page redirect
-			if (maxYear != null) {
-				redirectAttributes.addFlashAttribute("maxYear", maxYear);
-			}
-			
-			// If there is a minimum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
-			if (minPieces != null){
-				redirectAttributes.addFlashAttribute("minPieces", minPieces);
-			}
-			
-			// If there is a maximum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
-			if (maxPieces != null) {
-				redirectAttributes.addFlashAttribute("maxPieces", maxPieces);
-			}
-			
-			// If there is a theme_id being parsed this will add it to redirectAttributes so it stays after the page redirect
-			if (filteredTheme_name != null) {
-				redirectAttributes.addFlashAttribute("theme_name", filteredTheme_name);
-			}
+			addSetListFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
 			
 			return "redirect:/set_list=" + setListName + "/?sort=" + sort + "&barOpen=" + barOpen;
 		}
@@ -362,8 +334,8 @@ public class DatabaseController {
 	}
 	
 	// This create a new set list for a logged in user, using the entered list name
-	@PostMapping("/addNewSetList/previousPage={previousPage}")
-	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	@RequestMapping("/addNewSetList/previousPage={previousPage}")
+	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, @RequestParam(required = false) String currentSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
 		// This creates a set_list with the name submitted for the new user with
 		// an empty list of sets and saves list to the database table SetLists
@@ -395,10 +367,47 @@ public class DatabaseController {
     		if (previousPage.equals("search")) {
     			return "redirect:" + searchURL;
     		}
+    		else if (previousPage.equals("set_list")) {
+    			addSetListFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+    			
+    			return "redirect:/set_list=" + currentSetListName + "/?sort=" + sort + "&barOpen=" + barOpen;
+    		}
     		else {
     			return "redirect:/set/?set_number=" + set_number;
     		}
     	}
+	}
+	
+	private void addSetListFilters(String searchText, String minYear, String maxYear, String minPieces, String maxPieces, String filteredTheme_name, RedirectAttributes redirectAttributes) {
+		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (searchText != null) {
+			redirectAttributes.addFlashAttribute("searchText", searchText);
+		}
+		
+		// If there is a min year being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (minYear != null) {
+			redirectAttributes.addFlashAttribute("minYear", minYear);
+		}
+		
+		// If there is a max year being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (maxYear != null) {
+			redirectAttributes.addFlashAttribute("maxYear", maxYear);
+		}
+		
+		// If there is a minimum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (minPieces != null){
+			redirectAttributes.addFlashAttribute("minPieces", minPieces);
+		}
+		
+		// If there is a maximum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (maxPieces != null) {
+			redirectAttributes.addFlashAttribute("maxPieces", maxPieces);
+		}
+		
+		// If there is a theme_id being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (filteredTheme_name != null) {
+			redirectAttributes.addFlashAttribute("theme_name", filteredTheme_name);
+		}
 	}
 
 	// This deletes a Lego Set List and all the sets in that list from the database

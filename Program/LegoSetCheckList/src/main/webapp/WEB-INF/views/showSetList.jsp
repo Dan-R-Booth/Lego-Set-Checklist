@@ -44,16 +44,6 @@
 				if (screen.width < 550) {
 					document.getElementById("viewport").setAttribute("content", "width=550, initial-scale=0.5");
 				}
-
-				// The following disables the previous button if their is not a previous page of results
-				// and the next button if their is not another page of results				
-				if ("${previousPage}" == "") {	
-					document.getElementById("previousPageButton").disabled = true;
-				}
-				
-				if ("${nextPage}" == "") {
-					document.getElementById("nextPageButton").disabled = true;
-				}
 				
 				// This adds the previously adds the text search previously entered to the search box
 				document.getElementById("text_search").value = "${searchText}";
@@ -97,21 +87,7 @@
 				if("${setAdded}" == "true") {
 					document.getElementById("setAddedToListAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
-
-				// This displays an alert bar informing the user if a set list has been
-				// created and is shown on the addSetToListModal, which is also opened
-				if ("${setListCreated}" == "true") {
-					document.getElementById("setListCreatedAlert_${set_number}").setAttribute("class", "alert alert-success alert-dismissible fade show");
-					
-					// This opens the addSetToListModal
-					$("#addSetToListModal_${set_number}").modal("show");
-				}
 				
-				// This displays that if a set has been deleted from the list
-				if ("${setDeleted}" == "true") {
-					document.getElementById("setDeletedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
-				}
-
 				// If there was an error adding the set this will display this to the user
 				if("${setAddedError}" == "true") {
 					document.getElementById("selectList_${set_number}").setAttribute("class", "form-select is-invalid");
@@ -121,6 +97,20 @@
 
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
+				}
+				
+				// This displays an alert bar informing the user if a set list has been
+				// created and is shown on the addSetToListModal, which is also opened
+				if ("${setListCreated}" == "true") {
+					document.getElementById("setListCreatedAlert_${set_number}").setAttribute("class", "alert alert-success alert-dismissible fade show");
+
+					// This opens the addSetToListModal
+					$("#addSetToListModal_${set_number}").modal("show");
+				}
+				
+				// This displays that if a set has been deleted from the list
+				if ("${setDeleted}" == "true") {
+					document.getElementById("setDeletedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
 				}
 
 				// This adds bootstrap styling to tooltips
@@ -288,19 +278,6 @@
 							document.getElementById("set_" + id).style.display = "block";
 					}
 				}
-			}
-
-			// The following two functions call the api with the either the previous or next page uri
-			function previousPage() {
-				var previous = "${previousPage}";
-				
-				window.location = "/search/text=${searchText}/" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + previous;
-			}
-			
-			function nextPage() {
-				var next = "${nextPage}";
-				
-				window.location = "/search/text=${searchText}/" + getBarOpen() + "/sort=${sort}/minYear=${minYear}/maxYear=${maxYear}/minPieces=${minPieces}/maxPieces=${maxPieces}/theme_id=${theme_id}/uri/" + next;
 			}
 
 			// This will take the users to the set page for the Lego Set that matches the entered set number and variant
@@ -611,10 +588,10 @@
 					var setYear = parseInt(document.getElementById("year_" + id).innerHTML);
 					var setTheme = document.getElementById("theme_" + id).innerText;
                     var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
-					
+
 					// This will hide all sets that do not fall into the categories that the list is being filtered by
 					if (((setName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
-                        document.getElementById("set_" + id).style.display = "none";
+						document.getElementById("set_" + id).style.display = "none";
 					}
 					else {
 						document.getElementById("set_" + id).style.display = "block";
@@ -723,10 +700,52 @@
 				return filters;
 			}
 
-			function addSetToList(set_num, setListName) {
+			// This calls the controller to add a set to a set list
+			function addSetToList(set_num) {
 				var setListId = document.getElementById("selectList_" + set_num).value;
 
-				window.location = "/addSetToList/previousPage=set_list/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=" + setListName + "&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+				window.location = "/addSetToList/previousPage=set_list/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=${set_list.listName}&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+			}
+
+			// This function is called everytime a change occurs in the listName textbox
+			// to check if the user already has a list with entered list name
+			function checkListName(setNumber) {
+				var setListName = document.getElementById("setListNameTextBox_" + setNumber).value;
+				var listNameFound = false;
+
+				// This checks if there is already a set list with the entered list name
+				<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+					if ("${set_list.listName}" == setListName) {
+						listNameFound = true;
+					}
+				</c:forEach>
+
+				// If the list name has been found (meaning a list with that name already exists), the
+				// setListNameTextBox will be highlighted red to show there is an error, a tooltip will
+				// be added informing the user that the name is already in use along with an error alert
+				// box also containg this error message  and finally disabling the add new list button
+				if (listNameFound == true) {
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("class", "form-control is-invalid");
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("title", "List name must be Unique");
+					document.getElementById("addNewSetListHelp_" + setNumber).setAttribute("class", "alert alert-danger");
+					document.getElementById("addNewSetListButton_" + setNumber).disabled = true;
+				}
+				// If the list name is not found, this highlights the textbox green to show the name is
+				// valid, the tooltip is removed, the error alert box that contains the error message is
+				// hidden and finally enabling the add new list button
+				else {
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("class", "form-control is-valid");
+					document.getElementById("setListNameTextBox_" + setNumber).removeAttribute("title");
+					document.getElementById("addNewSetListHelp_" + setNumber).setAttribute("class", "d-none");
+					document.getElementById("addNewSetListButton_" + setNumber).disabled = false;
+				}
+			}
+
+			// This calls the controller to create a new set list
+			function createNewSetList(set_num) {
+				var setListName = document.getElementById("setListNameTextBox_" + set_num).value;
+
+				window.location = "/addNewSetList/previousPage=set_list/?setListName=" + setListName + "&set_number=" + set_num + "&currentSetListName=${set_list.listName}&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
 		</script>
@@ -983,7 +1002,7 @@
 							</script>
 						</c:if>
 						<div class="col">
-							<a href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
+							<a id="set_num_${loop.index}" href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
 						</div>
 						<div class="col">
                             <label id="name_${loop.index}">${set.name}</label>
@@ -1047,6 +1066,11 @@
                             </div>
                             <form method="POST" id="addSetToListForm_${set.num}">
                                 <div class="modal-body">
+									<!-- This alert will be display when a new set list is created -->
+									<div class="d-none" id="setListCreatedAlert_${set.num}" role="alert">
+										<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetListName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetListName}</a>"</strong>
+										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+									</div>
                                     <div class="mb-3">
                                         <label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
                                         <br>
@@ -1058,7 +1082,7 @@
                                                     <option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
                                                 </c:forEach>
                                             </select>
-                                            <button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
+                                            <button id="newListButton_${set.num}" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addNewSetListModel_${set.num}"><i class="fa fa-plus"></i>  New List</button>
                                         </div>
                                         
                                         <div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_listSelected.listName}"</div>
@@ -1066,12 +1090,41 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" id="addSetToListButton_${set.num}" class="btn btn-primary" onclick="addSetToList('${set.num}','${set_list.listName}')"><i class="fa fa-plus"></i> Add Set</button>
+                                    <button type="button" id="addSetToListButton_${set.num}" class="btn btn-primary" onclick="addSetToList('${set.num}')"><i class="fa fa-plus"></i> Add Set</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
+
+				<!-- Modal to Create a New Set List -->
+				<div class="modal fade" id="addNewSetListModel_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addNewSetListModelLabel_${set.num}" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="addNewSetListModelLabel_${set.num}">Create a New Lego Set List</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<form method="POST" id="addNewSetListForm_${set.num}">
+								<div class="modal-body">
+									<div class="mb-3">
+										<h5> Set List: </h5>
+										<div class="form-floating mb-3">
+											<input id="setListNameTextBox_${set.num}" class="form-control" name="setListName" type="text" oninput="checkListName('${set.num}')" placeholder="Input Unique List Name">
+											<label class="text-secondary" for="setListNameTextBox"> Input Unique List Name </label>
+										</div>
+										
+										<div id="addNewSetListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									<button type="button" id="addNewSetListButton_${set.num}" class="btn btn-primary" onclick="createNewSetList('${set.num}')" disabled><i class="fa fa-plus"></i> Create List</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
 			</c:forEach>
 		</div>
 
@@ -1134,10 +1187,6 @@
                     <li class="breadcrumb-item"><a href="/set_lists">Set Lists</a></li>
 	                <li class="breadcrumb-item text-white" aria-current="page">Set List</li>
 	            </ol>
-				<div class="mx-2 my-2">
-					<button id="previousPageButton" type="button" class="btn btn-primary btn-sm" onclick="previousPage()"> <i class="fa fa-arrow-left"></i> Previous </button>
-					<button id="nextPageButton" type="button" class="btn btn-primary btn-sm" onclick="nextPage()"> Next <i class="fa fa-arrow-right"></i> </button>
-				</div>
 		    </div>
         </nav>
 	</body>
