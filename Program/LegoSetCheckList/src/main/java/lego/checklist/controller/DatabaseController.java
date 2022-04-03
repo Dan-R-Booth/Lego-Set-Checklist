@@ -461,6 +461,7 @@ public class DatabaseController {
 		return "redirect:/set_list={listName}/?" + request.getQueryString();
 	}
 	
+	// Shows all the sets in progress of a logged in user
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
@@ -633,6 +634,35 @@ public class DatabaseController {
     		if (!inSetsInProgress && !inSetsInSetLists) {
     			setInfoRepo.delete(set);
     		}
+    	}
+	}
+
+	// This create a new set list for a logged in user, using the entered list name
+	@RequestMapping("/editSetList/previousPage={previousPage}")
+	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+		
+		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+		set_list.setListName(newSetListName);
+		set_listRepo.save(set_list);
+    	
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
+    	redirectAttributes.addFlashAttribute("setListEdited", true);
+    	redirectAttributes.addFlashAttribute("newSetListName", newSetListName);
+    	
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
+		
+    	// These returns the user back to the page that the user called the controller from
+    	if (previousPage.equals("set_lists")) {
+    		return "redirect:/set_lists";
+    	}
+    	else {
+			addSetListFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+			
+			return "redirect:/set_list=" + newSetListName + "/?sort=" + sort + "&barOpen=" + barOpen;
     	}
 	}
 }

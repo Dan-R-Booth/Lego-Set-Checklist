@@ -514,7 +514,7 @@
 
 			<!-- This alert will be display when a set list is deleted -->
 			<div class="d-none" id="setListDeletedAlert" role="alert">
-				<i class="fa fa-trash-o"></i> <strong>Deleted Set List: "${deletedSetListName}"</strong>
+				<i class="fa fa-trash-o"></i> <strong>Deleted Set List: "<i>${deletedSetListName}</i>"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 
