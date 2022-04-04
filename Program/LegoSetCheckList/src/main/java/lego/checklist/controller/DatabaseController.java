@@ -346,10 +346,10 @@ public class DatabaseController {
 		set_listRepo.save(set_list);
     	
     	// These are used so the JSP page knows to inform the user that they have created a new
-    	// Set list and what its name is and are both added to redirectAttributes so they stay
-		// after the page redirect
+    	// Set list and the new set list, and are both added to redirectAttributes so they
+		// stay after the page redirect
     	redirectAttributes.addFlashAttribute("setListCreated", true);
-    	redirectAttributes.addFlashAttribute("newSetListName", setListName);
+    	redirectAttributes.addFlashAttribute("newSetList", set_list);
     	
 		// This gets a list of sets belong to the logged in user, and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
@@ -368,6 +368,11 @@ public class DatabaseController {
     		// These returns the user back to the page that the user called the controller from
     		if (previousPage.equals("search")) {
     			return "redirect:" + searchURL;
+    		}
+    		else if (previousPage.equals("setsInProgress")) {
+    			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+    			
+    			return "redirect:/setsInProgress" + "/?sort=" + sort + "&barOpen=" + barOpen;
     		}
     		else if (previousPage.equals("set_list")) {
     			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);

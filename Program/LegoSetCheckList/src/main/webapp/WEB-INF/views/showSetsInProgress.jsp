@@ -104,6 +104,8 @@
 				if ("${setListCreated}" == "true") {
 					document.getElementById("setListCreatedAlert_${set_number}").setAttribute("class", "alert alert-success alert-dismissible fade show");
 
+					document.getElementById("selectList_${set_number}").value = "${newSetList.setListId}";
+
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
 				}
@@ -1098,7 +1100,7 @@
                                 <div class="modal-body">
 									<!-- This alert will be display when a new set list is created -->
 									<div class="d-none" id="setListCreatedAlert_${set.num}" role="alert">
-										<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetListName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetListName}</a>"</strong>
+										<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetList.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetList.listName}</a>"</strong>
 										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 									</div>
                                     <div class="mb-3">
