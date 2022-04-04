@@ -175,10 +175,12 @@ public class DatabaseController {
 			return "redirect:" + searchURL;
 		}
 		else if (previousPage.equals("setsInProgress")) {
-			return "redirect:/setsInProgress";
+			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+			
+			return "redirect:/setsInProgress" + "/?sort=" + sort + "&barOpen=" + barOpen;
 		}
 		else if (previousPage.equals("set_list")) {
-			addSetListFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
 			
 			return "redirect:/set_list=" + setListName + "/?sort=" + sort + "&barOpen=" + barOpen;
 		}
@@ -368,7 +370,7 @@ public class DatabaseController {
     			return "redirect:" + searchURL;
     		}
     		else if (previousPage.equals("set_list")) {
-    			addSetListFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+    			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
     			
     			return "redirect:/set_list=" + currentSetListName + "/?sort=" + sort + "&barOpen=" + barOpen;
     		}
@@ -378,7 +380,8 @@ public class DatabaseController {
     	}
 	}
 	
-	private void addSetListFilters(String searchText, String minYear, String maxYear, String minPieces, String maxPieces, String filteredTheme_name, RedirectAttributes redirectAttributes) {
+	// This adds the filters applied to a list to the redirect
+	private void addFilters(String searchText, String minYear, String maxYear, String minPieces, String maxPieces, String filteredTheme_name, RedirectAttributes redirectAttributes) {
 		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (searchText != null) {
 			redirectAttributes.addFlashAttribute("searchText", searchText);
@@ -482,7 +485,7 @@ public class DatabaseController {
 			sort = "set_num";
 		}
 		
-		String[] sorts = sort.split(", ");
+		String[] sorts = sort.split(",");
 		
 		model.addAttribute("sort1", sorts[0]);
 		if (sorts.length >= 2) {
@@ -559,6 +562,8 @@ public class DatabaseController {
 		
 		return "showSetsInProgress";
 	}
+	
+	// Gets the value of a sort between two sets
 	
 	// Compares two sets by a sort and returns the value of the comparison
 	private int getSortValue(String sort, Set set1, Set set2) {
@@ -660,7 +665,7 @@ public class DatabaseController {
     		return "redirect:/set_lists";
     	}
     	else {
-			addSetListFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
 			
 			return "redirect:/set_list=" + newSetListName + "/?sort=" + sort + "&barOpen=" + barOpen;
     	}

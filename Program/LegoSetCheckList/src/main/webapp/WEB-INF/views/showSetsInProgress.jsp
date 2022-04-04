@@ -88,15 +88,34 @@
 					document.getElementById("setAddedToListAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
 
-				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
+				// If there was an error adding the set this will display this to the user
 				if("${setAddedError}" == "true") {
 					document.getElementById("selectList_${set_number}").setAttribute("class", "form-select is-invalid");
 					document.getElementById("addSetToListHelp_${set_number}").setAttribute("class", "alert alert-danger mt-2s");
 					
-					document.getElementById("selectList_${set_number}").value = "${set_list.setListId}";
+					document.getElementById("selectList_${set_number}").value = "${set_listSelected.setListId}";
 
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
+				}
+				
+				// This displays an alert bar informing the user if a set list has been
+				// created and is shown on the addSetToListModal, which is also opened
+				if ("${setListCreated}" == "true") {
+					document.getElementById("setListCreatedAlert_${set_number}").setAttribute("class", "alert alert-success alert-dismissible fade show");
+
+					// This opens the addSetToListModal
+					$("#addSetToListModal_${set_number}").modal("show");
+				}
+				
+				// This displays that if a set has been deleted from the list
+				if ("${setDeleted}" == "true") {
+					document.getElementById("setDeletedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
+				}
+
+				// If a Lego set has just been edited, this will open an alert bar to inform the user of this
+				if("${setListEdited}" == "true") {
+					document.getElementById("setListEditedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
 
 				// This adds bootstrap styling to tooltips
@@ -299,8 +318,8 @@
 					window.location = "/set/?set_number=" + set_number + "&set_variant=" + set_variant;
 				}
 			}
-
-			// This calls the the controller setting the sort parameter as name
+			
+			// This calls the the controller setting the sort parameter as set number
 			function numSort() {
 				var iconClass = document.getElementById("numSortIcon").className;
 				
@@ -324,7 +343,7 @@
 				}
 			}
 			
-			// This calls the the controller setting the sort parameter as theme_id
+			// This calls the the controller setting the sort parameter as theme
 			function themeSort() {
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
@@ -373,32 +392,39 @@
 					minYear = "&minYear=" + document.getElementById("minYearBox").value;
 				}
 
-				var maxYear = "";
+                var maxYear = "";
 				if (document.getElementById("maxYearBox").value.length != 0) {
 					maxYear = "&maxYear=" + document.getElementById("maxYearBox").value;
 				}
 
-				var minPieces = "";
+                var minPieces = "";
 				if (document.getElementById("minPiecesBox").value.length != 0) {
 					minPieces = "&minPieces=" + document.getElementById("minPiecesBox").value;
 				}
 
-				var maxPieces = "";
+                var maxPieces = "";
 				if (document.getElementById("maxPiecesBox").value.length != 0) {
 					maxPieces = "&maxPieces=" + document.getElementById("maxPiecesBox").value;
 				}
 
-				var theme = "";
-				var themeName = document.getElementById("themeFilter").value;
+                var theme = "";
+                var themeName = document.getElementById("themeFilter").value;
 				if (themeName != "All Themes") {
 					theme = "&theme_name=" + themeName;
 				}
 
-				window.location = "/setsInProgress/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minYear + maxYear + minPieces + maxPieces + theme;
+				openLoader();
+
+				window.location = "/setsInProgress/?sort=" + sort + "&" + getBarOpen() + getFilters();
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
-			function sort() {
+			function multi_sort() {
+				sortBy(getMulti_SortValues());
+			}
+
+			// This gets all multi-sort values
+			function getMulti_SortValues() {
 				var sort1 = document.getElementById("sortSelect1").value;
 				var sort2 = document.getElementById("sortSelect2").value;
 				var sort3 = document.getElementById("sortSelect3").value;
@@ -406,14 +432,14 @@
 				var sort = sortValue(sort1);
 				
 				if (sort2 != "None") {
-					sort += ", " + sortValue(sort2);
+					sort += "," + sortValue(sort2);
 				}
 				
 				if (sort3 != "None") {
-					sort += ", " + sortValue(sort3);
+					sort += "," + sortValue(sort3);
 				}
-				
-				sortBy(sort);
+
+				return sort;
 			}
 
 			// This gets the value needed to be added to the Rebrickable API uri request, to sort a list of Lego Sets, depending on the value selected
@@ -568,10 +594,10 @@
 					var setYear = parseInt(document.getElementById("year_" + id).innerHTML);
 					var setTheme = document.getElementById("theme_" + id).innerText;
                     var setNum_pieces = parseInt(document.getElementById("num_pieces_" + id).innerHTML);
-					
+
 					// This will hide all sets that do not fall into the categories that the list is being filtered by
 					if (((setName.toUpperCase().search(text.toUpperCase()) == -1) && (text.length != 0)) || ((setYear < minYear) && (minYear.length != 0)) || ((setYear > maxYear) && (maxYear.length != 0)) || ((setTheme != themeName) && (themeName != "All Themes")) || ((setNum_pieces < minPieces) && (minPieces.length != 0))  || ((setNum_pieces > maxPieces) && (maxPieces.length != 0))) {
-                        document.getElementById("set_" + id).style.display = "none";
+						document.getElementById("set_" + id).style.display = "none";
 					}
 					else {
 						document.getElementById("set_" + id).style.display = "block";
@@ -619,21 +645,162 @@
 			function getBarOpen() {
 				var filterBar = document.getElementById("filterBar").style.display;
 				var sortBar = document.getElementById("sortBar").style.display;
-
+				
 				if (filterBar != "none") {
-					return "filter";
+					return "barOpen=filter";
 				}
 				else if (sortBar != "none") {
-					return "sort";
+					return "barOpen=sort";
 				}
 				else {
-					return "none";
+					return "barOpen=none";
 				}
 			}
 
 			// This starts the loading spinner so the user knows that a page is being loaded
 			function openLoader() {
 				$("#loadingModal").modal("show");
+			}
+
+			// This asks the user to confirm they want logout and if they do the user is sent to the database controller to do this 
+			function logout() {
+                alert("You have been successfully logged out")
+                window.location = "/logout";
+			}
+
+			// This adds the sorts and filters active to a URL, that along with the
+			// set number and name of a set to be deleted to sent to the controller
+			function deleteSet(set_num, set_name) {
+				window.location = "/setsInProgress/delete/set=" + set_num + "/" + set_name + "/?sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+			}
+
+			// This gets all the filters active and adds returns them all as a string 
+			function getFilters() {
+				var filters = "";
+
+				if (document.getElementById("text_search").value.length != 0) {
+					filters += "&searchText=" + document.getElementById("text_search").value;
+				}
+
+				if (document.getElementById("minYearBox").value.length != 0) {
+					filters += "&minYear=" + document.getElementById("minYearBox").value;
+				}
+
+				if (document.getElementById("maxYearBox").value.length != 0) {
+					filters += "&maxYear=" + document.getElementById("maxYearBox").value;
+				}
+
+				if (document.getElementById("minPiecesBox").value.length != 0 && document.getElementById("minPiecesBox").value != 0) {
+					filters += "&minPieces=" + document.getElementById("minPiecesBox").value;
+				}
+
+				if (document.getElementById("maxPiecesBox").value.length != 0) {
+					filters += "&maxPieces=" + document.getElementById("maxPiecesBox").value;
+				}
+
+                var themeName = document.getElementById("themeFilter").value;
+				if (themeName != "All Themes") {
+					filters += "&theme_name=" + themeName;
+				}
+
+				return filters;
+			}
+
+			// This calls the controller to add a set to a set list
+			function addSetToList(set_num) {
+				var setListId = document.getElementById("selectList_" + set_num).value;
+				
+				window.location = "/addSetToList/previousPage=setsInProgress/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=${set_list.listName}&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+			}
+
+			// This function is called everytime a change occurs in the listName textbox
+			// to check if the user already has a list with entered list name
+			function checkListName(setNumber) {
+				var setListName = document.getElementById("setListNameTextBox_" + setNumber).value;
+				var listNameFound = false;
+
+				// This checks if there is already a set list with the entered list name
+				<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+					if ("${set_list.listName}" == setListName) {
+						listNameFound = true;
+					}
+				</c:forEach>
+
+				// If the list name has been found (meaning a list with that name already exists), the
+				// setListNameTextBox will be highlighted red to show there is an error, a tooltip will
+				// be added informing the user that the name is already in use along with an error alert
+				// box also containg this error message  and finally disabling the add new list button
+				if (listNameFound == true) {
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("class", "form-control is-invalid");
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("title", "List name must be Unique");
+					document.getElementById("addNewSetListHelp_" + setNumber).setAttribute("class", "alert alert-danger");
+					document.getElementById("addNewSetListButton_" + setNumber).disabled = true;
+				}
+				// If the list name is not found, this highlights the textbox green to show the name is
+				// valid, the tooltip is removed, the error alert box that contains the error message is
+				// hidden and finally enabling the add new list button
+				else {
+					document.getElementById("setListNameTextBox_" + setNumber).setAttribute("class", "form-control is-valid");
+					document.getElementById("setListNameTextBox_" + setNumber).removeAttribute("title");
+					document.getElementById("addNewSetListHelp_" + setNumber).setAttribute("class", "d-none");
+					document.getElementById("addNewSetListButton_" + setNumber).disabled = false;
+				}
+			}
+
+			// This calls the controller to create a new set list
+			function createNewSetList(set_num) {
+				var setListName = document.getElementById("setListNameTextBox_" + set_num).value;
+
+				window.location = "/addNewSetList/previousPage=setsInProgress/?setListName=" + setListName + "&set_number=" + set_num + "&currentSetListName=${set_list.listName}&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+			}
+
+			// This function is called everytime a change occurs in the edit listName textbox
+			// to check if the user already has a list with entered list name and when the confirm
+			// change list name check box clicked
+			function checkEditListName() {
+				var setListName = document.getElementById("newSetListNameTextBox").value;
+				var listNameFound = false;
+
+				// This checks if there is already a set list with the entered list name
+				<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+					if ("${set_list.listName}" == setListName) {
+						listNameFound = true;
+					}
+				</c:forEach>
+
+				// If the list name has been found (meaning a list with that name already exists), the
+				// setListNameTextBox will be highlighted red to show there is an error, a tooltip will
+				// be added informing the user that the name is already in use along with an error alert
+				// box also containg this error message  and finally disabling the add new list button
+				if (listNameFound == true) {
+					document.getElementById("newSetListNameTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("newSetListNameTextBox").setAttribute("title", "List name must be Unique");
+					document.getElementById("editSetListHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("editSetListButton").disabled = true;
+				}
+				// If the list name is not found, this highlights the textbox green to show the name is
+				// valid, the tooltip is removed, the error alert box that contains the error message is
+				// hidden and finally enabling the add new list button if the user has confirmed they want
+				// to change the set name
+				else {
+					document.getElementById("newSetListNameTextBox").setAttribute("class", "form-control is-valid");
+					document.getElementById("newSetListNameTextBox").removeAttribute("title");
+					document.getElementById("editSetListHelp").setAttribute("class", "d-none");
+
+					if (document.getElementById("confirmListNameChange").checked == false) {
+						document.getElementById("editSetListButton").disabled = true;
+					}
+					else {
+						document.getElementById("editSetListButton").disabled = false;
+					}
+				}
+			}
+
+			// This calls the controller to change the set list name
+			function editSetList() {
+				var newSetListName = document.getElementById("newSetListNameTextBox").value;
+
+				window.location = "/editSetList/previousPage=set_list/?setListId=${set_list.setListId}&newSetListName=" + newSetListName + "&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
 		</script>
@@ -807,7 +974,7 @@
 										</select>
 									</div>
 									<div class="col-auto">
-										<button class="btn btn-primary mt-1" type="button" onclick="sort()"> <i class="fa fa-sort"></i> Sort </button>
+										<button class="btn btn-primary mt-1" type="button" onclick="multi_sort()"> <i class="fa fa-sort"></i> Sort </button>
 									</div>
 								</form>
 							</li>
@@ -927,8 +1094,13 @@
                                 <h5 class="modal-title" id="addSetToListModalLabel_${set.num}">Add Set to a List</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="POST" id="addSetToListForm_${set.num}" action="/addSetToList/previousPage=setsInProgress">
+                            <form method="POST" id="addSetToListForm_${set.num}">
                                 <div class="modal-body">
+									<!-- This alert will be display when a new set list is created -->
+									<div class="d-none" id="setListCreatedAlert_${set.num}" role="alert">
+										<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetListName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetListName}</a>"</strong>
+										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+									</div>
                                     <div class="mb-3">
                                         <label class="form-label">Add Set: "${set.num}/${set.name}" to a list</label>
                                         <br>
@@ -940,23 +1112,49 @@
                                                     <option class="form-check-label" value="${set_list.setListId}" data-tokens="${set_list.listName}"> ${set_list.listName} </option>
                                                 </c:forEach>
                                             </select>
-                                            <button id="newListButton_${set.num}" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i>  New List</button>
+                                            <button id="newListButton_${set.num}" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addNewSetListModel_${set.num}"><i class="fa fa-plus"></i>  New List</button>
                                         </div>
                                         
                                         <div id="addSetToListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> Set already in list: "${set_listSelected.listName}"</div>
-
-                                        <!-- This is a hidden input that adds the set num of the set selected to the form -->
-                                        <input type="hidden" id="inputSetNum_${set.num}" name="set_number" value="${set.num}"/>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
+                                    <button type="button" id="addSetToListButton_${set.num}" class="btn btn-primary" onclick="addSetToList('${set.num}')"><i class="fa fa-plus"></i> Add Set</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
+
+				<!-- Modal to Create a New Set List -->
+				<div class="modal fade" id="addNewSetListModel_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addNewSetListModelLabel_${set.num}" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="addNewSetListModelLabel_${set.num}">Create a New Lego Set List</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<form method="POST" id="addNewSetListForm_${set.num}">
+								<div class="modal-body">
+									<div class="mb-3">
+										<h5> Set List: </h5>
+										<div class="form-floating mb-3">
+											<input id="setListNameTextBox_${set.num}" class="form-control" name="setListName" type="text" oninput="checkListName('${set.num}')" placeholder="Input Unique List Name">
+											<label class="text-secondary" for="setListNameTextBox"> Input Unique List Name </label>
+										</div>
+										
+										<div id="addNewSetListHelp_${set.num}" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									<button type="button" id="addNewSetListButton_${set.num}" class="btn btn-primary" onclick="createNewSetList('${set.num}')" disabled><i class="fa fa-plus"></i> Create List</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
 
 			</c:forEach>
 		</div>
