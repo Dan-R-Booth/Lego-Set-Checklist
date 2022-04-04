@@ -1026,6 +1026,12 @@
 				<i class="fa fa-check-circle"></i> <strong>Set: "<a href="/set?set_number=${set_number}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set_number}</a>" added to list: "<a href="/set_list=${set_listSelected.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_listSelected.listName}</a>"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
+
+			<!-- This alert will be display when a set is deleted from sets in progress -->
+			<div class="d-none" id="setDeletedAlert" role="alert">
+				<i class="fa fa-trash-o"></i> <strong>Deleted Set: "<a href="/set?set_number=${deletedSetNumber}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${deletedSetName}</a>"</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
 		</div>
 	    
 		<div class="mb-5" id="sets">
@@ -1068,7 +1074,26 @@
                             <label id="num_pieces_${loop.index}">${set.num_pieces}</label>
 						</div>
                         <div class="col-1">
-							<i class="fa fa-trash fa-lg" id="deleteLink_${set.num}" style="cursor: pointer;" onclick="deleteSet()"></i>
+							<i class="fa fa-trash fa-lg" id="deleteLink_${set.num}" style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteSetFromListModal_${set.num}"></i>
+						</div>
+					</div>
+
+					<!-- Modal to confirm set deletion from list -->
+					<div class="modal fade" id="deleteSetFromListModal_${set.num}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteSetFromListModalLabel_${set.num}" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title"><i class="fa fa-trash"></i> Delete Set: "${set.name}"</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<p>Are you sure you want to delete the Lego Set: "<a href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.name}</a>" from the Sets in Progress? </p>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+									<button type="button" class="btn btn-primary" onclick="deleteSet('${set.num}', '${set.name}')"><i class="fa fa-trash"></i> Delete</button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

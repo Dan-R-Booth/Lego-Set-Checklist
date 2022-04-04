@@ -439,7 +439,7 @@ public class DatabaseController {
 		return "redirect:/set_lists";
 	}
 
-	// This deletes a Lego Set in a list from the database
+	// This deletes a Lego Set in a set list from the database
 	@GetMapping("/set_list={listName}/delete/{setListId}/set={set_num}/{set_name}")
 	public String deleteSetFromSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {		
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -468,8 +468,6 @@ public class DatabaseController {
     	// This adds the request query containing the which bar was open, sorts and filters parsed so these are added to the model in the showSetList class
 		return "redirect:/set_list={listName}/?" + request.getQueryString();
 	}
-	
-	// Shows all the sets in progress of a logged in user
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
 	@GetMapping("/setsInProgress")
@@ -569,8 +567,6 @@ public class DatabaseController {
 	}
 	
 	// Gets the value of a sort between two sets
-	
-	// Compares two sets by a sort and returns the value of the comparison
 	private int getSortValue(String sort, Set set1, Set set2) {
 		if (sort.equals("name")) {
 			// This compares the sets by Set Name ascending
@@ -647,7 +643,7 @@ public class DatabaseController {
     	}
 	}
 
-	// This create a new set list for a logged in user, using the entered list name
+	// This creates a new set list for a logged in user, using the entered list name
 	@RequestMapping("/editSetList/previousPage={previousPage}")
 	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
 		
@@ -675,4 +671,26 @@ public class DatabaseController {
 			return "redirect:/set_list=" + newSetListName + "/?sort=" + sort + "&barOpen=" + barOpen;
     	}
 	}
+
+	// This deletes a Lego Set in a users sets in progress from the database
+	@GetMapping("/setsInProgress/delete/set={set_num}/{set_name}")
+	public String deleteSetFromSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		Set set = new Set(set_num);
+		
+		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
+		setInProgessRepo.delete(setInProgress);
+		
+    	removeUnneededSetInfo();
+    	
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
+    	redirectAttributes.addFlashAttribute("setDeleted", true);
+    	redirectAttributes.addFlashAttribute("deletedSetName", set_name);
+    	redirectAttributes.addFlashAttribute("deletedSetNumber", set_num);
+    	
+    	// This adds the request query containing the which bar was open, sorts and filters parsed so these are added to the model in the showSetList class
+		return "redirect:/setsInProgress/?" + request.getQueryString();
+	}
+	
 }
