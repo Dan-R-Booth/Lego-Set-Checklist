@@ -159,10 +159,10 @@
 				var iconClass = document.getElementById("nameSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					sortBy("listName");
+					sortBy("sort=listName");
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					sortBy("-listName");
+					sortBy("sort=-listName");
 				}
 			}
 			
@@ -171,48 +171,37 @@
 				var iconClass = document.getElementById("numSetsSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
-					sortBy("numSets");
+					sortBy("sort=numSets");
 				}
 				else if (iconClass == "fa fa-sort-amount-asc") {
-					sortBy("-numSets");
+					sortBy("sort=-numSets");
 				}
 			}
 
 			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
 			function sortBy(sort) {
-				
-				var text = "";
-				if (document.getElementById("text_search").value.length != 0) {
-					text = "&searchText=" + document.getElementById("text_search").value;
-				}
-
-				var minSets = "";
-				if (document.getElementById("minSetsBox").value.length != 0) {
-					minSets = "&minSets=" + document.getElementById("minSetsBox").value;
-				}
-
-                var maxSets = "";
-				if (document.getElementById("maxSetsBox").value.length != 0) {
-					maxSets = "&maxSets=" + document.getElementById("maxSetsBox").value;
-				}
-
 				openLoader();
 
-				window.location = "/set_lists/?sort=" + sort + "&barOpen=" + getBarOpen() + text + minSets + maxSets;
+				window.location = "/set_lists/?" + sort + "&barOpen=" + getBarOpen() + getFilters();
 			}
-			
+
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
-			function sort() {
+			function multi_sort() {
+				sortBy(getMulti_SortValues());
+			}
+
+			// This gets all multi-sort values
+			function getMulti_SortValues() {
 				var sort1 = document.getElementById("sortSelect1").value;
 				var sort2 = document.getElementById("sortSelect2").value;
 				
-				var sort = sortValue(sort1);
+				var sort = "sort=" + sortValue(sort1);
 				
 				if (sort2 != "None") {
-					sort += ", " + sortValue(sort2);
+					sort += "," + sortValue(sort2);
 				}
-				
-				sortBy(sort);
+
+				return sort;
 			}
 
 			// This gets the value needed to be added to the Rebrickable API uri request, to sort a list of Lego Sets, depending on the value selected
@@ -341,6 +330,25 @@
 				}
 			}
 
+			// This gets all the filters active and adds returns them all as a string 
+			function getFilters() {
+				var filters = "";
+
+				if (document.getElementById("text_search").value.length != 0) {
+					filters += "&searchText=" + document.getElementById("text_search").value;
+				}
+
+				if (document.getElementById("minSetsBox").value.length != 0 && document.getElementById("minSetsBox").value != 0) {
+					filters += "&minSets=" + document.getElementById("minSetsBox").value;
+				}
+
+				if (document.getElementById("maxSetsBox").value.length != 0) {
+					filters += "&maxSets=" + document.getElementById("maxSetsBox").value;
+				}
+
+				return filters;
+			}
+
 			// This starts the loading spinner so the user knows that a page is being loaded
 			function openLoader() {
 				$("#loadingModal").modal("show");
@@ -378,6 +386,13 @@
 					document.getElementById("addNewSetListHelp").setAttribute("class", "d-none");
 					document.getElementById("addNewSetListButton").disabled = false;
 				}
+			}
+
+			// This calls the controller to create a new set list
+			function createNewSetList() {
+				var setListName = document.getElementById("setListNameTextBox").value;
+
+				window.location = "/addNewSetList/previousPage=set_lists/?setListName=" + setListName + "&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
 		</script>
@@ -493,7 +508,7 @@
 										</select>
 									</div>
 									<div class="col-auto">
-										<button class="btn btn-primary mt-1" type="button" onclick="sort()"> <i class="fa fa-sort"></i> Sort </button>
+										<button class="btn btn-primary mt-1" type="button" onclick="multi_sort()"> <i class="fa fa-sort"></i> Sort </button>
 									</div>
 								</form>
 							</li>
@@ -508,7 +523,7 @@
 		
 			<!-- This alert will be display when a new set list is created -->
 			<div class="d-none" id="setListCreatedAlert" role="alert">
-				<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetListName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetListName}</a>"</strong>
+				<i class="fa fa-check-circle"></i> <strong>Added New Set List: "<a href="/set_list=${newSetList.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${newSetList.listName}</a>"</strong>
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 
@@ -597,7 +612,7 @@
 						<h5 class="modal-title" id="addNewSetListModelLabel">Create a New Lego Set List</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<form method="POST" id="addNewSetListForm" action="/addNewSetList/previousPage=set_lists">
+					<form method="POST" id="addNewSetListForm">
 						<div class="modal-body">
 							<div class="mb-3">
 								<h5> Set List: </h5>
@@ -612,7 +627,7 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" id="addNewSetListButton" class="btn btn-primary" disabled><i class="fa fa-plus"></i> Create List</button>
+							<button type="button" id="addNewSetListButton" class="btn btn-primary"  onclick="createNewSetList()" disabled><i class="fa fa-plus"></i> Create List</button>
 						</div>
 					</form>
 				</div>

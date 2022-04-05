@@ -192,7 +192,7 @@ public class DatabaseController {
 	// This saves the progress on a set piece checklist to the database
 	@PostMapping("/set/{set_number}/pieces/save")
 	@ResponseBody
-	public void saveChecklist(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable String set_number, @SessionAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, RedirectAttributes redirectAttributes) {
+	public void saveChecklist(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable String set_number, @SessionAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) {
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
 		
@@ -237,7 +237,7 @@ public class DatabaseController {
 	
 	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
 	@GetMapping("/set_list={listName}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name) {
 		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
 		List<SetInSetList> setsInSetList = set_list.getSets();
 		
@@ -337,8 +337,7 @@ public class DatabaseController {
 	
 	// This create a new set list for a logged in user, using the entered list name
 	@RequestMapping("/addNewSetList/previousPage={previousPage}")
-	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, @RequestParam(required = false) String currentSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
-		
+	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, @RequestParam(required = false) String currentSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
 		// This creates a set_list with the name submitted for the new user with
 		// an empty list of sets and saves list to the database table SetLists
 		List<SetInSetList> setsInSetList = new ArrayList<>();
@@ -356,7 +355,22 @@ public class DatabaseController {
     	model.addAttribute("set_lists", set_lists);
 		
     	if (previousPage.equals("set_lists")) {
-    		return "redirect:/set_lists";
+    		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
+    		if (searchText != null) {
+    			redirectAttributes.addFlashAttribute("searchText", searchText);
+    		}
+    		
+    		// If there is a min number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
+    		if (minSets != null) {
+    			redirectAttributes.addFlashAttribute("minSets", minSets);
+    		}
+    		
+    		// If there is a max number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
+    		if (maxSets != null) {
+    			redirectAttributes.addFlashAttribute("maxSets", maxSets);
+    		}
+    		
+    		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
     	}
     	else {
     		// These are used so the JSP page knows the set and set list selected
@@ -645,7 +659,7 @@ public class DatabaseController {
 
 	// This creates a new set list for a logged in user, using the entered list name
 	@RequestMapping("/editSetList/previousPage={previousPage}")
-	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes) {
 		
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		set_list.setListName(newSetListName);

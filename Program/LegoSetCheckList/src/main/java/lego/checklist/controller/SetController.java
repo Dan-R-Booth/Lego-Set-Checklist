@@ -498,10 +498,7 @@ public class SetController {
 	
 	// This displays the page to display a logged in users set lists
 	@GetMapping("/set_lists")
-	public String showSetLists(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "set_lists", required = true) List<Set_list> set_lists, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, HttpServletRequest request) {
-		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
-		model.addAttribute("setListsUrl", url);
-		
+	public String showSetLists(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "set_lists", required = true) List<Set_list> set_lists, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets) {
 		// This is used so that if the filter or sort bar was open or no bar was open on the search page
 		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
 		model.addAttribute("barOpen", barOpen);
@@ -513,7 +510,7 @@ public class SetController {
 			sort = "listName";
 		}
 		
-		String[] sorts = sort.split(", ");
+		String[] sorts = sort.split(",");
 		
 		model.addAttribute("sort1", sorts[0]);
 		if (sorts.length == 2) {
