@@ -104,7 +104,7 @@
 					document.getElementById("selectList_${set_number}").setAttribute("class", "form-select is-invalid");
 					document.getElementById("addSetToListHelp_${set_number}").setAttribute("class", "alert alert-danger mt-2s");
 					
-					document.getElementById("selectList_${set_number}").value = "${set_list.setListId}";
+					document.getElementById("selectList_${set_number}").value = "${set_listSelected.setListId}";
 
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
