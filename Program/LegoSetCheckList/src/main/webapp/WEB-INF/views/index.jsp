@@ -420,11 +420,7 @@
 											<i class="fa fa-check-circle"></i> <strong>Account Successfully Created</strong>
 											<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 										</div>
-										<div class="text-center">
-											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
-										</div>
 										<div class="container-fluid">
-											<hr>
 											<div class="mb-3">
 												<label>Email:</label>
 												<form:input type="email" class="form-control" id="emailTextBox_Login" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
@@ -458,11 +454,7 @@
 							<div class="tab-pane fade" id="signUp" role="tabpanel" aria-labelledby="signUp-tab">
 								<form:form id="signUp_form" action="/signUp" modelAttribute="account">
 									<div class="modal-body">
-										<div class="text-center">
-											<button type="button" class="btn btn-outline-dark">Continue With Google</button>
-										</div>
 										<div class="container-fluid">
-											<hr>
 											<div class="mb-3">
 												<label>Email:</label>
 												<form:input type="email" class="form-control" id="emailTextBox_SignUp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>

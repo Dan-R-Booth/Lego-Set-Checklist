@@ -170,18 +170,13 @@
                         <br>
                         <br>
                         <dt class="col-sm-4">Password:</dt>
-                        <dd class="col-sm-4"> Set</dd>
+                        <dd class="col-sm-4"></dd>
                         <dd class="col-sm-4"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Password"><i class="fa fa-edit"></i> Change Password </a></dd>
-                        <br>
-                        <br>
-                        <dt class="col-sm-4">Google Account Linked:</dt>
-                        <dd class="col-sm-4"> Not Linked</dd>
-                        <dd class="col-sm-4"> <a href="#">Link Account</a></dd>
                         <br>
                     </dl>
                 </h4>
                 <hr>
-                <u class="text-danger" onclick="deleteAccount()" style="cursor: pointer;"> Delete your account</u>
+                <h5><u class="text-danger" onclick="deleteAccount()" style="cursor: pointer;"> Delete your account</u></h5>
             </div>
 
 			<!-- Modal to show loading -->
