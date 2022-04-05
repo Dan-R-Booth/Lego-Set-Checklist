@@ -386,36 +386,36 @@ public class DatabaseController {
     	}
 	}
 	
-	// This adds the filters applied to a list to the redirect
+	// This adds the filters applied to a list of sets to the redirect URL as request attributes
 	private void addFilters(String searchText, String minYear, String maxYear, String minPieces, String maxPieces, String filteredTheme_name, RedirectAttributes redirectAttributes) {
 		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (searchText != null) {
-			redirectAttributes.addFlashAttribute("searchText", searchText);
+			redirectAttributes.addAttribute("searchText", searchText);
 		}
 		
 		// If there is a min year being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (minYear != null) {
-			redirectAttributes.addFlashAttribute("minYear", minYear);
+			redirectAttributes.addAttribute("minYear", minYear);
 		}
 		
 		// If there is a max year being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (maxYear != null) {
-			redirectAttributes.addFlashAttribute("maxYear", maxYear);
+			redirectAttributes.addAttribute("maxYear", maxYear);
 		}
 		
 		// If there is a minimum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (minPieces != null){
-			redirectAttributes.addFlashAttribute("minPieces", minPieces);
+			redirectAttributes.addAttribute("minPieces", minPieces);
 		}
 		
 		// If there is a maximum number of pieces being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (maxPieces != null) {
-			redirectAttributes.addFlashAttribute("maxPieces", maxPieces);
+			redirectAttributes.addAttribute("maxPieces", maxPieces);
 		}
 		
 		// If there is a theme_id being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (filteredTheme_name != null) {
-			redirectAttributes.addFlashAttribute("theme_name", filteredTheme_name);
+			redirectAttributes.addAttribute("theme_name", filteredTheme_name);
 		}
 	}
 
@@ -442,21 +442,21 @@ public class DatabaseController {
 		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
 	}
 	
-	// This adds the filters applied to a list of set list to the redirect
+	// This adds the filters applied to a list of set lists to the redirect URL as request attributes
 	private void addSetListsFilters(String searchText, String minSets, String maxSets, RedirectAttributes redirectAttributes) {
 		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (searchText != null) {
-			redirectAttributes.addFlashAttribute("searchText", searchText);
+			redirectAttributes.addAttribute("searchText", searchText);
 		}
 		
 		// If there is a min number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (minSets != null) {
-			redirectAttributes.addFlashAttribute("minSets", minSets);
+			redirectAttributes.addAttribute("minSets", minSets);
 		}
 		
 		// If there is a max number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
 		if (maxSets != null) {
-			redirectAttributes.addFlashAttribute("maxSets", maxSets);
+			redirectAttributes.addAttribute("maxSets", maxSets);
 		}
 	}
 
