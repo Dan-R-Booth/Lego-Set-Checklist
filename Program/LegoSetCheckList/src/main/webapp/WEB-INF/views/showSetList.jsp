@@ -1229,7 +1229,7 @@
 								
 								<!-- This is used so the user has to confirm the changes they are making -->
 								<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="" id="confirmListNameChange" onclick="checkEditListName()">
+									<input class="form-check-input" type="checkbox" id="confirmListNameChange" onclick="checkEditListName()">
 									<label class="form-check-label" for="confirmListNameChange">I want to change the name of the Set List: '${set_list.listName}'</label>
 								</div>
 
