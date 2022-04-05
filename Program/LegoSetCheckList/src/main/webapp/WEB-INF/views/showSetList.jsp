@@ -1042,7 +1042,7 @@
                             <label id="num_pieces_${loop.index}">${set.num_pieces}</label>
 						</div>
                         <div class="col-1">
-							<i class="fa fa-trash fa-lg" id="deleteButton_${set.num}" style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteSetFromListModal_${set.num}" title="Delete Lego Set: '${set.name}' from the List"></i>
+							<i class="fa fa-trash fa-lg" id="deleteButton_${set.num}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetFromListModal_${set.num}" title="Delete Lego Set: '${set.name}' from the List"></i>
 						</div>
 						<script>
 							// This adds bootstrap styling to the tooltips for the add and delete buttons, because their data-bs-toggle is being used for their modal
