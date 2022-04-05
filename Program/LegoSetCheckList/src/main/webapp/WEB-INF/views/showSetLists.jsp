@@ -619,8 +619,15 @@
 							<label id="num_sets_${loop.index}">${set_list.totalSets}</label>
 						</div>
 						<div class="col-1">
-							<i class="fa fa-edit fa-lg mx-1" id="editLink_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel_${set_list.setListId}"></i>
-							<i class="fa fa-trash fa-lg" id="deleteLink_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal_${set_list.setListId}"></i>
+							<i class="fa fa-edit fa-lg mx-1" id="editButton_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel_${set_list.setListId}" title="Edit the name of Set List: '${set.name}'"></i>
+							<i class="fa fa-trash fa-lg" id="deleteButton_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal_${set_list.setListId}" title="Delete Set List: '${set_list.listName}'"></i>
+							<script>
+								// This adds bootstrap styling to this tooltip, as because its in a c:if it is not added with the other tooltips
+								$(document).ready(function(){ 
+									$('#deleteButton_${set_list.setListId}').tooltip();
+									$('#editButton_${set_list.setListId}').tooltip();
+								});
+							</script>
 						</div>
 					</div>
 				</div>
