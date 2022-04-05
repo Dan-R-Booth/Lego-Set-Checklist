@@ -105,7 +105,7 @@
 					document.getElementById("setListCreatedAlert_${set_number}").setAttribute("class", "alert alert-success alert-dismissible fade show");
 
 					document.getElementById("selectList_${set_number}").value = "${newSetList.setListId}";
-					
+
 					// This opens the addSetToListModal
 					$("#addSetToListModal_${set_number}").modal("show");
 				}
@@ -326,10 +326,10 @@
 				var iconClass = document.getElementById("numSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					sortBy("set_num");
+					sortBy("sort=set_num");
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					sortBy("-set_num");
+					sortBy("sort=-set_num");
 				}
 			}
 			
@@ -338,10 +338,10 @@
 				var iconClass = document.getElementById("nameSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-alpha-desc") {
-					sortBy("name");
+					sortBy("sort=name");
 				}
 				else if (iconClass == "fa fa-sort-alpha-asc") {
-					sortBy("-name");
+					sortBy("sort=-name");
 				}
 			}
 			
@@ -350,10 +350,10 @@
 				var iconClass = document.getElementById("themeSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-up") {
-					sortBy("theme");
+					sortBy("sort=theme");
 				}
 				else if (iconClass == "fa fa-sort-down") {
-					sortBy("-theme");
+					sortBy("sort=-theme");
 				}
 			}
 			
@@ -362,10 +362,10 @@
 				var iconClass = document.getElementById("yearSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-numeric-desc") {
-					sortBy("year");
+					sortBy("sort=year");
 				}
 				else if (iconClass == "fa fa-sort-numeric-asc") {
-					sortBy("-year");
+					sortBy("sort=-year");
 				}
 			}
 			
@@ -374,50 +374,18 @@
 				var iconClass = document.getElementById("numPiecesSortIcon").className;
 				
 				if (iconClass == "fa fa-sort" || iconClass == "fa fa-sort-amount-desc") {
-					sortBy("numPieces");
+					sortBy("sort=numPieces");
 				}
 				else if (iconClass == "fa fa-sort-amount-asc") {
-					sortBy("-numPieces");
+					sortBy("sort=-numPieces");
 				}
 			}
 
 			// Adds the sort selected to the url so that it is sent to the controller so that it can be applied
 			function sortBy(sort) {
-				
-				var text = "";
-				if (document.getElementById("text_search").value.length != 0) {
-					text = "&searchText=" + document.getElementById("text_search").value;
-				}
-
-				var minYear = "";
-				if (document.getElementById("minYearBox").value.length != 0) {
-					minYear = "&minYear=" + document.getElementById("minYearBox").value;
-				}
-
-                var maxYear = "";
-				if (document.getElementById("maxYearBox").value.length != 0) {
-					maxYear = "&maxYear=" + document.getElementById("maxYearBox").value;
-				}
-
-                var minPieces = "";
-				if (document.getElementById("minPiecesBox").value.length != 0) {
-					minPieces = "&minPieces=" + document.getElementById("minPiecesBox").value;
-				}
-
-                var maxPieces = "";
-				if (document.getElementById("maxPiecesBox").value.length != 0) {
-					maxPieces = "&maxPieces=" + document.getElementById("maxPiecesBox").value;
-				}
-
-                var theme = "";
-                var themeName = document.getElementById("themeFilter").value;
-				if (themeName != "All Themes") {
-					theme = "&theme_name=" + themeName;
-				}
-
 				openLoader();
 
-				window.location = "/set_list=${set_list.listName}/?sort=" + sort + "&" + getBarOpen() + getFilters();
+				window.location = "/set_list=${set_list.listName}/?" + sort + "&" + getBarOpen() + getFilters();
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
@@ -431,7 +399,7 @@
 				var sort2 = document.getElementById("sortSelect2").value;
 				var sort3 = document.getElementById("sortSelect3").value;
 				
-				var sort = sortValue(sort1);
+				var sort = "sort=" + sortValue(sort1);
 				
 				if (sort2 != "None") {
 					sort += "," + sortValue(sort2);
@@ -673,7 +641,7 @@
 			// This adds the sorts and filters active to a URL, that along with the
 			// set number and name of a set to be deleted to sent to the controller
 			function deleteSet(set_num, set_name) {
-				window.location = "/set_list=${set_list.listName}/delete/${set_list.setListId}/set=" + set_num + "/" + set_name + "/?sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+				window.location = "/set_list=${set_list.listName}/delete/${set_list.setListId}/set=" + set_num + "/" + set_name + "/?" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
 			// This gets all the filters active and adds returns them all as a string 
@@ -712,7 +680,7 @@
 			function addSetToList(set_num) {
 				var setListId = document.getElementById("selectList_" + set_num).value;
 
-				window.location = "/addSetToList/previousPage=set_list/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=${set_list.listName}&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+				window.location = "/addSetToList/previousPage=set_list/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=${set_list.listName}&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
 			// This function is called everytime a change occurs in the listName textbox
@@ -753,7 +721,7 @@
 			function createNewSetList(set_num) {
 				var setListName = document.getElementById("setListNameTextBox_" + set_num).value;
 
-				window.location = "/addNewSetList/previousPage=set_list/?setListName=" + setListName + "&set_number=" + set_num + "&currentSetListName=${set_list.listName}&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+				window.location = "/addNewSetList/previousPage=set_list/?setListName=" + setListName + "&set_number=" + set_num + "&currentSetListName=${set_list.listName}&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
 			// This function is called everytime a change occurs in the edit listName textbox
@@ -802,7 +770,7 @@
 			function editSetList() {
 				var newSetListName = document.getElementById("newSetListNameTextBox").value;
 
-				window.location = "/editSetList/previousPage=set_list/?setListId=${set_list.setListId}&newSetListName=" + newSetListName + "&sort=" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+				window.location = "/editSetList/previousPage=set_list/?setListId=${set_list.setListId}&newSetListName=" + newSetListName + "&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 		</script>
 		

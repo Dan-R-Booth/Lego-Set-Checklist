@@ -380,7 +380,7 @@
 			}
 			
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
-			function sort() {
+			function multi_sort() {
 				var sort1 = document.getElementById("sortSelect1").value;
 				var sort2 = document.getElementById("sortSelect2").value;
 				var sort3 = document.getElementById("sortSelect3").value;
@@ -840,7 +840,7 @@
 										</select>
 									</div>
 									<div class="col-auto">
-										<button class="btn btn-primary mt-1" type="button" onclick="sort()"> <i class="fa fa-sort"></i> Sort </button>
+										<button class="btn btn-primary mt-1" type="button" onclick="multi_sort()"> <i class="fa fa-sort"></i> Sort </button>
 									</div>
 								</form>
 							</li>
