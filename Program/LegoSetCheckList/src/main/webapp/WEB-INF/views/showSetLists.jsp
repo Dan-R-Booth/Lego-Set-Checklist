@@ -182,7 +182,7 @@
 			function sortBy(sort) {
 				openLoader();
 
-				window.location = "/set_lists/?" + sort + "&barOpen=" + getBarOpen() + getFilters();
+				window.location = "/set_lists/?" + sort + "&" + getBarOpen() + getFilters();
 			}
 
 			// This sorts a list of Lego sets depending on values assigned in the sortBar
@@ -320,13 +320,13 @@
 				var sortBar = document.getElementById("sortBar").style.display;
 
 				if (filterBar != "none") {
-					return "filter";
+					return "barOpen=filter";
 				}
 				else if (sortBar != "none") {
-					return "sort";
+					return "barOpen=sort";
 				}
 				else {
-					return "none";
+					return "barOpen=none";
 				}
 			}
 
@@ -401,6 +401,56 @@
 				window.location = "/set_list=" + listName + "/delete/" + setListId + "/?" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
+			
+			// This function is called everytime a change occurs in the edit listName textbox
+			// to check if the user already has a list with entered list name and when the confirm
+			// change list name check box clicked
+			function checkEditListName(setListId) {
+				var setListName = document.getElementById("newSetListNameTextBox_" + setListId).value;
+				var listNameFound = false;
+
+				// This checks if there is already a set list with the entered list name
+				<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+					if ("${set_list.listName}" == setListName) {
+						listNameFound = true;
+					}
+				</c:forEach>
+
+				// If the list name has been found (meaning a list with that name already exists), the
+				// setListNameTextBox will be highlighted red to show there is an error, a tooltip will
+				// be added informing the user that the name is already in use along with an error alert
+				// box also containg this error message  and finally disabling the add new list button
+				if (listNameFound == true) {
+					document.getElementById("newSetListNameTextBox_" + setListId).setAttribute("class", "form-control is-invalid");
+					document.getElementById("newSetListNameTextBox_" + setListId).setAttribute("title", "List name must be Unique");
+					document.getElementById("editSetListHelp_" + setListId).setAttribute("class", "alert alert-danger");
+					document.getElementById("editSetListButton_" + setListId).disabled = true;
+				}
+				// If the list name is not found, this highlights the textbox green to show the name is
+				// valid, the tooltip is removed, the error alert box that contains the error message is
+				// hidden and finally enabling the add new list button if the user has confirmed they want
+				// to change the set name
+				else {
+					document.getElementById("newSetListNameTextBox_" + setListId).setAttribute("class", "form-control is-valid");
+					document.getElementById("newSetListNameTextBox_" + setListId).removeAttribute("title");
+					document.getElementById("editSetListHelp_" + setListId).setAttribute("class", "d-none");
+
+					if (document.getElementById("confirmListNameChange_" + setListId).checked == false) {
+						document.getElementById("editSetListButton_" + setListId).disabled = true;
+					}
+					else {
+						document.getElementById("editSetListButton_" + setListId).disabled = false;
+					}
+				}
+			}
+
+
+			// This calls the controller to change the set list name
+			function editSetList(setListId) {
+				var newSetListName = document.getElementById("newSetListNameTextBox_" + setListId).value;
+
+				window.location = "/editSetList/previousPage=set_lists/?setListId=" + setListId + "&newSetListName=" + newSetListName + "&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+			}
 		</script>
 		
 	</head>
@@ -569,7 +619,7 @@
 							<label id="num_sets_${loop.index}">${set_list.totalSets}</label>
 						</div>
 						<div class="col-1">
-							<i class="fa fa-edit fa-lg mx-1" id="editLink_${set_list.setListId}" style="cursor: pointer;" onclick="editSetList()"></i>
+							<i class="fa fa-edit fa-lg mx-1" id="editLink_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel_${set_list.setListId}"></i>
 							<i class="fa fa-trash fa-lg" id="deleteLink_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal_${set_list.setListId}"></i>
 						</div>
 					</div>
@@ -590,6 +640,41 @@
 								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
 								<button type="button" class="btn btn-primary" onclick="deleteSetList('${set_list.setListId}', '${set_list.listName}')"><i class="fa fa-trash"></i> Delete</button>
 							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Modal Edit List Name -->
+				<div class="modal fade" id="editSetListModel_${set_list.setListId}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editSetListModelLabel_${set_list.setListId}" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="editSetListModelLabel_${set_list.setListId}">Edit Lego Set List Name</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<form method="POST" id="editSetListModel_${set_list.setListId}">
+								<div class="modal-body">
+									<div class="mb-3">
+										<h5> Set List: </h5>
+										<div class="form-floating mb-3">
+											<input id="newSetListNameTextBox_${set_list.setListId}" class="form-control" name="setListName" type="text" oninput="checkEditListName('${set_list.setListId}')" placeholder="Change List Name" value="${set_list.listName}">
+											<label class="text-secondary" for="setListNameTextBox_${set_list.setListId}"> Edit List Name </label>
+										</div>
+										
+										<!-- This is used so the user has to confirm the changes they are making -->
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="confirmListNameChange_${set_list.setListId}" onclick="checkEditListName('${set_list.setListId}')">
+											<label class="form-check-label" for="confirmListNameChange_${set_list.setListId}">I want to change the name of the Set List: '${set_list.listName}'</label>
+										</div>
+
+										<div id="editSetListHelp_${set_list.setListId}" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+									<button type="button" id="editSetListButton_${set_list.setListId}" class="btn btn-primary" onclick="editSetList('${set_list.setListId}')" disabled><i class="fa fa-plus"></i> Change List Name</button>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>

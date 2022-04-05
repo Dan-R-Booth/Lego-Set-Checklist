@@ -666,7 +666,7 @@ public class DatabaseController {
 
 	// This creates a new set list for a logged in user, using the entered list name
 	@RequestMapping("/editSetList/previousPage={previousPage}")
-	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes) {
+	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
 		
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		set_list.setListName(newSetListName);
@@ -684,7 +684,9 @@ public class DatabaseController {
 		
     	// These returns the user back to the page that the user called the controller from
     	if (previousPage.equals("set_lists")) {
-    		return "redirect:/set_lists";
+    		addSetListsFilters(searchText, minSets, maxSets, redirectAttributes);
+    		
+    		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
     	}
     	else {
 			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
