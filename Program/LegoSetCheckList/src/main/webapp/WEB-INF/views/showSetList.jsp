@@ -963,11 +963,8 @@
 					<div class="col">
 						<h6>Set Image:</h6>
 					</div>
-					<!-- This code will only display this button if the user is logged in -->
-					<c:if test="${not empty accountLoggedIn}">
-						<div class="col-1">
-						</div>
-					</c:if>
+					<div class="col-1">
+					</div>
 					<div class="col">
 						<h6 style="cursor: pointer;" onclick="numSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Set Number">Set Number: <i id="numSortIcon" class="fa fa-sort"></i></h6>
 					</div>
@@ -1019,18 +1016,15 @@
 							<!-- When clicked this will display a Model with the image enlarged within -->
 							<img class="m-2" src="${set.img_url}" alt="Image of the Lego Set ${set.name}" style="width: 80%; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#setModal_${set.num}">
 						</div>
-						<!-- This code will only display this button if the user is logged in -->
-						<c:if test="${not empty accountLoggedIn}">
-							<div class="col-1">
-								<i class="fa fa-plus fa-lg" id="addSetToListModelButton_${set.num}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" data-bs-toggle="tooltip" title="Add Lego Set: '${set.name}' to a List"></i>
-							</div>
+						<div class="col-1">
+							<i class="fa fa-plus fa-lg" id="addSetToListModelButton_${set.num}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" title="Add Lego Set: '${set.name}' to a List"></i>
 							<script>
 								// This adds bootstrap styling to this tooltip, as because its in a c:if it is not added with the other tooltips
 								$(document).ready(function(){ 
 									$('#addSetToListModelButton_${set.num}').tooltip();
 								});
 							</script>
-						</c:if>
+						</div>
 						<div class="col">
 							<a id="set_num_${loop.index}" href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
 						</div>
@@ -1047,7 +1041,13 @@
                             <label id="num_pieces_${loop.index}">${set.num_pieces}</label>
 						</div>
                         <div class="col-1">
-							<i class="fa fa-trash fa-lg" id="deleteLink_${set.num}" style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteSetFromListModal_${set.num}"></i>
+							<i class="fa fa-trash fa-lg" id="deleteButton_${set.num}" style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteSetFromListModal_${set.num}" title="Delete Lego Set: '${set.name}' from the List"></i>
+							<script>
+								// This adds bootstrap styling to this tooltip, as because its in a c:if it is not added with the other tooltips
+								$(document).ready(function(){ 
+									$('#deleteButton_${set.num}').tooltip();
+								});
+							</script>
 						</div>
 					</div>
 
