@@ -355,20 +355,7 @@ public class DatabaseController {
     	model.addAttribute("set_lists", set_lists);
 		
     	if (previousPage.equals("set_lists")) {
-    		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
-    		if (searchText != null) {
-    			redirectAttributes.addFlashAttribute("searchText", searchText);
-    		}
-    		
-    		// If there is a min number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
-    		if (minSets != null) {
-    			redirectAttributes.addFlashAttribute("minSets", minSets);
-    		}
-    		
-    		// If there is a max number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
-    		if (maxSets != null) {
-    			redirectAttributes.addFlashAttribute("maxSets", maxSets);
-    		}
+    		addSetListsFilters(searchText, minSets, maxSets, redirectAttributes);
     		
     		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
     	}
@@ -434,7 +421,7 @@ public class DatabaseController {
 
 	// This deletes a Lego Set List and all the sets in that list from the database
 	@GetMapping("/set_list={listName}/delete/{setListId}")
-	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, RedirectAttributes redirectAttributes) {
+	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		set_listRepo.delete(set_list);
 		
@@ -450,7 +437,27 @@ public class DatabaseController {
     	redirectAttributes.addFlashAttribute("setListDeleted", true);
     	redirectAttributes.addFlashAttribute("deletedSetListName", listName);
     	
-		return "redirect:/set_lists";
+    	addSetListsFilters(searchText, minSets, maxSets, redirectAttributes);
+		
+		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
+	}
+	
+	// This adds the filters applied to a list of set list to the redirect
+	private void addSetListsFilters(String searchText, String minSets, String maxSets, RedirectAttributes redirectAttributes) {
+		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (searchText != null) {
+			redirectAttributes.addFlashAttribute("searchText", searchText);
+		}
+		
+		// If there is a min number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (minSets != null) {
+			redirectAttributes.addFlashAttribute("minSets", minSets);
+		}
+		
+		// If there is a max number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (maxSets != null) {
+			redirectAttributes.addFlashAttribute("maxSets", maxSets);
+		}
 	}
 
 	// This deletes a Lego Set in a set list from the database

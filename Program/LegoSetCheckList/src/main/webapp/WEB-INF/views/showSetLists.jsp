@@ -395,6 +395,12 @@
 				window.location = "/addNewSetList/previousPage=set_lists/?setListName=" + setListName + "&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 
+			// This adds the sorts and filters active to a URL, that along with the
+			// set number and name of a set to be deleted to sent to the controller
+			function deleteSetList(setListId, listName) {
+				window.location = "/set_list=" + listName + "/delete/" + setListId + "/?" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
+			}
+
 		</script>
 		
 	</head>
@@ -582,7 +588,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
-								<button type="button" class="btn btn-primary" onclick="window.location = '/set_list=${set_list.listName}/delete/${set_list.setListId}'"><i class="fa fa-trash"></i> Delete</button>
+								<button type="button" class="btn btn-primary" onclick="deleteSetList('${set_list.setListId}', '${set_list.listName}')"><i class="fa fa-trash"></i> Delete</button>
 							</div>
 						</div>
 					</div>
