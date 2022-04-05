@@ -802,11 +802,18 @@
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
 							<li class="nav-item ms-5">
-								<a class="nav-link" id="editLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel"> <i class="fa fa-edit"></i> Edit</a>
+								<a class="nav-link" id="editLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel" title="Edit the name of Set List: '${set_list.listName}'"> <i class="fa fa-edit"></i> Edit</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="nav-link" id="deleteLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal"> <i class="fa fa-trash"></i> Delete</a>
+								<a class="nav-link" id="deleteLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal" title="Delete Set List: '${set_list.listName}'"> <i class="fa fa-trash"></i> Delete</a>
 							</li>
+							<script>
+								// This adds bootstrap styling to the tooltips for the edit and delete links, because their data-bs-toggle is being used for their modal
+								$(document).ready(function(){ 
+									$("#editLink").tooltip();
+									$("#deleteLink").tooltip();
+								});
+							</script>
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
@@ -1018,12 +1025,6 @@
 						</div>
 						<div class="col-1">
 							<i class="fa fa-plus fa-lg" id="addSetToListModelButton_${set.num}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" title="Add Lego Set: '${set.name}' to a List"></i>
-							<script>
-								// This adds bootstrap styling to this tooltip, as because the data-bs-toggle is being used for the modal
-								$(document).ready(function(){ 
-									$('#addSetToListModelButton_${set.num}').tooltip();
-								});
-							</script>
 						</div>
 						<div class="col">
 							<a id="set_num_${loop.index}" href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
@@ -1042,13 +1043,14 @@
 						</div>
                         <div class="col-1">
 							<i class="fa fa-trash fa-lg" id="deleteButton_${set.num}" style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteSetFromListModal_${set.num}" title="Delete Lego Set: '${set.name}' from the List"></i>
-							<script>
-								// This adds bootstrap styling to this tooltip, as because the data-bs-toggle is being used for the modal
-								$(document).ready(function(){ 
-									$('#deleteButton_${set.num}').tooltip();
-								});
-							</script>
 						</div>
+						<script>
+							// This adds bootstrap styling to the tooltips for the add and delete buttons, because their data-bs-toggle is being used for their modal
+							$(document).ready(function(){ 
+								$("#addSetToListModelButton_${set.num}").tooltip();
+								$("#deleteButton_${set.num}").tooltip();
+							});
+						</script>
 					</div>
 
 					<!-- Modal to confirm set deletion from list -->
