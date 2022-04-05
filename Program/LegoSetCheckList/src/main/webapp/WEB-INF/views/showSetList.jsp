@@ -802,7 +802,7 @@
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
 							<li class="nav-item ms-5">
-								<a class="nav-link" id="editLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel" title="Edit the name of Set List: '${set_list.listName}'"> <i class="fa fa-edit"></i> Edit</a>
+								<a class="nav-link" id="editLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModal" title="Edit the name of Set List: '${set_list.listName}'"> <i class="fa fa-edit"></i> Edit</a>
 							</li>
 							<li class="nav-item ms-5">
 								<a class="nav-link" id="deleteLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal" title="Delete Set List: '${set_list.listName}'"> <i class="fa fa-trash"></i> Delete</a>
@@ -1213,14 +1213,14 @@
         </div>
 
 		<!-- Modal Edit List Name -->
-		<div class="modal fade" id="editSetListModel" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editSetListModelLabel" aria-hidden="true">
+		<div class="modal fade" id="editSetListModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editSetListModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="editSetListModelLabel">Edit Lego Set List Name</h5>
+						<h5 class="modal-title" id="editSetListModalLabel">Edit Lego Set List Name</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<form method="POST" id="editSetListModel">
+					<form method="POST" id="editSetListModal">
 						<div class="modal-body">
 							<div class="mb-3">
 								<h5> Set List: </h5>

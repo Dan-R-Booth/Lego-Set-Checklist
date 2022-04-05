@@ -619,7 +619,7 @@
 							<label id="num_sets_${loop.index}">${set_list.totalSets}</label>
 						</div>
 						<div class="col-1">
-							<i class="fa fa-edit fa-lg mx-1" id="editButton_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel_${set_list.setListId}" title="Edit the name of Set List: '${set_list.listName}'"></i>
+							<i class="fa fa-edit fa-lg mx-1" id="editButton_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModal_${set_list.setListId}" title="Edit the name of Set List: '${set_list.listName}'"></i>
 							<i class="fa fa-trash fa-lg" id="deleteButton_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal_${set_list.setListId}" title="Delete Set List: '${set_list.listName}'"></i>
 							<script>
 								// This adds bootstrap styling to these tooltips, as because their data-bs-toggle is being used for their modal
@@ -652,14 +652,14 @@
 				</div>
 
 				<!-- Modal Edit List Name -->
-				<div class="modal fade" id="editSetListModel_${set_list.setListId}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editSetListModelLabel_${set_list.setListId}" aria-hidden="true">
+				<div class="modal fade" id="editSetListModal_${set_list.setListId}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editSetListModalLabel_${set_list.setListId}" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="editSetListModelLabel_${set_list.setListId}">Edit Lego Set List Name</h5>
+								<h5 class="modal-title" id="editSetListModalLabel_${set_list.setListId}">Edit Lego Set List Name</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
-							<form method="POST" id="editSetListModel_${set_list.setListId}">
+							<form method="POST" id="editSetListModal_${set_list.setListId}">
 								<div class="modal-body">
 									<div class="mb-3">
 										<h5> Set List: </h5>
