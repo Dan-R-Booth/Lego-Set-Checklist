@@ -622,7 +622,7 @@
 							<i class="fa fa-edit fa-lg mx-1" id="editButton_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editSetListModel_${set_list.setListId}" title="Edit the name of Set List: '${set_list.listName}'"></i>
 							<i class="fa fa-trash fa-lg" id="deleteButton_${set_list.setListId}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal_${set_list.setListId}" title="Delete Set List: '${set_list.listName}'"></i>
 							<script>
-								// This adds bootstrap styling to these tooltips, as because their data-bs-toggle is being used for the modal
+								// This adds bootstrap styling to these tooltips, as because their data-bs-toggle is being used for their modal
 								$(document).ready(function(){ 
 									$('#deleteButton_${set_list.setListId}').tooltip();
 									$('#editButton_${set_list.setListId}').tooltip();
