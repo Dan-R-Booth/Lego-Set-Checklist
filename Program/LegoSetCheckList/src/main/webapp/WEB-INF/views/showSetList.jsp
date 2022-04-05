@@ -1019,7 +1019,7 @@
 						<div class="col-1">
 							<i class="fa fa-plus fa-lg" id="addSetToListModelButton_${set.num}" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#addSetToListModal_${set.num}" title="Add Lego Set: '${set.name}' to a List"></i>
 							<script>
-								// This adds bootstrap styling to this tooltip, as because its in a c:if it is not added with the other tooltips
+								// This adds bootstrap styling to this tooltip, as because the data-bs-toggle is being used for the modal
 								$(document).ready(function(){ 
 									$('#addSetToListModelButton_${set.num}').tooltip();
 								});
@@ -1043,7 +1043,7 @@
                         <div class="col-1">
 							<i class="fa fa-trash fa-lg" id="deleteButton_${set.num}" style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteSetFromListModal_${set.num}" title="Delete Lego Set: '${set.name}' from the List"></i>
 							<script>
-								// This adds bootstrap styling to this tooltip, as because its in a c:if it is not added with the other tooltips
+								// This adds bootstrap styling to this tooltip, as because the data-bs-toggle is being used for the modal
 								$(document).ready(function(){ 
 									$('#deleteButton_${set.num}').tooltip();
 								});
