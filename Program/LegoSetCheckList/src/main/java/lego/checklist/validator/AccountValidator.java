@@ -31,15 +31,10 @@ public class AccountValidator implements Validator {
 		// to the instance of the Errors class errors
 		ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
 
-		// These check that the email address contains no spaces, that it is in a valid format and
-		// that an account does not already exist with the entered email.
-		// If any of these are wrong an error message is added to the instance of the Errors class errors
+		// These check that the email address contains no spaces and that an account does not already exist with the
+		// entered email. If any of these are wrong an error message is added to the instance of the Errors class errors
 		if (email.contains(" ")) {
 			errors.rejectValue("email", "email", "Email address connot contain spaces");
-		}
-		// Using RFC 5322
-		else if (email.equals("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
-			errors.rejectValue("email", "email", "Email address is invalid");
 		}
 		else if (repo.findByEmail(account.getEmail()) != null) {
 			errors.rejectValue("email", "email", "Email address already in use");
