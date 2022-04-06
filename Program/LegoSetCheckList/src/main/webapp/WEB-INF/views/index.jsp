@@ -82,7 +82,7 @@
 					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
 					
 					//This displays the main div in body for users not logged in
-					document.getElementById("loggedOutDiv").setAttribute("class", "");
+					document.getElementById("loggedOutDiv").setAttribute("class", "m-3");
 				}
 				else {
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
@@ -93,7 +93,7 @@
 					document.getElementById("profileLink").setAttribute("class", "nav-link active");
 
 					//This displays the main div in body for users logged in
-					document.getElementById("loggedInDiv").setAttribute("class", "");
+					document.getElementById("loggedInDiv").setAttribute("class", "m-3");
 				}
 
 				// This adds bootstrap styling to tooltips
@@ -363,11 +363,51 @@
 		
 		<div class="container-fluid mb-5">
 			<div id="loggedOutDiv" class="d-none">
-				
+				<h2 class="pb-3">Welcome to the Lego Set Checklist</h2>
+				<div class="border border-3 border-dark p-3">
+					<h5>
+						The purpose of this website is to find a Lego Set and view all the pieces in this Lego set in a check list. Here you can tick the pieces off the list when building this set for the first time or again, or you could use it to check if you have right pieces to build set that you don't own.
+						<br>
+						<br>
+						For example, you have a Lego set that you have taken apart and put all the pieces in a box along with other Lego pieces,
+						and you would like to rebuild the set,you could do this easily using a digital checklist.
+					</h5>
+					<br>
+					<div class="container-fluid row">
+						<ul class="list-unstyled col-sm-6">
+							<li><b>Features:</b>
+								<ul>
+									<li>Find a Lego Set by Set Number</li>
+									<li>Search, filter and sort all Lego sets</li>
+									<li>Filter and Sort Checklist of a Sets Lego Pieces</li>
+									<li>View Information on a Lego Set</li>
+									<li>Export and Import Checklists</li>
+									<li>View Lego Set Instruction Booklets</li>
+								</ul>
+							</li>
+						</ul>
+
+						<ul class="list-unstyled col-sm-5">
+							<li><b>Account Features:</b>
+								<ul>
+									<li>Save Lego Sets to find them later</li>
+									<li>Save Progress in a Lego Set so that you can return to it later</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<br>
+				<br>
+				<h5>You are currently not logged in to an account.</h5>
+				Click here to <a style="cursor: pointer;" href="#" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal">Sign in/Create an account</a> or continue without signing in
 			</div>
 
 			<div id="loggedInDiv" class="d-none">
-				
+				<h2>Welcome back</h2>
+				Recent Set Lists:
+				<br>
+				Recent Sets in Progress:
 			</div>
 
 			<!-- Modal to Import a Lego Checklist -->
