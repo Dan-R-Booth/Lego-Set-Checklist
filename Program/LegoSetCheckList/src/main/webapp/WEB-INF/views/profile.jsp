@@ -49,11 +49,21 @@
 				// This displays that if a set has been deleted from the list
 				if ("${passwordIncorrect}" == "true") {
 					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("class", "form-control is-invalid");
-					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("title", "${passwordErrorMessage_Login}");
+					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("title", "${passwordErrorMessage}");
 					document.getElementById("passwordErrorHelp").setAttribute("class", "alert alert-danger");
 
-					// This opens the addSetToListModal
+					// This opens the deleteAccountModal
 					$("#deleteAccountModal").modal("show");
+				}
+
+				// As this runs a function if there was an error changing the user's password
+				if ("${passwordChangeFailed}" == "true") {
+					changePasswordErrors();
+				}
+
+				// This displays to the user their password has been changed
+				if ("${passwordChanged}" == "true") {
+					document.getElementById("passwordChangedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
 
 				// This adds bootstrap styling to tooltips
@@ -99,6 +109,66 @@
 				$("#loadingModal").modal("show");
 			}
             
+			// This function is called everytime a change occurs in the password textboxes to check if the entered passwords match
+			function passwordsMatchCheck() {
+				var password = document.getElementById("newPasswordTextBox").value;
+				var confirmedPassword = document.getElementById("confirmedNewPasswordTextBox").value;
+
+				// This checks if the entered passwords match
+				// If they don't match, this highlights the sign-up password textboxes so the user knows
+				// that the passwords don't match, as well as adding this error message to these textbox's
+				// tooltips, unhiding the error alert box that contains the error message and finally disabling
+				// the signUp button
+				if (password != confirmedPassword) {
+					document.getElementById("newPasswordTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("newPasswordTextBox").setAttribute("title", "Passwords must match");
+					document.getElementById("confirmedNewPasswordTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("confirmedNewPasswordTextBox").setAttribute("title", "Passwords must match");
+					document.getElementById("passwordMatchHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("changePasswordButton").disabled = true;
+				}
+				// If the passwords do match, this highlights the sign-up password textboxes are highlighted
+				// green to show the passwords do match, the error alert box that contains the error message
+				// "Passwords don't match" is set to hidden and finally enabling the signUp button
+				else {
+					document.getElementById("newPasswordTextBox").setAttribute("class", "form-control is-valid");
+					document.getElementById("newPasswordTextBox").setAttribute("title", "Enter a Password");
+					document.getElementById("confirmedNewPasswordTextBox").setAttribute("class", "form-control is-valid");
+					document.getElementById("confirmedNewPasswordTextBox").setAttribute("title", "Re-enter Password");
+					document.getElementById("passwordMatchHelp").setAttribute("class", "d-none");
+					document.getElementById("changePasswordButton").disabled = false;
+				}
+			}
+
+			function changePassword() {
+				var oldPassword = document.getElementById("oldPasswordTextBox").value;
+				var newPassword = document.getElementById("newPasswordTextBox").value;
+
+				window.location = "/changePassword/?email=${accountLoggedIn.email}&oldPassword=" + oldPassword + "&newPassword=" + newPassword;
+			}
+
+			// These will display any errors returned by the controller when changing a users password
+			function changePasswordErrors() {
+				// This displays that if the old password entered was incorrect
+				if ("${oldPasswordIncorrect}" == "true") {
+					document.getElementById("oldPasswordTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("oldPasswordTextBox").setAttribute("title", "${oldPasswordErrorMessage}");
+					document.getElementById("oldPasswordErrorHelp").setAttribute("class", "alert alert-danger");
+				}
+
+				// This displays that if there is a problem with the new password entered
+				if ("${newPasswordIncorrect}" == "true") {
+					document.getElementById("newPasswordTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("newPasswordTextBox").setAttribute("title", "${newPasswordErrorMessage}");
+					document.getElementById("confirmedNewPasswordTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("confirmedNewPasswordTextBox").setAttribute("title", "${newPasswordErrorMessage}");
+					document.getElementById("newPasswordErrorHelp").setAttribute("class", "alert alert-danger");
+				}
+
+				// This opens the changePasswordModal
+				$("#changePasswordModal").modal("show");
+			}
+
 			// This function is called everytime the delete account check box is clicked,
 			// and it disables and enables the deleteAccountButton depending on this
 			function checkDeleteAccount() {
@@ -108,13 +178,6 @@
 				else {
 					document.getElementById("deleteAccountButton").disabled = false;
 				}
-			}
-
-			// This calls the controller to change the set list name
-			function deleteAccount() {
-				var password = document.getElementById("passwordTextBox_DeleteAccount").value;
-
-				window.location = "/deleteAccount/?account=${accountLoggedIn.email}&password=" + password;
 			}
 
 		</script>
@@ -185,6 +248,12 @@
 					</button>
 				</div>
 			</nav>
+
+			<!-- This alert will be display when a password is changed -->
+			<div class="d-none" id="passwordChangedAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Password Changed Successfully</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
 		</div>
 		
 		<div class="container-fluid my-5">
@@ -199,7 +268,7 @@
                         <br>
                         <dt class="col-sm-4">Password:</dt>
                         <dd class="col-sm-4"></dd>
-                        <dd class="col-sm-4"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Password"><i class="fa fa-edit"></i> Change Password </a></dd>
+                        <dd class="col-sm-4"  data-bs-toggle="modal" data-bs-target="#changePasswordModal"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Password"><i class="fa fa-edit"></i> Change Password </a></dd>
                         <br>
                     </dl>
                 </h4>
@@ -240,22 +309,67 @@
                 </div>
             </div>
 
+			<!-- Modal to Change Password -->
+			<div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<form method="POST" id="changePasswordForm">
+							<div class="modal-body">
+								<div class="mb-3">
+									<!-- This is a hidden input that adds the users account to the form -->
+									<input type="hidden" id="emailInput_ChangePassword" name="email" value="${accountLoggedIn.email}" path="email"/>
+
+									<div class="mb-3">
+										<label>Password:</label>
+										<input type="password" class="form-control" id="oldPasswordTextBox" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password" path="password"/>
+									</div>
+									
+									<!-- This will output the error message returned to the user -->
+									<div id="oldPasswordErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${oldPasswordErrorMessage}</div>
+									
+									<div class="mb-3">
+										<label>New Password:</label>
+										<input oninput="passwordsMatchCheck()" type="password" class="form-control" id="newPasswordTextBox" placeholder="Enter New Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password" path="password"/>
+									</div>
+									<div class="mb-3">
+										<label>Confirm Password:</label>
+										<input oninput="passwordsMatchCheck()" type="password" class="form-control" id="confirmedNewPasswordTextBox" placeholder="Confirm New Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
+									</div>
+									
+									<!-- This is hidden and will be displayed to the user via the passwordsMatchCheck function if the entered passwords don't match -->
+									<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
+
+									<!-- This will output the error message returned to the user -->
+									<div id="newPasswordErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${newPasswordErrorMessage}</div>
+
+								</div>
+								<button type="button" id="changePasswordButton" class="btn btn-primary" style="width: 100%" onclick="changePassword()"> Change Password</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
 			<!-- Modal Delete Account -->
 			<div class="modal fade" id="deleteAccountModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="deleteAccountModal">Delete Account: "${accountLoggedIn.email}"</h5>
+							<h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
 						</div>
-						<form:form method="POST" id="editSetListModal" action="/deleteAccount" modelAttribute="account">
+						<form:form method="POST" id="deleteAccountForm" action="/deleteAccount" modelAttribute="account">
 							<div class="modal-body">
 								<div class="mb-3">
-									<h5>Are you sure you want to delete your account?</h5>
+									<h5><i class="fa fa-warning"></i> Are you sure you want to delete your account?</h5>
 									Once you delete your account it can not be recovered
 									<br>
 									<br>
 									<!-- This is a hidden input that adds the users account to the form -->
-									<form:input type="hidden" id="emailInput" name="email" value="${accountLoggedIn.email}" path="email"/>
+									<form:input type="hidden" id="emailInput_DeleteAccount" name="email" value="${accountLoggedIn.email}" path="email"/>
 
 									<div class="mb-3">
 										<label>Password:</label>

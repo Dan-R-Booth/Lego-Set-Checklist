@@ -659,7 +659,7 @@
 								<h5 class="modal-title" id="editSetListModalLabel_${set_list.setListId}">Edit Lego Set List Name</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
-							<form method="POST" id="editSetListModal_${set_list.setListId}">
+							<form method="POST" id="editSetListForm_${set_list.setListId}">
 								<div class="modal-body">
 									<div class="mb-3">
 										<h5> Set List: </h5>

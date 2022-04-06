@@ -55,7 +55,7 @@ public class AccountValidator implements Validator {
 		Account account = (Account) target;
 		String email = account.getEmail();
 		String password = account.getPassword();
-
+		
 		// This confirms if the entered email is blank or not and if it is returns an error message
 		ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
 		
@@ -64,14 +64,11 @@ public class AccountValidator implements Validator {
 		if (email.contains(" ")) {
 			errors.rejectValue("email", "email", "Email address connot contain spaces");
 		}
-		// Using RFC 5322
-		else if (email.equals("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
-			errors.rejectValue("email", "email", "Email address is invalid");
-		}
 
 		// This confirms if the entered password is blank or not and if it is returns an error message
-		ValidationUtils.rejectIfEmpty(errors, "password", "password", "Password cannot be blank");
-		
+		if (password.isEmpty()) {
+			ValidationUtils.rejectIfEmpty(errors, "password", "password", "Password cannot be blank");
+		}
 		
 		// If no errors have currently been found the following will run
 		if (errors.getAllErrors().isEmpty()) {

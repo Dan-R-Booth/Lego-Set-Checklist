@@ -118,6 +118,9 @@ public class DatabaseController {
 			// This is used so that the index page knows that the sign-up returned errors
 			redirectAttributes.addFlashAttribute("login_signUpErrors", "signUp");
 			
+			// This adds the email entered so it can be put back in the form
+			redirectAttributes.addFlashAttribute("emailEntered_signUpErrors", account.getEmail());
+			
 			// This redirects the user back to the index page
 			return "redirect:/";
 		}
@@ -138,7 +141,9 @@ public class DatabaseController {
 		// This is used so the JSP page knows to inform the user that they have successfully created
 		// an account and is added to redirectAttributes so it stays after the page redirect
 		redirectAttributes.addFlashAttribute("accountCreated", true);
-				
+		
+		redirectAttributes.addFlashAttribute("emailAccountCreated", account.getEmail());
+		
 		// This redirects the user back to the index page
 		return "redirect:/";
 	}
@@ -187,6 +192,9 @@ public class DatabaseController {
 			// This is used so that the index page knows that the login returned errors
 			redirectAttributes.addFlashAttribute("login_signUpErrors", "login");
 			
+			// This adds the email entered so it can be put back in the form
+			redirectAttributes.addFlashAttribute("emailEntered_loginErrors", account.getEmail());
+			
 			// This redirects the user back to the index page
 			return "redirect:/";
 		}
@@ -207,7 +215,7 @@ public class DatabaseController {
 	
 	// This deletes a users account, as long as the password entered matches the saved password
 	@PostMapping("/deleteAccount")
-	public String deleteAccount(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+	public String deleteAccount(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) {
 		// This creates an instance of the AccountValidator and calls the validateLogin function with
 		// an Account generated using email parsed and password entered in the delete account form.
 		// This function then checks if there are any errors with the accounts details and if there are
@@ -241,6 +249,81 @@ public class DatabaseController {
 		
 		// This redirects the user to the logout page
 		return "redirect:/logout";
+	}
+	
+	// This deletes a users account, as long as the password entered matches the saved password
+	@GetMapping("/changePassword")
+	public String changePassword(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String email, @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+		// This creates an instance of the AccountValidator and calls the validateLogin function with
+		// an Account generated using email parsed and password entered in the delete account form.
+		// This function then checks if there are any errors with the accounts details and if there are
+		// adds these to the BindingResult result
+		AccountValidator accountValidator = new AccountValidator(accountRepo);
+		
+		account = new Account(email, oldPassword);
+		
+		// I reuse the login validate because this checks the password is correct or blank
+		accountValidator.validateLogin(account, result);
+		
+		Boolean errors = false;
+		
+		// This function will run if there are any errors returned by the AccountValidator class
+		if (result.hasErrors()) {
+			errors = true;
+			
+			// This loop goes through all the errors comparing their error code with the certain
+			// error codes, so that the boolean values can be updated to show there is an error
+			// and adding this errors message to the model of that error code type 
+			for (ObjectError error : result.getAllErrors()) {
+				if (error.getCode().equals("password")) {
+					redirectAttributes.addFlashAttribute("oldPasswordErrorMessage", error.getDefaultMessage());
+				}
+				else if (error.getCode().equals("email_password")) {
+					// This is only password incorrect as email is added automatically
+					redirectAttributes.addFlashAttribute("oldPasswordErrorMessage", "Password incorrect");
+				}
+				System.out.println("\ncode: " + error.getCode() + "\nmessage: " + error.getDefaultMessage() + "\n");
+			}
+			// This is used so that the user knows that the password entered was incorrect
+			redirectAttributes.addFlashAttribute("oldPasswordIncorrect", true);
+		}
+		
+		// This checks that the password is not empty or contains no spaces, and if it is not empty
+		// or has spaces an error message is added reflecting this to the redirect
+		if (newPassword.isEmpty()) {
+			errors = true;
+			redirectAttributes.addFlashAttribute("newPasswordErrorMessage", "Password cannot be blank");
+			
+			// This is used so that the user knows that the new password entered was invalid
+			redirectAttributes.addFlashAttribute("newPasswordIncorrect", true);
+		}
+		else if (newPassword.contains(" ")) {
+			errors = true;
+			redirectAttributes.addFlashAttribute("newPasswordErrorMessage", "Password cannot contain spaces");
+
+			// This is used so that the user knows that the new password entered was invalid
+			redirectAttributes.addFlashAttribute("newPasswordIncorrect", true);
+		}
+		
+		if (errors == false) {
+			// This sets the new password and updates the account
+			// logged in and then saves the updated account to the
+			// database
+			account.setPassword(newPassword);
+			model.addAttribute("accountLoggedIn", account);
+			
+			accountRepo.save(account);
+			
+			// This is used so that the user knows that the password was changed
+			redirectAttributes.addFlashAttribute("passwordChanged", true);
+		}
+		else {
+			// This is used so that the user knows that the password was not changed
+			redirectAttributes.addFlashAttribute("passwordChangeFailed", true);
+		}
+		
+		// This redirects the user to the logout page
+		return "redirect:/profile";
 	}
 	
 	// This logs the user out of their account and returns them to the index page

@@ -61,6 +61,8 @@
 				if ("${accountCreated}" == "true") {
 					document.getElementById("accountCreatedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 					
+					document.getElementById("emailTextBox_Login").value = "${emailAccountCreated}";
+
 					// This opens the login_SignUp_Modal
 					$("#login_SignUp_Modal").modal("show");
 				}
@@ -423,7 +425,7 @@
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<form:input type="email" class="form-control" id="emailTextBox_Login" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
+												<form:input value="${emailEntered_loginErrors}" type="email" class="form-control" id="emailTextBox_Login" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
 											</div>
 												
 											<!-- This will output the error message returned to the user -->
@@ -457,7 +459,7 @@
 										<div class="container-fluid">
 											<div class="mb-3">
 												<label>Email:</label>
-												<form:input type="email" class="form-control" id="emailTextBox_SignUp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
+												<form:input value="${emailEntered_signUpErrors}" type="email" class="form-control" id="emailTextBox_SignUp" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address" path="email"/>
 											</div>
 
 											<div id="emailErrorHelp_SignUp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${emailErrorMessage_SignUp}</div>
@@ -468,11 +470,12 @@
 											</div>
 											<div class="mb-3">
 												<label>Confirm Password:</label>
-												<input oninput="passwordsMatchCheck()" type="password" class="form-control" id="confirmedPasswordTextBox_SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>  
+												<input oninput="passwordsMatchCheck()" type="password" class="form-control" id="confirmedPasswordTextBox_SignUp" placeholder="Confirm Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Re-enter Password"/>
 											</div>
 											
-											<!-- This is hidden and will be displayed to the user via the signUp function if the entered passwords don't match -->
+											<!-- This is hidden and will be displayed to the user via the passwordsMatchCheck function if the entered passwords don't match -->
 											<div id="passwordMatchHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Passwords must match</div>
+
 											<div id="passwordErrorHelp_SignUp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage_SignUp}</div>
 							
 											<button type="submit" value="SignUp" id="submitSignUp" class="btn btn-primary" style="width: 100%"> <i class="fa fa-user-plus"></i> Create an Account</button>
