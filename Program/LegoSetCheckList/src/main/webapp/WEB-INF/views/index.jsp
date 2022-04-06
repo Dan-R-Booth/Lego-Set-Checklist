@@ -363,7 +363,7 @@
 		
 		<div class="container-fluid mb-5">
 			<div id="loggedOutDiv" class="d-none">
-				<h2 class="pb-3">Welcome to the Lego Set Checklist</h2>
+				<h2 class="pb-3">Welcome to the Lego Set Checklist Creator</h2>
 				<div class="border border-3 border-dark p-3">
 					<h5>
 						The purpose of this website is to find a Lego Set and view all the pieces in this Lego set in a check list. Here you can tick the pieces off the list when building this set for the first time or again, or you could use it to check if you have right pieces to build set that you don't own.

@@ -45,7 +45,7 @@
 				if (screen.width < 350) {
 					document.getElementById("viewport").setAttribute("content", "width=350");
 				}
-
+				
 				// This adds bootstrap styling to tooltips
 				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
@@ -140,7 +140,17 @@
             <div class="col-8 m-5">
 				<h2 class="text-danger"><i class="fa fa-exclamation-circle"></i> Access Denied</h2>
                 <br>
-                <h5>You must be logged in to ${pageInfo}</h5>
+                <h5>You must be logged in to
+					<!-- This adds the information as to what page the user cannot access, and if this is not parsed in a standard message is displayed -->
+                	<c:choose>
+			  			<c:when test="${pageInfo != null}">
+				    		${pageInfo}
+				  		</c:when>
+						<c:otherwise>
+					    	access this page
+						</c:otherwise>
+					</c:choose>
+				</h5>
                 <br>
 				<button class="btn btn-outline-secondary btn-dark text-white" type="button" onclick="window.location = '/'" style="width: 75%"> RETURN TO HOME PAGE </button>
 			</div>

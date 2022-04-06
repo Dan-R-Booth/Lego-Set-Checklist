@@ -216,6 +216,12 @@ public class DatabaseController {
 	// This deletes a users account, as long as the password entered matches the saved password
 	@PostMapping("/deleteAccount")
 	public String deleteAccount(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) {
+		// If a user is not logged in this redirects the user to the access denied page
+		if (account == null) {
+			redirectAttributes.addFlashAttribute("pageInfo", "edit your account");
+			return "redirect:/accessDenied";
+		}
+		
 		// This creates an instance of the AccountValidator and calls the validateLogin function with
 		// an Account generated using email parsed and password entered in the delete account form.
 		// This function then checks if there are any errors with the accounts details and if there are
@@ -254,6 +260,12 @@ public class DatabaseController {
 	// This deletes a users account, as long as the password entered matches the saved password
 	@GetMapping("/changePassword")
 	public String changePassword(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String email, @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+		// If a user is not logged in this redirects the user to the access denied page
+		if (account == null) {
+			redirectAttributes.addFlashAttribute("pageInfo", "edit your account");
+			return "redirect:/accessDenied";
+		}
+		
 		// This creates an instance of the AccountValidator and calls the validateLogin function with
 		// an Account generated using email parsed and password entered in the delete account form.
 		// This function then checks if there are any errors with the accounts details and if there are
@@ -404,7 +416,7 @@ public class DatabaseController {
 	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes) {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
-			redirectAttributes.addFlashAttribute("pageName", "access the 'Sets In Progress' page");
+			redirectAttributes.addFlashAttribute("pageInfo", "access the 'Sets In Progress' page");
 			return "redirect:/accessDenied";
 		}
 		
@@ -608,7 +620,12 @@ public class DatabaseController {
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
 	@RequestMapping("/addSetToList/previousPage={previousPage}")
-	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, @RequestParam(required = false) String setListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+	public String addSetToList(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String set_number, @RequestParam(required = false) String setListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RestTemplate restTemplate, RedirectAttributes redirectAttributes) {
+		// If a user is not logged in this redirects the user to the access denied page
+		if (account == null) {
+			redirectAttributes.addFlashAttribute("pageInfo", "add a Lego Set to a Set List");
+			return "redirect:/accessDenied";
+		}
 		
 		// This gets a list of sets belong to the logged in user
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
@@ -731,7 +748,13 @@ public class DatabaseController {
 
 	// This create a new set list for a logged in user, using the entered list name
 	@RequestMapping("/addNewSetList/previousPage={previousPage}")
-	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, @RequestParam(required = false) String currentSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
+	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, @RequestParam(required = false) String currentSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
+		// If a user is not logged in this redirects the user to the access denied page
+		if (account == null) {
+			redirectAttributes.addFlashAttribute("pageInfo", "create a new Set List");
+			return "redirect:/accessDenied";
+		}
+		
 		// This creates a set_list with the name submitted for the new user with
 		// an empty list of sets and saves list to the database table SetLists
 		List<SetInSetList> setsInSetList = new ArrayList<>();
@@ -785,7 +808,7 @@ public class DatabaseController {
 	public String deleteSetFromSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
-			redirectAttributes.addFlashAttribute("pageName", "access the 'Sets In Progress' page");
+			redirectAttributes.addFlashAttribute("pageInfo", "delete a Lego Set from Sets In Progress");
 			return "redirect:/accessDenied";
 		}
 		
@@ -812,7 +835,7 @@ public class DatabaseController {
 	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
-			redirectAttributes.addFlashAttribute("pageName", "delete a Set List");
+			redirectAttributes.addFlashAttribute("pageInfo", "delete a Set List");
 			return "redirect:/accessDenied";
 		}
 		
@@ -841,7 +864,7 @@ public class DatabaseController {
 	public String deleteSetFromSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {		
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
-			redirectAttributes.addFlashAttribute("pageName", "view Set Lists");
+			redirectAttributes.addFlashAttribute("pageInfo", "delete a Lego Set from a Set List");
 			return "redirect:/accessDenied";
 		}
 		
@@ -877,7 +900,7 @@ public class DatabaseController {
 	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
-			redirectAttributes.addFlashAttribute("pageName", "edit a Set List");
+			redirectAttributes.addFlashAttribute("pageInfo", "edit a Set List");
 			return "redirect:/accessDenied";
 		}
 		
