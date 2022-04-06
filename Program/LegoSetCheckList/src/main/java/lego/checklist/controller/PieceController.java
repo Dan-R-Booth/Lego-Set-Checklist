@@ -73,7 +73,7 @@ public class PieceController {
 	private PieceFoundRepository pieceFoundRepo;
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, @RequestParam(required = false) Boolean hidePiecesNotFound) {
+	public String showPieces(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, @RequestParam(required = false) Boolean hidePiecesNotFound, @RequestParam(required = false) Boolean changesMade) {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
@@ -203,6 +203,11 @@ public class PieceController {
 		// If the boolean hidePiecesNotFound is parsed into the controller this adds it to the model
 		if (hidePiecesNotFound != null) {
 			model.addAttribute("hidePiecesNotFound", hidePiecesNotFound);
+		}
+		
+		// If the boolean changesMade is parsed into the controller this adds it to the model
+		if (changesMade != null) {
+			model.addAttribute("changesMade", changesMade);
 		}
 		
 		// This calls a function that adds all the colours to a list that is used to display options to filter the list by colours

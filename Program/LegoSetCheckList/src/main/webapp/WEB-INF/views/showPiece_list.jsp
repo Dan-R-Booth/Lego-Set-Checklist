@@ -43,6 +43,9 @@
 			// This is a global array used to store the dvi id of all pieces that are spares so they can be identified when filtering a list
 			var sparePieceList = [];
 		
+			// This used to monitor when changes are made to the checklist without saving
+			var changesMade = false;
+
 			// This does setup for the page when it is first loaded
 			function setup() {
 				// This sets a minimum size the page will adpat to until it will just zoom out,
@@ -84,12 +87,19 @@
 
 				// If the account logged in is not set, the login/SignUp link is displayed enabling users to log in
 				// Otherwise the logout link is displayed allowing users to logout of their account
-				if("${accountLoggedIn}" == "") {
+				if ("${accountLoggedIn}" == "") {
 					document.getElementById("login/signUpLink").setAttribute("class", "nav-link");
 				}
 				else {
 					document.getElementById("logoutLink").setAttribute("class", "nav-link");
 					document.getElementById("saveLink").setAttribute("class", "nav-link");
+				}
+
+				// This sets the changesMade variable to true if it is parsed,
+				// if it is parsed in as false this does nothing as it is preset
+				// as false already
+				if ("${changesMade}" == "true") {
+					changesMade = true;
 				}
 
 				// This adds bootstrap styling to tooltips
@@ -248,6 +258,8 @@
 				var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 				quantityChecked --;
 					
+				changesMade = true;
+
 				 if (quantityChecked == 0) {
 					document.getElementById("decreaseQuantityCheckedButton_" + id).disabled = true;
 				}
@@ -269,6 +281,8 @@
 				var quantityChecked = document.getElementById("piece_quantity_checked_" + id).value;
 				quantityChecked ++;
 				
+				changesMade = true;
+
 				 document.getElementById("decreaseQuantityCheckedButton_" + id).disabled = false;
 				 if (quantityChecked == quantity) {
 					document.getElementById("increaseQuantityCheckedButton_" + id).disabled = true;
@@ -330,6 +344,8 @@
 			function saveProgress() {
 				var array = getQuantityChecked();
 				
+				changesMade = false;
+
 				$.post("/set/${set.num}/pieces/save/?" + "quantityChecked=" + array);
 
 				// This displays an alert bar informing the user the checklist has been saved
@@ -434,7 +450,7 @@
 
 				openLoader();
 
-				window.location = "/set/${set_number}/pieces/?sort=" + sort + "&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound + hidePiecesNotFound;
+				window.location = "/set/${set_number}/pieces/?sort=" + sort + "&quantityChecked=" + array + colourFilter + pieceTypeFilter + hidePiecesFound + hidePiecesNotFound + "&changesMade=" + changesMade;
 			}
 
 			// This filters the list by piece types and colours the user would like to view
@@ -610,16 +626,16 @@
 				return pieceTypeFilter;
 			}
 
-			// This function will return the user to the search page with the same filters and sorts they last had active
+			// This function will return the link to the search page with the same filters and sorts the user last had active
 			// and if they haven't been to the search page, to the default unfilter and sorted page
 			function backToSearch() {
 				openLoader();
 
 				if ("${searchURL}" != "") {
-					window.location = "${searchURL}";
+					return "${searchURL}";
 				}
 				else {
-					window.location = "/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
+					return "/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
 				}
 			}
 
@@ -681,6 +697,59 @@
 				$("#loadingModal").modal("show");
 			}
 
+			// This runs when a user tries to leave the page. If they are logged in and the list changes have
+			// not been saved a popup opens asking if they want to leave without saving or save and leave
+			function confirmLeavePage(link) {
+				if("${accountLoggedIn}" == "" || changesMade == false) {
+					openLoader()
+					window.location = link;
+				}
+				else {
+					document.getElementById("leaveWithoutSavingButton").setAttribute("onclick", "exit('" + link + "')");
+					document.getElementById("saveAndLeaveButton").setAttribute("onclick", "saveAndExit('" + link + "')");
+	
+					$("#leavePageModal").modal("show");
+				}
+			}
+
+			// This opens the loader before using the inputed link
+			function exit(link) {
+				openLoader()
+				window.location = link;
+			}
+
+			// This saves the checklist progress and opens the loader before using the inputed link
+			function saveAndExit(link) {
+				saveProgress();
+				openLoader()
+
+				// This waits for 2 seconds before using the link, as if the user is saving
+				// and logging out the save must be completed before the logout request
+				setTimeout(window.location = link, 2000);
+			}
+
+			// When the user clicks the logout button this opens the correct model
+			// depending on if there have been changes to the checklist
+			function logout() {
+				if (changesMade == false) {
+					$("#logoutModal").modal("show");
+				}
+				else {
+					$("#logoutSavingModal").modal("show");
+				}
+			}
+
+			// When the user clicks the import button this opens the correct model
+			// depending on if there have been changes to the checklist
+			function openImportPopup() {
+				if ("${accountLoggedIn}" == "" || changesMade == false) {
+					$("#importModal").modal("show");
+				}
+				else {
+					$("#confirmImportModal").modal("show");
+				}
+			}
+
 		</script>
 		
 	</head>
@@ -703,10 +772,10 @@
 								<a class="nav-link" style="cursor: pointer;" onclick="exportList()"> <i class="fa fa-download"></i> Export Checklist</a>
 							</li>
 							<li class="nav-item mx-5">
-								<a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="fa fa-upload"></i> Import Checklist</a>
+								<a class="nav-link" style="cursor: pointer;" onclick="openImportPopup()"> <i class="fa fa-upload"></i> Import Checklist</a>
 							</li>
 							<li class="nav-item mx-5">
-								<a class="nav-link" href="/set?set_number=${set.num}"> <i class="fa fa-arrow-left"></i> Return to Set View</a>
+								<a class="nav-link" style="cursor: pointer;" onclick="confirmLeavePage('/set?set_number=${set.num}')"> <i class="fa fa-arrow-left"></i> Return to Set View</a>
 							</li>
 						</ul>
 						<ul class="navbar-nav">
@@ -714,7 +783,7 @@
 								<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 							<li class="nav-item ms-5">
-								<a class="d-none" id="logoutLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#logoutModal"> <i class="fa fa-sign-out"></i> Logout</a>
+								<a class="d-none" id="logoutLink" style="cursor: pointer;" onclick="logout()"> <i class="fa fa-sign-out"></i> Logout</a>
 							</li>
 						</ul>
 					</div>
@@ -861,33 +930,6 @@
 					<div class="modal-body">
 						<img src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 100%">
 					</div>
-				</div>
-			</div>
-		</div>
-		
-		<!-- Modal to Import a Lego Checklist -->
-		<div class="modal fade" id="importModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="importModalLabel">Import Lego Set Checklist</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<form method="POST" id="importForm" action="/openImport" enctype="multipart/form-data">
-						<div class="modal-body">
-							<div class="mb-3">
-								<label for="importFile" class="form-label">Choose a CSV file containing a saved checklist to import</label>
-								<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv" required/>
-							</div>
-
-							<div id="importFileNoneHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Please select a CSV file to upload.</div>
-							<div id="importFileErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${message}</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-							<button type="button" id="importFileButton" class="btn btn-primary" onclick="importCSVFile()"> <i class="fa fa-upload"></i> Import </button>
-						</div>
-					</form>
 				</div>
 			</div>
 		</div>
@@ -1049,6 +1091,113 @@
 			</c:forEach>
 		</div>
 
+		<!-- Modal to confirm logout -->
+        <div class="modal fade" id="logoutModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fa fa-sign-out"></i> Logout</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Are you sure you want to logout?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+						<button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="exit('/logout')"><i class="fa fa-sign-out"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- Modal to confirm logout with/withoutSaving -->
+        <div class="modal fade" id="logoutSavingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="logoutSavingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fa fa-sign-out"></i> Logout</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Are you sure you want to logout?</h5>
+						<div class="alert alert-warning"><i class="fa fa-warning"></i> Any Changes Not Saved will be lost</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+						<button type="button" class="btn btn-secondary" style="cursor: pointer;" onclick="saveAndExit('/logout')"><i class="fa fa-save"></i> Save & Logout</button>
+						<button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="exit('/logout')"><i class="fa fa-sign-out"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- Modal to confirm leaving the page -->
+		<div class="modal fade" id="leavePageModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="leavePageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Exit</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to leave without saving your changes? </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+						<button type="button" class="btn btn-secondary" id="saveAndLeaveButton" style="cursor: pointer;"><i class="fa fa-save"></i> Save & Exit</button>
+						<button type="button" class="btn btn-primary" id="leaveWithoutSavingButton" style="cursor: pointer;">Exit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- Modal to ask the user if they want to save before importing -->
+		<div class="modal fade" id="confirmImportModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="confirmImportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Save Changes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Do you want to save your changes before importing? </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+						<button type="button" class="btn btn-secondary" id="saveAndImportButton" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#importModal" onclick="saveProgress()" data-bs-dismiss="modal"><i class="fa fa-save"></i> Save & Import</button>
+						<button type="button" class="btn btn-primary" id="importWithoutSavingButton" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#importModal" data-bs-dismiss="modal">Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- Modal to Import a Lego Checklist -->
+		<div class="modal fade" id="importModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="importModalLabel">Import Lego Set Checklist</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<form method="POST" id="importForm" action="/openImport" enctype="multipart/form-data">
+						<div class="modal-body">
+							<div class="mb-3">
+								<label for="importFile" class="form-label">Choose a CSV file containing a saved checklist to import</label>
+								<input class="form-control" type="file" id="importFile" name="importFile" accept=".csv" required/>
+							</div>
+
+							<div id="importFileNoneHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> Please select a CSV file to upload.</div>
+							<div id="importFileErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${message}</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<button type="button" id="importFileButton" class="btn btn-primary" onclick="importCSVFile()"> <i class="fa fa-upload"></i> Import </button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
 		<!-- Modal to show loading -->
 		<div class="modal fade" id="loadingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
@@ -1063,31 +1212,12 @@
 			</div>
 		</div>
 
-		<!-- Modal to confirm logout -->
-        <div class="modal fade" id="logoutModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="fa fa-sign-out"></i> Logout</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to logout? </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
-						<button type="button" class="btn btn-primary" style="cursor: pointer;" onclick="window.location.href='/logout'"><i class="fa fa-sign-out"></i> Logout</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
 			<div class="container-fluid">
 	            <ol class="breadcrumb bg-dark">
-	                <li class="breadcrumb-item"><a href="/">Home</a></li>
-	                <li class="breadcrumb-item"><a href="#" onclick="backToSearch()">Search</a></li>
-	                <li class="breadcrumb-item"><a href="/set?set_number=${set.num}">Set</a></li>
+	                <li class="breadcrumb-item"><a href="#" onclick="confirmLeavePage('/')">Home</a></li>
+	                <li class="breadcrumb-item"><a href="#" onclick="confirmLeavePage(backToSearch())">Search</a></li>
+	                <li class="breadcrumb-item"><a href="#" onclick="confirmLeavePage('/set?set_number=${set.num}')">Set</a></li>
 	                <li class="breadcrumb-item text-white" aria-current="page">Pieces</li>
 	            </ol>
 		    </div>
