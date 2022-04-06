@@ -46,6 +46,16 @@
 					document.getElementById("viewport").setAttribute("content", "width=350");
 				}
 
+				// This displays that if a set has been deleted from the list
+				if ("${passwordIncorrect}" == "true") {
+					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("class", "form-control is-invalid");
+					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("title", "${passwordErrorMessage_Login}");
+					document.getElementById("passwordErrorHelp").setAttribute("class", "alert alert-danger");
+
+					// This opens the addSetToListModal
+					$("#deleteAccountModal").modal("show");
+				}
+
 				// This adds bootstrap styling to tooltips
 				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
@@ -89,6 +99,24 @@
 				$("#loadingModal").modal("show");
 			}
             
+			// This function is called everytime the delete account check box is clicked,
+			// and it disables and enables the deleteAccountButton depending on this
+			function checkDeleteAccount() {
+				if (document.getElementById("confirmDeleteAccount").checked == false) {
+					document.getElementById("deleteAccountButton").disabled = true;
+				}
+				else {
+					document.getElementById("deleteAccountButton").disabled = false;
+				}
+			}
+
+			// This calls the controller to change the set list name
+			function deleteAccount() {
+				var password = document.getElementById("passwordTextBox_DeleteAccount").value;
+
+				window.location = "/deleteAccount/?account=${accountLoggedIn.email}&password=" + password;
+			}
+
 		</script>
 
 	</head>
@@ -176,7 +204,7 @@
                     </dl>
                 </h4>
                 <hr>
-                <h5><u class="text-danger" onclick="deleteAccount()" style="cursor: pointer;"> Delete your account</u></h5>
+                <h5><u class="text-danger" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteAccountModal"> Delete your account</u></h5>
             </div>
 
 			<!-- Modal to show loading -->
@@ -211,6 +239,47 @@
                     </div>
                 </div>
             </div>
+
+			<!-- Modal Delete Account -->
+			<div class="modal fade" id="deleteAccountModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="deleteAccountModal">Delete Account: "${accountLoggedIn.email}"</h5>
+						</div>
+						<form:form method="POST" id="editSetListModal" action="/deleteAccount" modelAttribute="account">
+							<div class="modal-body">
+								<div class="mb-3">
+									<h5>Are you sure you want to delete your account?</h5>
+									Once you delete your account it can not be recovered
+									<br>
+									<br>
+									<!-- This is a hidden input that adds the users account to the form -->
+									<form:input type="hidden" id="emailInput" name="email" value="${accountLoggedIn.email}" path="email"/>
+
+									<div class="mb-3">
+										<label>Password:</label>
+										<form:input type="password" class="form-control" id="passwordTextBox_DeleteAccount" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password" path="password"/>
+									</div>
+
+									<!-- This will output the error message returned to the user -->
+									<div id="passwordErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage}</div>
+									<br>
+									<!-- This is used so the user has to confirm they want to delete their account -->
+									<div class="form-check fw-bold">
+										<input class="form-check-input" type="checkbox" id="confirmDeleteAccount" onclick="checkDeleteAccount()">
+										<label class="form-check-label" for="confirmDeleteAccount">Ticking this box I understand that in deleting my account none of my data can be recovered</label>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+								<button type="submit" id="deleteAccountButton" class="btn btn-primary" disabled><i class="fa fa-trash"></i> Delete Account</button>
+							</div>
+						</form:form>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
@@ -219,7 +288,4 @@
 	                <li class="breadcrumb-item"><a href="/">Home</a></li>
 	                <li class="breadcrumb-item text-white" aria-current="page">Profile</li>
 	            </ol>
-		    </div>
-		</nav>
-	</body>
-</html>
+		    </div

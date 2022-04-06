@@ -31,6 +31,7 @@ public class Set_list {
 	private String listName;
 	
 	@OneToMany(mappedBy = "listOfSets", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<SetInSetList> setsInSetList;
 	
 	@Column(nullable = false)

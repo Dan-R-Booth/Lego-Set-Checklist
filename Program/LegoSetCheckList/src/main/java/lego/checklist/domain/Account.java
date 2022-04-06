@@ -3,6 +3,7 @@ package lego.checklist.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,6 +14,9 @@ public class Account {
 	
 	@Column(nullable = false)
 	private String password;
+	
+	@OneToOne(mappedBy = "account")
+	private SetsOwnedList setsOwnedList;
 	
 	public Account() {}
 	

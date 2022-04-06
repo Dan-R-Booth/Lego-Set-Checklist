@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,16 +37,26 @@ import lego.checklist.domain.Set;
 import lego.checklist.domain.SetInProgress;
 import lego.checklist.domain.SetInSetList;
 import lego.checklist.domain.Set_list;
+import lego.checklist.domain.SetsOwnedList;
 import lego.checklist.domain.Theme;
+import lego.checklist.repository.AccountRepository;
 import lego.checklist.repository.PieceFoundRepository;
 import lego.checklist.repository.SetInProgressRepository;
 import lego.checklist.repository.SetInSetListRepository;
 import lego.checklist.repository.SetInfoRepository;
 import lego.checklist.repository.Set_listRepository;
+import lego.checklist.repository.SetsOwnedListRepository;
+import lego.checklist.validator.AccountValidator;
 
 @Controller
 @SessionAttributes({"accountLoggedIn", "set_lists"})
 public class DatabaseController {
+	
+	@Autowired
+	private AccountRepository accountRepo;
+
+	@Autowired
+	private SetsOwnedListRepository setsOwnedListRepo;
 	
 	@Autowired
 	private Set_listRepository set_listRepo;
@@ -64,6 +78,433 @@ public class DatabaseController {
 	
 	// The api key used to access the Rebrickable api
 	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	
+	// This will create an new account for a user, as long as the entered details are valid
+	@PostMapping("/signUp")
+	public String signUp(@ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) {
+		// This creates an instance of the AccountValidator and calls the validate function
+		// with an Account generated using values entered in the signUp form. This function
+		// then checks if there are any errors with the accounts details and if there are
+		// adds these to the BindingResult result
+		AccountValidator accountValidator = new AccountValidator(accountRepo);
+		accountValidator.validate(account, result);
+		
+		// This function will run if there are any errors returned by the AccountValidator class
+		if (result.hasErrors()) {			
+			// This are used and added to the model so the JSP knows where the error occurs
+			boolean emailValid = true;
+			boolean passwordValid = true;
+			
+			// This loop goes through all the errors comparing their error code with the certain
+			// error codes, so that the boolean values can be updated to show there is an error
+			// and adding this errors message to the redirectAttributes so they stays after the
+			// page redirect
+			for (ObjectError error : result.getAllErrors()) {
+				if (error.getCode().equals("email")) {
+					emailValid = false;
+					redirectAttributes.addFlashAttribute("emailErrorMessage_SignUp", error.getDefaultMessage());
+				}
+				else if (error.getCode().equals("password")) {
+					passwordValid = false;
+					System.out.println(error.getDefaultMessage());
+					redirectAttributes.addFlashAttribute("passwordErrorMessage_SignUp", error.getDefaultMessage());
+				}
+			}
+			
+			// These added to redirectAttributes so it stays after the page redirect
+			redirectAttributes.addFlashAttribute("emailValid_SignUp", emailValid);
+			redirectAttributes.addFlashAttribute("passwordValid_SignUp", passwordValid);
+			
+			// This is used so that the index page knows that the sign-up returned errors
+			redirectAttributes.addFlashAttribute("login_signUpErrors", "signUp");
+			
+			// This redirects the user back to the index page
+			return "redirect:/";
+		}
+		// This adds the created account to the database table Accounts
+		accountRepo.save(account);
+		
+		// This creates a set_list called setsOwnedList for the new user with
+		// an empty list of sets and saves list to the database table SetLists
+		List<SetInSetList> setsInSetList = new ArrayList<>();
+		Set_list set_list = new Set_list(account, "Sets Owned List", setsInSetList, setsInSetList.size());
+		set_listRepo.save(set_list);
+		
+		// This then creates a setsOwnedList with the new set_list
+		// and saves this to the database table setsOwnedLists
+		SetsOwnedList setsOwnedList = new SetsOwnedList(set_list, account);
+		setsOwnedListRepo.save(setsOwnedList);
+		
+		// This is used so the JSP page knows to inform the user that they have successfully created
+		// an account and is added to redirectAttributes so it stays after the page redirect
+		redirectAttributes.addFlashAttribute("accountCreated", true);
+				
+		// This redirects the user back to the index page
+		return "redirect:/";
+	}
+	
+	// This will sign a user into their account, as long as the entered details are valid
+	@PostMapping("/login")
+	public String login(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+		// This creates an instance of the AccountValidator and calls the validateLogin function
+		// with an Account generated using values entered in the login form. This function
+		// then checks if there are any errors with the accounts details and if there are
+		// adds these to the BindingResult result
+		AccountValidator accountValidator = new AccountValidator(accountRepo);
+		accountValidator.validateLogin(account, result);
+		
+		// This function will run if there are any errors returned by the AccountValidator class
+		if (result.hasErrors()) {
+			// This are used and added to the model so the JSP knows where the error occurs
+			boolean emailValid = true;
+			boolean passwordValid = true;
+			boolean email_passwordValid = true;
+			
+			// This loop goes through all the errors comparing their error code with the certain
+			// error codes, so that the boolean values can be updated to show there is an error
+			// and adding this errors message to the redirectAttributes so they stays after the
+			// page redirect
+			for (ObjectError error : result.getAllErrors()) {
+				if (error.getCode().equals("email")) {
+					emailValid = false;
+					redirectAttributes.addFlashAttribute("emailErrorMessage_Login", error.getDefaultMessage());
+				}
+				else if (error.getCode().equals("password")) {
+					passwordValid = false;
+					redirectAttributes.addFlashAttribute("passwordErrorMessage_Login", error.getDefaultMessage());
+				}
+				else if (error.getCode().equals("email_password")) {
+					email_passwordValid = false;
+					redirectAttributes.addFlashAttribute("email_passwordErrorMessage", error.getDefaultMessage());
+				}
+			}
+			
+			// These added to redirectAttributes so it stays after the page redirect
+			redirectAttributes.addFlashAttribute("emailValid_Login", emailValid);
+			redirectAttributes.addFlashAttribute("passwordValid_Login", passwordValid);
+			redirectAttributes.addFlashAttribute("email_passwordValid", email_passwordValid);
+			
+			// This is used so that the index page knows that the login returned errors
+			redirectAttributes.addFlashAttribute("login_signUpErrors", "login");
+			
+			// This redirects the user back to the index page
+			return "redirect:/";
+		}
+		
+		// This is used so the JSP page knows to inform the user that they have been
+		// logged in and is added to redirectAttributes so it stays after the page redirect
+		redirectAttributes.addFlashAttribute("loggedIn", true);
+		
+		model.addAttribute("accountLoggedIn", account);
+		
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
+		
+		// This redirects the user back to the index page
+		return "redirect:/";
+	}
+	
+	// This deletes a users account, as long as the password entered matches the saved password
+	@PostMapping("/deleteAccount")
+	public String deleteAccount(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+		// This creates an instance of the AccountValidator and calls the validateLogin function with
+		// an Account generated using email parsed and password entered in the delete account form.
+		// This function then checks if there are any errors with the accounts details and if there are
+		// adds these to the BindingResult result
+		AccountValidator accountValidator = new AccountValidator(accountRepo);
+		// I reuse the login validate because this checks the password is correct or blank
+		accountValidator.validateLogin(account, result);
+		
+		// This function will run if there are any errors returned by the AccountValidator class
+		if (result.hasErrors()) {
+			
+			// This loop goes through all the errors comparing their error code with the certain
+			// error codes, so that the boolean values can be updated to show there is an error
+			// and adding this errors message to the model of that error code type 
+			for (ObjectError error : result.getAllErrors()) {
+				if (error.getCode().equals("password")) {
+					redirectAttributes.addFlashAttribute("passwordErrorMessage", error.getDefaultMessage());
+				}
+				else if (error.getCode().equals("email_password")) {
+					// This is only password incorrect as email is added automatically
+					redirectAttributes.addFlashAttribute("passwordErrorMessage", "Password incorrect");
+				}
+			}
+			// This is used so that the user knows that the password entered was incorrect
+			redirectAttributes.addFlashAttribute("passwordIncorrect", true);
+			
+			return "redirect:/profile";
+		}
+		
+		accountRepo.delete(account);
+		
+		// This redirects the user to the logout page
+		return "redirect:/logout";
+	}
+	
+	// This logs the user out of their account and returns them to the index page
+	@GetMapping("/logout")
+	public String logout(SessionStatus status) {
+		// This removes the Session attributes accountLogedIn, and Set_lists thus logging the user out of their account
+		status.setComplete();
+		
+		removeUnneededSetInfo();
+		
+		// This redirects the user back to the index page
+		return "redirect:/";
+	}
+	
+	@GetMapping("/profile")
+	public String viewProfile(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn) {
+		// This adds the a new account class that will be used by the form to delete an account
+		model.addAttribute("account", new Account());
+		
+		return "profile";
+	}
+	
+	// This saves the progress on a set piece checklist to the database
+	@PostMapping("/set/{set_number}/pieces/save")
+	@ResponseBody
+	public void saveChecklist(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable String set_number, @SessionAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) {
+		// This gets all the pieces in a Lego Set
+		List<Piece> piece_list = set.getPiece_list();
+		
+		// This updates the quantity checked for each piece in the Lego set
+		for (int i = 0; i < piece_list.size(); i++) {
+			Piece piece = piece_list.get(i);
+			piece.setQuantity_checked(quantityChecked.get(i));
+		}
+    	
+    	// This then creates a setsOwnedList with the new set_list
+		// and saves this to the database table setsOwnedLists
+    	SetInProgress setInProgress = new SetInProgress(account, set);
+    	
+    	// This checks if the set being added to a list already has its info saved to the database,
+		// and if it does not this adds that sets information to the database table SetInfo
+    	if (setInfoRepo.findByNum(set_number) == null) {
+    		setInfoRepo.save(set);
+    	}
+    	
+		// If the user already has saved the set to the database, this sets the set saved
+		// in the database table to setInProgress, and then deletes all the pieces saved
+		// in the database so that these can then be replaced with the new updated pieces
+		// Otherwise a new setInProgress is saved to the database
+		if (setInProgessRepo.findByAccountAndSet(account, set) != null) {
+			setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
+			pieceFoundRepo.deleteBySetInProgress(setInProgress);
+		}
+		else {
+			setInProgessRepo.save(setInProgress);
+		}
+    	
+    	// For each piece in the Lego set if its quantity is above zero, this adds a piece's number, colour name
+		// and if its a spare as a line to the database with the setInProgress, as these values uniquely identity
+    	// each Lego piece and which setInProgress they belong to and thus user
+    	for (Piece piece : piece_list) {
+    		if (piece.getQuantity_checked() != 0) {
+    			PieceFound pieceFound = new PieceFound(setInProgress, piece.getNum(), piece.getColour_name(), piece.isSpare(), piece.getQuantity_checked());
+    			pieceFoundRepo.save(pieceFound);
+    		}
+    	}
+	}
+	
+	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
+	@GetMapping("/setsInProgress")
+	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
+		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
+		model.addAttribute("setsInProgressUrl", url);
+		
+		List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
+		
+		// This is used so that if the filter or sort bar was open or no bar was open on the search page
+		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+		model.addAttribute("barOpen", barOpen);
+		
+		// If their is a sort to be applied to the Sets in Progress, then the following is ran to apply this sort
+		// (by default if no sort entered will be sorted by set_number ascending)
+		// -- Start of Sort --
+		if (sort == null) {
+			sort = "set_num";
+		}
+		
+		String[] sorts = sort.split(",");
+		
+		model.addAttribute("sort1", sorts[0]);
+		if (sorts.length >= 2) {
+			model.addAttribute("sort2", sorts[1]);
+		}
+		
+		if (sorts.length == 3) {
+			model.addAttribute("sort3", sorts[2]);
+		}
+		
+		// This sorts the sets in progress by the sorts selected, it compares each set in the list
+		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists)
+		// and if they match again sort 3 (if exists). This calls a function to do the comparison
+		// of each Set and the sort in use too
+		Collections.sort(setsInProgress, new Comparator<SetInProgress>() {
+			@Override
+			public int compare(SetInProgress setInProgress1, SetInProgress setInProgress2) {
+				int sortValue = getSortValue(sorts[0], setInProgress1.getSet(), setInProgress2.getSet());
+				
+				if (sortValue == 0 && sorts.length >= 2) {
+					sortValue = getSortValue(sorts[1], setInProgress1.getSet(), setInProgress2.getSet());
+				}
+				
+				if (sortValue == 0 && sorts.length == 3) {
+					sortValue = getSortValue(sorts[2], setInProgress1.getSet(), setInProgress2.getSet());
+				}
+				
+				return sortValue;
+			}
+		});
+		// -- End of Sort --
+		
+		// If there is a text search being parsed this will add it to the model
+		if (searchText != null) {
+			model.addAttribute("searchText", searchText);
+		}
+		
+		// If there is a min year being parsed this will add it to the model
+		if (minYear != null) {
+			model.addAttribute("minYear", minYear);
+		}
+		
+		// If there is a max year being parsed this will add it to the model
+		if (maxYear != null) {
+			model.addAttribute("maxYear", maxYear);
+		}
+		
+		// If there is a minimum number of pieces being parsed this will add it to the model
+		if (minPieces != null){
+			model.addAttribute("minPieces", minPieces);
+		}
+		
+		// If there is a maximum number of pieces being parsed this will add it to the model
+		if (maxPieces != null) {
+			model.addAttribute("maxPieces", maxPieces);
+		}
+		
+		// If there is a theme_id being parsed this will add it to the model
+		if (filteredTheme_name != null) {
+			model.addAttribute("theme_name", filteredTheme_name);
+		}
+		
+		List<Set> sets = new ArrayList<>();
+		
+		// This gets all the set info for all the sets the user has in progress
+		for (SetInProgress setInProgress : setsInProgress) {
+			Set set = setInProgress.getSet();
+			sets.add(set);
+		}
+		
+		model.addAttribute("sets", sets);
+		model.addAttribute("themeList", ThemeController.themeList);
+		model.addAttribute("num_sets", sets.size());
+		
+		return "showSetsInProgress";
+	}
+	
+	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
+	@GetMapping("/set_list={listName}")
+	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name) {
+		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
+		List<SetInSetList> setsInSetList = set_list.getSets();
+		
+		// This is used so that if the filter or sort bar was open or no bar was open on the search page
+		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+		model.addAttribute("barOpen", barOpen);
+		
+		// If their is a sort to be applied to the Set List, then the following is ran to apply this sort
+		// (by default if no sort entered will be sorted by set_number ascending)
+		// -- Start of Sort --
+		if (sort == null) {
+			sort = "set_num";
+		}
+		String[] sorts = sort.split(",");
+		
+		model.addAttribute("sort1", sorts[0]);
+		if (sorts.length >= 2) {
+			model.addAttribute("sort2", sorts[1]);
+		}
+		
+		if (sorts.length == 3) {
+			model.addAttribute("sort3", sorts[2]);
+		}
+		
+		// This sorts the list of sets by the sorts selected, it compares each set in the list
+		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists)
+		// and if they match again sort 3 (if exists). This calls a function to do the comparison
+		// of each Set and ther sort in use too
+		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
+			@Override
+			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
+				int sortValue = getSortValue(sorts[0], setInSetList1.getSet(), setInSetList2.getSet());
+				
+				if (sortValue == 0 && sorts.length >= 2) {
+					sortValue = getSortValue(sorts[1], setInSetList1.getSet(), setInSetList2.getSet());
+				}
+				
+				if (sortValue == 0 && sorts.length == 3) {
+					sortValue = getSortValue(sorts[2], setInSetList1.getSet(), setInSetList2.getSet());
+				}
+				
+				return sortValue;
+			}
+		});
+		// -- End of Sort --
+		
+		// If there is a text search being parsed this will add it to the model
+		if (searchText != null) {
+			model.addAttribute("searchText", searchText);
+		}
+		
+		// If there is a min year being parsed this will add it to the model
+		if (minYear != null) {
+			model.addAttribute("minYear", minYear);
+		}
+		
+		// If there is a max year being parsed this will add it to the model
+		if (maxYear != null) {
+			model.addAttribute("maxYear", maxYear);
+		}
+		
+		// If there is a minimum number of pieces being parsed this will add it to the model
+		if (minPieces != null){
+			model.addAttribute("minPieces", minPieces);
+		}
+		
+		// If there is a maximum number of pieces being parsed this will add it to the model
+		if (maxPieces != null) {
+			model.addAttribute("maxPieces", maxPieces);
+		}
+		
+		// If there is a theme_id being parsed this will add it to the model
+		if (filteredTheme_name != null) {
+			model.addAttribute("theme_name", filteredTheme_name);
+		}
+		
+		List<Set> sets = new ArrayList<>();
+		
+		// This gets all the set info for all the sets the user has in progress
+		// and adds these to a list of sets that are then added to the model
+		for (SetInSetList setInSetList : setsInSetList) {
+			Set set = setInSetList.getSet();
+			sets.add(set);
+		}
+		
+		model.addAttribute("sets", sets);
+		
+        model.addAttribute("searchText", searchText);
+        model.addAttribute("sets", sets);
+        model.addAttribute("themeList", ThemeController.themeList);
+        model.addAttribute("num_sets", sets.size());
+        
+        set_list.setSetsInSetList(setsInSetList);
+        model.addAttribute("set_list", set_list);
+		return "showSetList";
+	}
 	
 	// This gets a set list and checks if it contains a Lego Set with the same set number,
 	// if the list does contains the set it is added to the set list
@@ -189,152 +630,6 @@ public class DatabaseController {
 		}
 	}
 
-	// This saves the progress on a set piece checklist to the database
-	@PostMapping("/set/{set_number}/pieces/save")
-	@ResponseBody
-	public void saveChecklist(@SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable String set_number, @SessionAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked) {
-		// This gets all the pieces in a Lego Set
-		List<Piece> piece_list = set.getPiece_list();
-		
-		// This updates the quantity checked for each piece in the Lego set
-		for (int i = 0; i < piece_list.size(); i++) {
-			Piece piece = piece_list.get(i);
-			piece.setQuantity_checked(quantityChecked.get(i));
-		}
-    	
-    	// This then creates a setsOwnedList with the new set_list
-		// and saves this to the database table setsOwnedLists
-    	SetInProgress setInProgress = new SetInProgress(account, set);
-    	
-    	// This checks if the set being added to a list already has its info saved to the database,
-		// and if it does not this adds that sets information to the database table SetInfo
-    	if (setInfoRepo.findByNum(set_number) == null) {
-    		setInfoRepo.save(set);
-    	}
-    	
-		// If the user already has saved the set to the database, this sets the set saved
-		// in the database table to setInProgress, and then deletes all the pieces saved
-		// in the database so that these can then be replaced with the new updated pieces
-		// Otherwise a new setInProgress is saved to the database
-		if (setInProgessRepo.findByAccountAndSet(account, set) != null) {
-			setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
-			pieceFoundRepo.deleteBySetInProgress(setInProgress);
-		}
-		else {
-			setInProgessRepo.save(setInProgress);
-		}
-    	
-    	// For each piece in the Lego set if its quantity is above zero, this adds a piece's number, colour name
-		// and if its a spare as a line to the database with the setInProgress, as these values uniquely identity
-    	// each Lego piece and which setInProgress they belong to and thus user
-    	for (Piece piece : piece_list) {
-    		if (piece.getQuantity_checked() != 0) {
-    			PieceFound pieceFound = new PieceFound(setInProgress, piece.getNum(), piece.getColour_name(), piece.isSpare(), piece.getQuantity_checked());
-    			pieceFoundRepo.save(pieceFound);
-    		}
-    	}
-	}
-	
-	// This gets all the sets in a set list saved to the database, using the set_numbers saved there, and the adds this set_list and set to the model to display these in the showSetList page
-	@GetMapping("/set_list={listName}")
-	public String showSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name) {
-		Set_list set_list = set_listRepo.findByAccountAndListName(account, listName);
-		List<SetInSetList> setsInSetList = set_list.getSets();
-		
-		// This is used so that if the filter or sort bar was open or no bar was open on the search page
-		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
-		model.addAttribute("barOpen", barOpen);
-		
-		// If their is a sort to be applied to the Set List, then the following is ran to apply this sort
-		// (by default if no sort entered will be sorted by set_number ascending)
-		// -- Start of Sort --
-		if (sort == null) {
-			sort = "set_num";
-		}
-		String[] sorts = sort.split(",");
-		
-		model.addAttribute("sort1", sorts[0]);
-		if (sorts.length >= 2) {
-			model.addAttribute("sort2", sorts[1]);
-		}
-		
-		if (sorts.length == 3) {
-			model.addAttribute("sort3", sorts[2]);
-		}
-		
-		// This sorts the list of sets by the sorts selected, it compares each set in the list
-		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists)
-		// and if they match again sort 3 (if exists). This calls a function to do the comparison
-		// of each Set and ther sort in use too
-		Collections.sort(setsInSetList, new Comparator<SetInSetList>() {
-			@Override
-			public int compare(SetInSetList setInSetList1, SetInSetList setInSetList2) {
-				int sortValue = getSortValue(sorts[0], setInSetList1.getSet(), setInSetList2.getSet());
-				
-				if (sortValue == 0 && sorts.length >= 2) {
-					sortValue = getSortValue(sorts[1], setInSetList1.getSet(), setInSetList2.getSet());
-				}
-				
-				if (sortValue == 0 && sorts.length == 3) {
-					sortValue = getSortValue(sorts[2], setInSetList1.getSet(), setInSetList2.getSet());
-				}
-				
-				return sortValue;
-			}
-		});
-		// -- End of Sort --
-		
-		// If there is a text search being parsed this will add it to the model
-		if (searchText != null) {
-			model.addAttribute("searchText", searchText);
-		}
-		
-		// If there is a min year being parsed this will add it to the model
-		if (minYear != null) {
-			model.addAttribute("minYear", minYear);
-		}
-		
-		// If there is a max year being parsed this will add it to the model
-		if (maxYear != null) {
-			model.addAttribute("maxYear", maxYear);
-		}
-		
-		// If there is a minimum number of pieces being parsed this will add it to the model
-		if (minPieces != null){
-			model.addAttribute("minPieces", minPieces);
-		}
-		
-		// If there is a maximum number of pieces being parsed this will add it to the model
-		if (maxPieces != null) {
-			model.addAttribute("maxPieces", maxPieces);
-		}
-		
-		// If there is a theme_id being parsed this will add it to the model
-		if (filteredTheme_name != null) {
-			model.addAttribute("theme_name", filteredTheme_name);
-		}
-		
-		List<Set> sets = new ArrayList<>();
-		
-		// This gets all the set info for all the sets the user has in progress
-		// and adds these to a list of sets that are then added to the model
-		for (SetInSetList setInSetList : setsInSetList) {
-			Set set = setInSetList.getSet();
-			sets.add(set);
-		}
-		
-		model.addAttribute("sets", sets);
-		
-        model.addAttribute("searchText", searchText);
-        model.addAttribute("sets", sets);
-        model.addAttribute("themeList", ThemeController.themeList);
-        model.addAttribute("num_sets", sets.size());
-        
-        set_list.setSetsInSetList(setsInSetList);
-        model.addAttribute("set_list", set_list);
-		return "showSetList";
-	}
-	
 	// This create a new set list for a logged in user, using the entered list name
 	@RequestMapping("/addNewSetList/previousPage={previousPage}")
 	public String addNewSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @SessionAttribute(value = "searchURL", required = false) String searchURL, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) String setListName, @RequestParam(required = false) String set_number, @RequestParam(required = false) String currentSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
@@ -386,6 +681,129 @@ public class DatabaseController {
     	}
 	}
 	
+	// This deletes a Lego Set in a users sets in progress from the database
+	@GetMapping("/setsInProgress/delete/set={set_num}/{set_name}")
+	public String deleteSetFromSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		Set set = new Set(set_num);
+		
+		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
+		setInProgessRepo.delete(setInProgress);
+		
+    	removeUnneededSetInfo();
+    	
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
+    	redirectAttributes.addFlashAttribute("setDeleted", true);
+    	redirectAttributes.addFlashAttribute("deletedSetName", set_name);
+    	redirectAttributes.addFlashAttribute("deletedSetNumber", set_num);
+    	
+    	// This adds the request query containing the which bar was open, sorts and filters parsed so these are added to the model in the showSetList class
+		return "redirect:/setsInProgress/?" + request.getQueryString();
+	}
+	
+	// This deletes a Lego Set List and all the sets in that list from the database
+	@GetMapping("/set_list={listName}/delete/{setListId}")
+	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
+		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+		set_listRepo.delete(set_list);
+		
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
+		
+    	removeUnneededSetInfo();
+    	
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
+    	redirectAttributes.addFlashAttribute("setListDeleted", true);
+    	redirectAttributes.addFlashAttribute("deletedSetListName", listName);
+    	
+    	addSetListsFilters(searchText, minSets, maxSets, redirectAttributes);
+		
+		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
+	}
+
+	// This deletes a Lego Set in a set list from the database
+	@GetMapping("/set_list={listName}/delete/{setListId}/set={set_num}/{set_name}")
+	public String deleteSetFromSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {		
+		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+		Set set = new Set(set_num);
+		
+		SetInSetList setInSetList = setInSetListRepo.findByListOfSetsAndSet(set_list, set);
+		setInSetListRepo.delete(setInSetList);
+		
+		// This decreases the total number of sets in the set_list and saves this to the db
+		set_list.removeSet();
+		set_listRepo.save(set_list);
+		
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
+		
+    	removeUnneededSetInfo();
+    	
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
+    	redirectAttributes.addFlashAttribute("setDeleted", true);
+    	redirectAttributes.addFlashAttribute("deletedSetName", set_name);
+    	redirectAttributes.addFlashAttribute("deletedSetNumber", set_num);
+    	
+    	// This adds the request query containing the which bar was open, sorts and filters parsed so these are added to the model in the showSetList class
+		return "redirect:/set_list={listName}/?" + request.getQueryString();
+	}
+	
+	// This creates a new set list for a logged in user, using the entered list name
+	@RequestMapping("/editSetList/previousPage={previousPage}")
+	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
+		
+		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
+		set_list.setListName(newSetListName);
+		set_listRepo.save(set_list);
+    	
+    	// These are used so the JSP page knows to inform the user that they have created a new
+    	// Set list and what its name is and are both added to redirectAttributes so they stay
+		// after the page redirect
+    	redirectAttributes.addFlashAttribute("setListEdited", true);
+    	redirectAttributes.addFlashAttribute("newSetListName", newSetListName);
+    	
+		// This gets a list of sets belong to the logged in user, and adds these to the model
+		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+    	model.addAttribute("set_lists", set_lists);
+		
+    	// These returns the user back to the page that the user called the controller from
+    	if (previousPage.equals("set_lists")) {
+    		addSetListsFilters(searchText, minSets, maxSets, redirectAttributes);
+    		
+    		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
+    	}
+    	else {
+			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
+			
+			return "redirect:/set_list=" + newSetListName + "/?sort=" + sort + "&barOpen=" + barOpen;
+    	}
+	}
+
+	// This adds the filters applied to a list of set lists to the redirect URL as request attributes
+	private void addSetListsFilters(String searchText, String minSets, String maxSets, RedirectAttributes redirectAttributes) {
+		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (searchText != null) {
+			redirectAttributes.addAttribute("searchText", searchText);
+		}
+		
+		// If there is a min number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (minSets != null) {
+			redirectAttributes.addAttribute("minSets", minSets);
+		}
+		
+		// If there is a max number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
+		if (maxSets != null) {
+			redirectAttributes.addAttribute("maxSets", maxSets);
+		}
+	}
+
 	// This adds the filters applied to a list of sets to the redirect URL as request attributes
 	private void addFilters(String searchText, String minYear, String maxYear, String minPieces, String maxPieces, String filteredTheme_name, RedirectAttributes redirectAttributes) {
 		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
@@ -419,174 +837,6 @@ public class DatabaseController {
 		}
 	}
 
-	// This deletes a Lego Set List and all the sets in that list from the database
-	@GetMapping("/set_list={listName}/delete/{setListId}")
-	public String deleteSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
-		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
-		set_listRepo.delete(set_list);
-		
-		// This gets a list of sets belong to the logged in user, and adds these to the model
-		List<Set_list> set_lists = set_listRepo.findByAccount(account);
-    	model.addAttribute("set_lists", set_lists);
-		
-    	removeUnneededSetInfo();
-    	
-    	// These are used so the JSP page knows to inform the user that they have created a new
-    	// Set list and what its name is and are both added to redirectAttributes so they stay
-		// after the page redirect
-    	redirectAttributes.addFlashAttribute("setListDeleted", true);
-    	redirectAttributes.addFlashAttribute("deletedSetListName", listName);
-    	
-    	addSetListsFilters(searchText, minSets, maxSets, redirectAttributes);
-		
-		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
-	}
-	
-	// This adds the filters applied to a list of set lists to the redirect URL as request attributes
-	private void addSetListsFilters(String searchText, String minSets, String maxSets, RedirectAttributes redirectAttributes) {
-		// If there is a text search being parsed this will add it to redirectAttributes so it stays after the page redirect
-		if (searchText != null) {
-			redirectAttributes.addAttribute("searchText", searchText);
-		}
-		
-		// If there is a min number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
-		if (minSets != null) {
-			redirectAttributes.addAttribute("minSets", minSets);
-		}
-		
-		// If there is a max number of sets being parsed this will add it to redirectAttributes so it stays after the page redirect
-		if (maxSets != null) {
-			redirectAttributes.addAttribute("maxSets", maxSets);
-		}
-	}
-
-	// This deletes a Lego Set in a set list from the database
-	@GetMapping("/set_list={listName}/delete/{setListId}/set={set_num}/{set_name}")
-	public String deleteSetFromSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("listName") String listName, @PathVariable("setListId") int setListId, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {		
-		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
-		Set set = new Set(set_num);
-		
-		SetInSetList setInSetList = setInSetListRepo.findByListOfSetsAndSet(set_list, set);
-		setInSetListRepo.delete(setInSetList);
-		
-		// This decreases the total number of sets in the set_list and saves this to the db
-		set_list.removeSet();
-		set_listRepo.save(set_list);
-		
-		// This gets a list of sets belong to the logged in user, and adds these to the model
-		List<Set_list> set_lists = set_listRepo.findByAccount(account);
-    	model.addAttribute("set_lists", set_lists);
-		
-    	removeUnneededSetInfo();
-    	
-    	// These are used so the JSP page knows to inform the user that they have created a new
-    	// Set list and what its name is and are both added to redirectAttributes so they stay
-		// after the page redirect
-    	redirectAttributes.addFlashAttribute("setDeleted", true);
-    	redirectAttributes.addFlashAttribute("deletedSetName", set_name);
-    	redirectAttributes.addFlashAttribute("deletedSetNumber", set_num);
-    	
-    	// This adds the request query containing the which bar was open, sorts and filters parsed so these are added to the model in the showSetList class
-		return "redirect:/set_list={listName}/?" + request.getQueryString();
-	}
-	
-	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user
-	@GetMapping("/setsInProgress")
-	public String showSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, HttpServletRequest request) {
-		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
-		model.addAttribute("setsInProgressUrl", url);
-		
-		List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
-		
-		// This is used so that if the filter or sort bar was open or no bar was open on the search page
-		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
-		model.addAttribute("barOpen", barOpen);
-		
-		// If their is a sort to be applied to the Sets in Progress, then the following is ran to apply this sort
-		// (by default if no sort entered will be sorted by set_number ascending)
-		// -- Start of Sort --
-		if (sort == null) {
-			sort = "set_num";
-		}
-		
-		String[] sorts = sort.split(",");
-		
-		model.addAttribute("sort1", sorts[0]);
-		if (sorts.length >= 2) {
-			model.addAttribute("sort2", sorts[1]);
-		}
-		
-		if (sorts.length == 3) {
-			model.addAttribute("sort3", sorts[2]);
-		}
-		
-		// This sorts the sets in progress by the sorts selected, it compares each set in the list
-		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists)
-		// and if they match again sort 3 (if exists). This calls a function to do the comparison
-		// of each Set and the sort in use too
-		Collections.sort(setsInProgress, new Comparator<SetInProgress>() {
-			@Override
-			public int compare(SetInProgress setInProgress1, SetInProgress setInProgress2) {
-				int sortValue = getSortValue(sorts[0], setInProgress1.getSet(), setInProgress2.getSet());
-				
-				if (sortValue == 0 && sorts.length >= 2) {
-					sortValue = getSortValue(sorts[1], setInProgress1.getSet(), setInProgress2.getSet());
-				}
-				
-				if (sortValue == 0 && sorts.length == 3) {
-					sortValue = getSortValue(sorts[2], setInProgress1.getSet(), setInProgress2.getSet());
-				}
-				
-				return sortValue;
-			}
-		});
-		// -- End of Sort --
-		
-		// If there is a text search being parsed this will add it to the model
-		if (searchText != null) {
-			model.addAttribute("searchText", searchText);
-		}
-		
-		// If there is a min year being parsed this will add it to the model
-		if (minYear != null) {
-			model.addAttribute("minYear", minYear);
-		}
-		
-		// If there is a max year being parsed this will add it to the model
-		if (maxYear != null) {
-			model.addAttribute("maxYear", maxYear);
-		}
-		
-		// If there is a minimum number of pieces being parsed this will add it to the model
-		if (minPieces != null){
-			model.addAttribute("minPieces", minPieces);
-		}
-		
-		// If there is a maximum number of pieces being parsed this will add it to the model
-		if (maxPieces != null) {
-			model.addAttribute("maxPieces", maxPieces);
-		}
-		
-		// If there is a theme_id being parsed this will add it to the model
-		if (filteredTheme_name != null) {
-			model.addAttribute("theme_name", filteredTheme_name);
-		}
-		
-		List<Set> sets = new ArrayList<>();
-		
-		// This gets all the set info for all the sets the user has in progress
-		for (SetInProgress setInProgress : setsInProgress) {
-			Set set = setInProgress.getSet();
-			sets.add(set);
-		}
-		
-		model.addAttribute("sets", sets);
-		model.addAttribute("themeList", ThemeController.themeList);
-		model.addAttribute("num_sets", sets.size());
-		
-		return "showSetsInProgress";
-	}
-	
 	// Gets the value of a sort between two sets
 	private int getSortValue(String sort, Set set1, Set set2) {
 		if (sort.equals("name")) {
@@ -631,14 +881,13 @@ public class DatabaseController {
 		}
 	}
 	
-	// This function goes through all rows in the SetInfo table and checking if that set number
-	// is in any row of either SetsInProgress or SetsInSetList, if it is in neither it is removed
-	// from the database 
+	// This function goes through all rows in the SetInfo table and checking if that set number is in any
+	// row of either SetsInProgress or SetsInSetList, if it is in neither it is removed from the database 
 	private void removeUnneededSetInfo() {
 		List<Set> setsInDB = (List<Set>) setInfoRepo.findAll();;
     	List<SetInProgress> setsInProgress = (List<SetInProgress>) setInProgessRepo.findAll();
     	List<SetInSetList> setsInSetLists = (List<SetInSetList>) setInSetListRepo.findAll();
-    	
+
     	for (Set set : setsInDB) {
     		boolean inSetsInProgress = false;
     		
@@ -648,7 +897,7 @@ public class DatabaseController {
     				break;
     			}
     		}
-    		
+
 			boolean inSetsInSetLists = false;
     		
     		for (SetInSetList setInSetList : setsInSetLists) {
@@ -663,57 +912,4 @@ public class DatabaseController {
     		}
     	}
 	}
-
-	// This creates a new set list for a logged in user, using the entered list name
-	@RequestMapping("/editSetList/previousPage={previousPage}")
-	public String editSetList(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("previousPage") String previousPage, @RequestParam(required = true) int setListId, @RequestParam(required = true) String newSetListName, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
-		
-		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
-		set_list.setListName(newSetListName);
-		set_listRepo.save(set_list);
-    	
-    	// These are used so the JSP page knows to inform the user that they have created a new
-    	// Set list and what its name is and are both added to redirectAttributes so they stay
-		// after the page redirect
-    	redirectAttributes.addFlashAttribute("setListEdited", true);
-    	redirectAttributes.addFlashAttribute("newSetListName", newSetListName);
-    	
-		// This gets a list of sets belong to the logged in user, and adds these to the model
-		List<Set_list> set_lists = set_listRepo.findByAccount(account);
-    	model.addAttribute("set_lists", set_lists);
-		
-    	// These returns the user back to the page that the user called the controller from
-    	if (previousPage.equals("set_lists")) {
-    		addSetListsFilters(searchText, minSets, maxSets, redirectAttributes);
-    		
-    		return "redirect:/set_lists/?sort=" + sort + "&barOpen=" + barOpen;
-    	}
-    	else {
-			addFilters(searchText, minYear, maxYear, minPieces, maxPieces, filteredTheme_name, redirectAttributes);
-			
-			return "redirect:/set_list=" + newSetListName + "/?sort=" + sort + "&barOpen=" + barOpen;
-    	}
-	}
-
-	// This deletes a Lego Set in a users sets in progress from the database
-	@GetMapping("/setsInProgress/delete/set={set_num}/{set_name}")
-	public String deleteSetFromSetsInProgress(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account account, @PathVariable("set_num") String set_num, @PathVariable("set_name") String set_name, @RequestParam(required = false) String sort, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String searchText, @RequestParam(required = false) String minYear, @RequestParam(required = false) String maxYear, @RequestParam(required = false) String minPieces, @RequestParam(required = false) String maxPieces, @RequestParam(value = "theme_name", required = false) String filteredTheme_name, RedirectAttributes redirectAttributes, HttpServletRequest request) {
-		Set set = new Set(set_num);
-		
-		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
-		setInProgessRepo.delete(setInProgress);
-		
-    	removeUnneededSetInfo();
-    	
-    	// These are used so the JSP page knows to inform the user that they have created a new
-    	// Set list and what its name is and are both added to redirectAttributes so they stay
-		// after the page redirect
-    	redirectAttributes.addFlashAttribute("setDeleted", true);
-    	redirectAttributes.addFlashAttribute("deletedSetName", set_name);
-    	redirectAttributes.addFlashAttribute("deletedSetNumber", set_num);
-    	
-    	// This adds the request query containing the which bar was open, sorts and filters parsed so these are added to the model in the showSetList class
-		return "redirect:/setsInProgress/?" + request.getQueryString();
-	}
-	
 }

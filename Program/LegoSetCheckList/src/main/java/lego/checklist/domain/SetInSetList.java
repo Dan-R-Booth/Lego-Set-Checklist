@@ -22,7 +22,7 @@ public class SetInSetList {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "setListId", nullable = false)
-	// Called this as if called set_list the repo would look for variable list in type Set
+	// Called this as if called set_list the repository would look for variable list in type Set
 	private Set_list listOfSets;
 	
 	public SetInSetList() {}

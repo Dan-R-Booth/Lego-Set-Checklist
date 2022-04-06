@@ -9,6 +9,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "SetsOwnedLists")
 public class SetsOwnedList {
@@ -16,14 +19,17 @@ public class SetsOwnedList {
 	@GeneratedValue
 	private int setsOwnedListId;
 	
-	@OneToOne(cascade = CascadeType.REMOVE)
+	@OneToOne
 	@JoinColumn(name = "setListId", referencedColumnName = "setListId", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set_list setList;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
 	private Account account;
 
+	public SetsOwnedList() {}
+	
 	public SetsOwnedList(Set_list setList, Account account) {
 		this.setList = setList;
 		this.account = account;
