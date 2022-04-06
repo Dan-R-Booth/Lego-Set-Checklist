@@ -96,6 +96,11 @@
 					document.getElementById("loggedInDiv").setAttribute("class", "m-3");
 				}
 
+				// If true this opens the login_SignUp_Modal
+				if ("${openLogin_SignUp_Modal}" == "true") {
+					$("#login_SignUp_Modal").modal("show");
+				}
+
 				// This adds bootstrap styling to tooltips
 				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
