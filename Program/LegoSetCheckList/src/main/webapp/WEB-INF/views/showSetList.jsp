@@ -807,6 +807,9 @@
 							<li class="nav-item ms-5">
 								<a class="nav-link" id="deleteLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSetListModal" title="Delete Set List: '${set_list.listName}'"> <i class="fa fa-trash"></i> Delete</a>
 							</li>
+							<li class="nav-item mx-5">
+								<a class="nav-link" href="set_lists"> <i class="fa fa-arrow-left"></i> Return to Set Lists</a>
+							</li>
 							<script>
 								// This adds bootstrap styling to the tooltips for the edit and delete links, because their data-bs-toggle is being used for their modal
 								$(document).ready(function(){ 
