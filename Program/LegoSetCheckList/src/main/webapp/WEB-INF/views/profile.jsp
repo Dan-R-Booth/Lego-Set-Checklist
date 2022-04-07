@@ -179,6 +179,19 @@
 					document.getElementById("deleteAccountButton").disabled = false;
 				}
 			}
+			
+			// This function will return the user to the search page with the same filters and sorts they last had active
+			// and if they haven't been to the search page, to the default unfilter and sorted page
+			function backToSearch() {
+				openLoader();
+
+				if ("${searchURL}" != "") {
+					window.location = "${searchURL}";
+				}
+				else {
+					window.location = "/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
+				}
+			}
 
 		</script>
 
@@ -232,7 +245,7 @@
 					<div class="collapse navbar-collapse" id="optionsBar">
 						<ul class="navbar-nav">
 							<li class="nav-item mx-5">
-								<a class="nav-link active" href="/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/"> <i class="fa fa-search"></i> Search for a Lego Set</a>
+								<a class="nav-link active" style="cursor: pointer;" onclick="backToSearch()"> <i class="fa fa-search"></i> Search for a Lego Set</a>
 							</li>
 							<li class="nav-item ms-5">
 								<a class="nav-link active" id="viewSetListsLink" href="set_lists"> <i class="fa fa-list"></i> View Set Lists</a>
