@@ -483,7 +483,7 @@ public class DatabaseController {
 			pieceFoundRepo.deleteBySetInProgress(setInProgress);
 		}
 		else {
-			setInProgessRepo.save(setInProgress);
+			setInProgress = setInProgessRepo.save(setInProgress);
 		}
     	
     	// For each piece in the Lego set if its quantity is above zero, this adds a piece's number, colour name
@@ -495,6 +495,9 @@ public class DatabaseController {
     			pieceFoundRepo.save(pieceFound);
     		}
     	}
+    	
+    	setInProgress.updateDateTime();
+    	setInProgessRepo.save(setInProgress);
 	}
 	
 	// This gets all the sets currently being completed by a user from the database and then opens showSetsInProgress so that they can be displayed to the user

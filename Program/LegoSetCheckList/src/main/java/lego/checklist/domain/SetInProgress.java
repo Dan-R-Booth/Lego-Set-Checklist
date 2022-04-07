@@ -1,5 +1,7 @@
 package lego.checklist.domain;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,12 +29,15 @@ public class SetInProgress {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
 	@JoinColumn(name = "setNumber", referencedColumnName = "setNumber", nullable = false)
 	private Set set;
+	
+	private LocalDateTime lastChangedDateTime;
 
 	public SetInProgress() {}
 
 	public SetInProgress(Account account, Set set) {
 		this.account = account;
 		this.set = set;
+		this.lastChangedDateTime = LocalDateTime.now();
 	}
 
 	public int getSetInProgressId() {
@@ -41,5 +46,9 @@ public class SetInProgress {
 
 	public Set getSet() {
 		return set;
+	}
+	
+	public void updateDateTime() {
+		this.lastChangedDateTime = LocalDateTime.now();
 	}
 }
