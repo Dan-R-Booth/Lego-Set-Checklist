@@ -6,7 +6,7 @@
         <field id="tpd5" name="End date" width="42" order="2"/>
         <option id="taskLabelRight" value="resources"/>
         <timeline>
-            <![CDATA[584,575,586,588,579,3,573]]>
+            <![CDATA[573,588,3,575,579,584,586]]>
         </timeline>
         <option id="color.recent">
             <![CDATA[#33ffff #ff00ff #0000ff #ff00cc #ff9900 #00ff00 #ff0000 #eeeeee #0099ff #00cc33]]>
@@ -208,12 +208,15 @@
         <task id="540" name="Design and Implement any other optional features that have not yet been completed" color="#8cb6ce" meeting="false" start="2022-03-30" duration="3" complete="0" thirdDate="2022-03-22" thirdDate-constraint="0" expand="true">
             <depend id="633" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="633" name="Finish Features in progress" color="#8cb6ce" meeting="false" start="2022-04-04" duration="4" complete="0" thirdDate="2022-03-02" thirdDate-constraint="0" expand="true">
-            <depend id="637" type="2" difference="0" hardness="Strong"/>
-        </task>
-        <task id="637" name="Write consent form and usablitiy tests" color="#33ffff" meeting="false" start="2022-04-08" duration="1" complete="0" thirdDate="2022-04-08" thirdDate-constraint="0" expand="true"/>
+        <task id="633" name="Finish Features in progress" color="#8cb6ce" meeting="false" start="2022-04-04" duration="5" complete="0" thirdDate="2022-03-02" thirdDate-constraint="0" expand="true"/>
         <task id="584" name="Deadline for feature development" color="#0000ff" meeting="true" start="2022-04-04" duration="0" complete="0" thirdDate="2022-03-04" thirdDate-constraint="0" expand="true"/>
-        <task id="571" name="Perform Usability Tests and fix any bugs found and make small tweaks from feedback" color="#33ffff" meeting="false" start="2022-04-25" duration="5" complete="0" thirdDate="2022-04-04" thirdDate-constraint="0" expand="true"/>
+        <task id="637" name="Write consent form, usablitiy questionnaire and interview questions" color="#33ffff" meeting="false" start="2022-04-11" duration="6" complete="0" thirdDate="2022-04-08" thirdDate-constraint="0" expand="true">
+            <depend id="655" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="655" name="Make tweaks to questionnaire, consent form and interviews questions and compelete ethics approval" color="#33ffff" meeting="false" start="2022-04-19" duration="4" complete="0" thirdDate="2022-04-18" thirdDate-constraint="0" expand="true">
+            <depend id="571" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="571" name="Perform Usability Tests and interviews and fix any bugs found and make small tweaks from feedback" color="#33ffff" meeting="false" start="2022-04-25" duration="5" complete="0" thirdDate="2022-04-04" thirdDate-constraint="0" expand="true"/>
         <task id="586" name="Deadline for Software Testing" color="#0000ff" meeting="true" start="2022-04-11" duration="0" complete="0" thirdDate="2022-03-04" thirdDate-constraint="0" expand="true"/>
         <task id="121" name="Dissertation Write-up" color="#ff9900" meeting="false" start="2022-04-11" duration="18" complete="0" thirdDate="2022-04-18" thirdDate-constraint="0" expand="true"/>
         <task id="3" name="Dissertation Deadline" color="#ff0000" meeting="true" start="2022-05-05" duration="0" complete="0" thirdDate="2021-10-11" thirdDate-constraint="0" expand="true"/>
