@@ -20,7 +20,7 @@ public class SetInProgress {
 	private int setInProgressId;
 	
 	@ManyToOne
-	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
+	@JoinColumn(name = "accountId", referencedColumnName = "accountId", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Account account;
 	

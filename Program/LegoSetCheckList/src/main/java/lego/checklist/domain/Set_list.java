@@ -23,7 +23,7 @@ public class Set_list {
 	private int setListId;
 	
 	@ManyToOne
-	@JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
+	@JoinColumn(name = "accountId", referencedColumnName = "accountId", nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Account account;
 	

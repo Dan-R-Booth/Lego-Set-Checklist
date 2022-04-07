@@ -2,6 +2,7 @@ package lego.checklist.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -9,6 +10,10 @@ import javax.persistence.Table;
 @Table(name = "Accounts")
 public class Account {
 	@Id
+	@GeneratedValue
+	private int accountId;
+	
+	@Column(unique = true, nullable = false)
 	private String email;
 	
 	@Column(nullable = false)
@@ -19,6 +24,10 @@ public class Account {
 	public Account(String email, String password) {
 		this.email = email;
 		this.password = password;
+	}
+	
+	public int getAccountId() {
+		return accountId;
 	}
 
 	public String getEmail() {

@@ -193,10 +193,15 @@ public class DatabaseController {
 		// logged in and is added to redirectAttributes so it stays after the page redirect
 		redirectAttributes.addFlashAttribute("loggedIn", true);
 		
-		model.addAttribute("accountLoggedIn", account);
+		// This is called to get the account stored in the database to get the accounts accountId
+		// which is required as it is used a foreign key in other tables, so is needed to access
+		// the users data in these tables
+		Account usersAccount = accountRepo.findByEmail(account.getEmail());
+		
+		model.addAttribute("accountLoggedIn", usersAccount);
 		
 		// This gets a list of sets belong to the logged in user, and adds these to the model
-		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+		List<Set_list> set_lists = set_listRepo.findByAccount(usersAccount);
     	model.addAttribute("set_lists", set_lists);
 		
 		// This redirects the user back to the index page
@@ -241,7 +246,9 @@ public class DatabaseController {
 			return "redirect:/profile";
 		}
 		
-		accountRepo.delete(account);
+		accountRepo.delete(accountLoggedIn);
+		
+		removeUnneededSetInfo();
 		
 		// This redirects the user to the logout page
 		return "redirect:/logout";
@@ -333,8 +340,6 @@ public class DatabaseController {
 	public String logout(SessionStatus status) {
 		// This removes the Session attributes accountLogedIn, and Set_lists thus logging the user out of their account
 		status.setComplete();
-		
-		removeUnneededSetInfo();
 		
 		// This redirects the user back to the index page
 		return "redirect:/";
