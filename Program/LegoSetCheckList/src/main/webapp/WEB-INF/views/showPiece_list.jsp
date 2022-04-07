@@ -629,8 +629,6 @@
 			// This function will return the link to the search page with the same filters and sorts the user last had active
 			// and if they haven't been to the search page, to the default unfilter and sorted page
 			function backToSearch() {
-				openLoader();
-
 				if ("${searchURL}" != "") {
 					return "${searchURL}";
 				}
@@ -701,8 +699,7 @@
 			// not been saved a popup opens asking if they want to leave without saving or save and leave
 			function confirmLeavePage(link) {
 				if("${accountLoggedIn}" == "" || changesMade == false) {
-					openLoader()
-					window.location = link;
+					exit(link);
 				}
 				else {
 					document.getElementById("leaveWithoutSavingButton").setAttribute("onclick", "exit('" + link + "')");
@@ -761,7 +758,7 @@
 		
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
+					<a class="navbar-brand" style="cursor: pointer;" onclick="confirmLeavePage('/')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
 	
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
