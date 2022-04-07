@@ -37,7 +37,6 @@ import lego.checklist.domain.Set;
 import lego.checklist.domain.SetInProgress;
 import lego.checklist.domain.SetInSetList;
 import lego.checklist.domain.Set_list;
-import lego.checklist.domain.SetsOwnedList;
 import lego.checklist.domain.Theme;
 import lego.checklist.repository.AccountRepository;
 import lego.checklist.repository.PieceFoundRepository;
@@ -45,7 +44,6 @@ import lego.checklist.repository.SetInProgressRepository;
 import lego.checklist.repository.SetInSetListRepository;
 import lego.checklist.repository.SetInfoRepository;
 import lego.checklist.repository.Set_listRepository;
-import lego.checklist.repository.SetsOwnedListRepository;
 import lego.checklist.validator.AccountValidator;
 
 @Controller
@@ -54,9 +52,6 @@ public class DatabaseController {
 	
 	@Autowired
 	private AccountRepository accountRepo;
-
-	@Autowired
-	private SetsOwnedListRepository setsOwnedListRepo;
 	
 	@Autowired
 	private Set_listRepository set_listRepo;
@@ -127,16 +122,11 @@ public class DatabaseController {
 		// This adds the created account to the database table Accounts
 		accountRepo.save(account);
 		
-		// This creates a set_list called setsOwnedList for the new user with
+		// This creates an initial set_list called setsOwnedList for the new user with
 		// an empty list of sets and saves list to the database table SetLists
 		List<SetInSetList> setsInSetList = new ArrayList<>();
 		Set_list set_list = new Set_list(account, "Sets Owned List", setsInSetList, setsInSetList.size());
 		set_listRepo.save(set_list);
-		
-		// This then creates a setsOwnedList with the new set_list
-		// and saves this to the database table setsOwnedLists
-		SetsOwnedList setsOwnedList = new SetsOwnedList(set_list, account);
-		setsOwnedListRepo.save(setsOwnedList);
 		
 		// This is used so the JSP page knows to inform the user that they have successfully created
 		// an account and is added to redirectAttributes so it stays after the page redirect
