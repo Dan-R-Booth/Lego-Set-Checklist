@@ -233,15 +233,15 @@ public class DatabaseController {
 			// and adding this errors message to the model of that error code type 
 			for (ObjectError error : result.getAllErrors()) {
 				if (error.getCode().equals("password")) {
-					redirectAttributes.addFlashAttribute("passwordErrorMessage", error.getDefaultMessage());
+					redirectAttributes.addFlashAttribute("passwordErrorMessage_DeleteAccount", error.getDefaultMessage());
 				}
 				else if (error.getCode().equals("email_password")) {
 					// This is only password incorrect as email is added automatically
-					redirectAttributes.addFlashAttribute("passwordErrorMessage", "Password incorrect");
+					redirectAttributes.addFlashAttribute("passwordErrorMessage_DeleteAccount", "Password incorrect");
 				}
 			}
 			// This is used so that the user knows that the password entered was incorrect
-			redirectAttributes.addFlashAttribute("passwordIncorrect", true);
+			redirectAttributes.addFlashAttribute("passwordIncorrect_DeleteAccount", true);
 			
 			return "redirect:/profile";
 		}
@@ -254,7 +254,98 @@ public class DatabaseController {
 		return "redirect:/logout";
 	}
 	
-	// This deletes a users account, as long as the password entered matches the saved password
+	// This changes a users email address, as long as the password entered matches the saved password and the new email is valid
+	@GetMapping("/changeEmail")
+	public String changeEmail(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String oldEmail, @RequestParam(required = true) String newEmail, @RequestParam(required = true) String password, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+		// If a user is not logged in this redirects the user to the access denied page
+		if (account == null) {
+			redirectAttributes.addFlashAttribute("pageInfo", "edit your account");
+			return "redirect:/accessDenied";
+		}
+		
+		Boolean errors = false;
+		
+		// This creates an instance of the AccountValidator
+		// This function then checks if there are any errors with the accounts details and if there are
+		// adds these to the BindingResult result
+		AccountValidator accountValidator = new AccountValidator(accountRepo);
+		
+		// This creates a new account with the users email and password to compare with the one saved in the database
+		account = new Account(oldEmail, password);
+		
+		// I reuse the login validate because this checks the password is correct or blank
+		accountValidator.validateLogin(account, result);
+		
+		// This function will run if there are any errors returned by the AccountValidator class
+		if (result.hasErrors()) {
+			errors = true;
+			
+			// This loop goes through all the errors comparing their error code with the certain
+			// error codes, so that the boolean values can be updated to show there is an error
+			// and adding this errors message to the model of that error code type 
+			for (ObjectError error : result.getAllErrors()) {
+				if (error.getCode().equals("password")) {
+					redirectAttributes.addFlashAttribute("passwordErrorMessage_ChangeEmail", error.getDefaultMessage());
+				}
+				else if (error.getCode().equals("email_password")) {
+					// This is only password incorrect as email is added automatically
+					redirectAttributes.addFlashAttribute("passwordErrorMessage_ChangeEmail", "Password incorrect");
+				}
+				System.out.println("\n oldEmail: " + oldEmail + " error: " + error.getDefaultMessage() + "\n");
+			}
+			// This is used so that the user knows that the password entered was incorrect
+			redirectAttributes.addFlashAttribute("passwordIncorrect_ChangeEmail", true);
+		}
+		
+		// This creates a new account with the users new email and password to compare with email addresses
+		// saved in the database as email must be unique
+		account = new Account(newEmail, password);
+		
+		// I reuse the validate for sign-up because this checks the email is valid and not already attached to another account
+		accountValidator.validate(account, result);
+		
+		// This function will run if there are any errors returned by the AccountValidator class
+		if (result.hasErrors()) {
+			errors = true;
+			
+			// This loop goes through all the errors comparing their error code with the certain
+			// error codes, so that the boolean values can be updated to show there is an error
+			// and adding this errors message to the model of that error code type 
+			for (ObjectError error : result.getAllErrors()) {
+				if (error.getCode().equals("email")) {
+					redirectAttributes.addFlashAttribute("newEmailErrorMessage", error.getDefaultMessage());
+				}
+			}
+			// This is used so that the user knows that the password entered was incorrect
+			redirectAttributes.addFlashAttribute("newEmailIncorrect", true);
+		}
+		
+		if (errors == false) {
+			System.out.println("\n here \n");
+			// This sets the new password and updates the account logged
+			// in and then saves the updated account to the database
+			accountLoggedIn.setEmail(newEmail);
+			model.addAttribute("accountLoggedIn", accountLoggedIn);
+			
+			accountRepo.save(accountLoggedIn);
+			
+			// This is used so that the user knows that their email was changed
+			redirectAttributes.addFlashAttribute("emailChanged", true);
+		}
+		else {
+			System.out.println("\n error \n");
+			// This is used so that the user knows that their email was not changed
+			redirectAttributes.addFlashAttribute("emailChangedFailed", true);
+			
+			// This adds the email entered so it can be put back in the form
+			redirectAttributes.addFlashAttribute("emailChangedEntered", account.getEmail());
+		}
+		System.out.println("\n end \n");
+		// This redirects the user to the logout page
+		return "redirect:/profile";
+	}
+	
+	// This changes a users password, as long as the password entered matches the old saved password and the new password is valid
 	@GetMapping("/changePassword")
 	public String changePassword(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String email, @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 		// If a user is not logged in this redirects the user to the access denied page
@@ -264,11 +355,12 @@ public class DatabaseController {
 		}
 		
 		// This creates an instance of the AccountValidator and calls the validateLogin function with
-		// an Account generated using email parsed and password entered in the delete account form.
+		// an Account generated using email parsed and password entered in the change password form.
 		// This function then checks if there are any errors with the accounts details and if there are
 		// adds these to the BindingResult result
 		AccountValidator accountValidator = new AccountValidator(accountRepo);
 		
+		// This creates a new account with the users email and old password to compare with the one saved in the database
 		account = new Account(email, oldPassword);
 		
 		// I reuse the login validate because this checks the password is correct or blank
@@ -291,7 +383,6 @@ public class DatabaseController {
 					// This is only password incorrect as email is added automatically
 					redirectAttributes.addFlashAttribute("oldPasswordErrorMessage", "Password incorrect");
 				}
-				System.out.println("\ncode: " + error.getCode() + "\nmessage: " + error.getDefaultMessage() + "\n");
 			}
 			// This is used so that the user knows that the password entered was incorrect
 			redirectAttributes.addFlashAttribute("oldPasswordIncorrect", true);
@@ -318,17 +409,17 @@ public class DatabaseController {
 			// This sets the new password and updates the account
 			// logged in and then saves the updated account to the
 			// database
-			account.setPassword(newPassword);
-			model.addAttribute("accountLoggedIn", account);
+			accountLoggedIn.setPassword(newPassword);
+			model.addAttribute("accountLoggedIn", accountLoggedIn);
 			
-			accountRepo.save(account);
+			accountRepo.save(accountLoggedIn);
 			
-			// This is used so that the user knows that the password was changed
+			// This is used so that the user knows that their password was changed
 			redirectAttributes.addFlashAttribute("passwordChanged", true);
 		}
 		else {
-			// This is used so that the user knows that the password was not changed
-			redirectAttributes.addFlashAttribute("passwordChangeFailed", true);
+			// This is used so that the user knows that their password was not changed
+			redirectAttributes.addFlashAttribute("passwordChangedFailed", true);
 		}
 		
 		// This redirects the user to the logout page
@@ -347,7 +438,7 @@ public class DatabaseController {
 	
 	// This displays opens the profile page showing the users information
 	@GetMapping("/profile")
-	public String viewProfile(Model model, @SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, RedirectAttributes redirectAttributes) {
+	public String viewProfile(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account accountLoggedIn, RedirectAttributes redirectAttributes) {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (accountLoggedIn == null) {
 			redirectAttributes.addFlashAttribute("pageInfo", "access the 'Profile' page");

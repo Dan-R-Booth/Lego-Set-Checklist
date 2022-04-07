@@ -29,7 +29,9 @@ public class AccountValidator implements Validator {
 
 		// This confirms if the entered email is blank or not and if it is an error message is added
 		// to the instance of the Errors class errors
-		ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
+		if (email.isEmpty()) {
+			ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
+		}
 
 		// These check that the email address contains no spaces and that an account does not already exist with the
 		// entered email. If any of these are wrong an error message is added to the instance of the Errors class errors
@@ -57,7 +59,9 @@ public class AccountValidator implements Validator {
 		String password = account.getPassword();
 		
 		// This confirms if the entered email is blank or not and if it is returns an error message
-		ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
+		if (email.isEmpty()) {
+			ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
+		}
 		
 		// These check that the email address contains no space, that it is in a valid format.
 		// If any of these are wrong an error message is added to the instance of the Errors class errors

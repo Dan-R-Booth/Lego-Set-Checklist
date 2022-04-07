@@ -47,17 +47,27 @@
 				}
 
 				// This displays that if a set has been deleted from the list
-				if ("${passwordIncorrect}" == "true") {
+				if ("${passwordIncorrect_DeleteAccount}" == "true") {
 					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("class", "form-control is-invalid");
-					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("title", "${passwordErrorMessage}");
-					document.getElementById("passwordErrorHelp").setAttribute("class", "alert alert-danger");
+					document.getElementById("passwordTextBox_DeleteAccount").setAttribute("title", "${passwordErrorMessage_DeleteAccount}");
+					document.getElementById("passwordErrorHelp_DeleteAccount").setAttribute("class", "alert alert-danger");
 
 					// This opens the deleteAccountModal
 					$("#deleteAccountModal").modal("show");
 				}
 
+				// As this runs a function if there was an error changing the user's email address
+				if ("${emailChangedFailed}" == "true") {
+					changeEmailErrors();
+				}
+
+				// This displays to the user their email address has been changed
+				if ("${emailChanged}" == "true") {
+					document.getElementById("emailChangedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
+				}
+
 				// As this runs a function if there was an error changing the user's password
-				if ("${passwordChangeFailed}" == "true") {
+				if ("${passwordChangedFailed}" == "true") {
 					changePasswordErrors();
 				}
 
@@ -139,12 +149,41 @@
 					document.getElementById("changePasswordButton").disabled = false;
 				}
 			}
-
+			
+			// This calls the database controller with the user's email, password and new email entered to change the users email address
+			function changeEmail() {
+				var newEmail = document.getElementById("newEmailTextBox").value;
+				var password = document.getElementById("passwordTextBox_ChangeEmail").value;
+				
+				window.location = "/changeEmail/?oldEmail=${accountLoggedIn.email}&newEmail=" + newEmail + "&password=" + password;
+			}
+			
+			// This calls the database controller with the user's email, old password and new password entered to change the users password
 			function changePassword() {
 				var oldPassword = document.getElementById("oldPasswordTextBox").value;
 				var newPassword = document.getElementById("newPasswordTextBox").value;
-
+				
 				window.location = "/changePassword/?email=${accountLoggedIn.email}&oldPassword=" + oldPassword + "&newPassword=" + newPassword;
+			}
+
+			// These will display any errors returned by the controller when changing a users email address
+			function changeEmailErrors() {
+				// This displays that if the password entered was incorrect
+				if ("${passwordIncorrect_ChangeEmail}" == "true") {
+					document.getElementById("passwordTextBox_ChangeEmail").setAttribute("class", "form-control is-invalid");
+					document.getElementById("passwordTextBox_ChangeEmail").setAttribute("title", "${passwordErrorMessage_ChangeEmail}");
+					document.getElementById("passwordErrorHelp_ChangeEmail").setAttribute("class", "alert alert-danger");
+				}
+
+				// This displays that if there is a problem with the new email entered
+				if ("${newEmailIncorrect}" == "true") {
+					document.getElementById("newEmailTextBox").setAttribute("class", "form-control is-invalid");
+					document.getElementById("newEmailTextBox").setAttribute("title", "${newEmailErrorMessage}");
+					document.getElementById("newEmailErrorHelp").setAttribute("class", "alert alert-danger");
+				}
+
+				// This opens the changeEmailModal
+				$("#changeEmailModal").modal("show");
 			}
 
 			// These will display any errors returned by the controller when changing a users password
@@ -262,6 +301,12 @@
 				</div>
 			</nav>
 
+			<!-- This alert will be display when a email address is changed -->
+			<div class="d-none" id="emailChangedAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Email Address Changed Successfully</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+
 			<!-- This alert will be display when a password is changed -->
 			<div class="d-none" id="passwordChangedAlert" role="alert">
 				<i class="fa fa-check-circle"></i> <strong>Password Changed Successfully</strong>
@@ -276,12 +321,12 @@
                     <dl class="row">
                         <dt class="col-sm-4">Email:</dt>
                         <dd class="col-sm-4"><input  class="form-control" type="email" value="${accountLoggedIn.email}" style="width: 80%;" disabled readonly/></dd>
-                        <dd class="col-sm-4"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Email Address"><i class="fa fa-edit"></i> Change Email </a></dd>
+                        <dd class="col-sm-4" data-bs-toggle="modal" data-bs-target="#changeEmailModal"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Email Address"><i class="fa fa-edit"></i> Change Email </a></dd>
                         <br>
                         <br>
                         <dt class="col-sm-4">Password:</dt>
                         <dd class="col-sm-4"></dd>
-                        <dd class="col-sm-4"  data-bs-toggle="modal" data-bs-target="#changePasswordModal"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Password"><i class="fa fa-edit"></i> Change Password </a></dd>
+                        <dd class="col-sm-4" data-bs-toggle="modal" data-bs-target="#changePasswordModal"> <a style="cursor: pointer;" data-bs-toggle="tooltip" title="Change Password"><i class="fa fa-edit"></i> Change Password </a></dd>
                         <br>
                     </dl>
                 </h4>
@@ -322,6 +367,44 @@
                 </div>
             </div>
 
+			<!-- Modal to Change Email -->
+			<div class="modal fade" id="changeEmailModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="changeEmailModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="changeEmailModalLabel">Change Email</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<form method="POST" id="changeEmailForm">
+							<div class="modal-body">
+								<div class="mb-3">
+									<!-- This is a hidden input that adds the users account to the form -->
+									<input type="hidden" id="emailInput_ChangeEmail" name="email" value="${accountLoggedIn.email}" path="email"/>
+
+									<div class="mb-3">
+										<label>Password:</label>
+										<input type="password" class="form-control" id="passwordTextBox_ChangeEmail" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password"/>
+									</div>
+									
+									<!-- This will output the error message returned to the user -->
+									<div id="passwordErrorHelp_ChangeEmail" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage_ChangeEmail}</div>
+									
+									<div class="mb-3">
+										<label>New Email:</label>
+										<input value="${emailChangedEntered}" type="email" class="form-control" id="newEmailTextBox" placeholder="Enter Email" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Email Address"/>
+									</div>
+
+									<!-- This will output the error message returned to the user -->
+									<div id="newEmailErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${newEmailErrorMessage}</div>
+
+								</div>
+								<button type="button" id="changeEmailButton" class="btn btn-primary" style="width: 100%" onclick="changeEmail()"> Change Email</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
 			<!-- Modal to Change Password -->
 			<div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
@@ -338,7 +421,7 @@
 
 									<div class="mb-3">
 										<label>Password:</label>
-										<input type="password" class="form-control" id="oldPasswordTextBox" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password" path="password"/>
+										<input type="password" class="form-control" id="oldPasswordTextBox" placeholder="Enter Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Password"/>
 									</div>
 									
 									<!-- This will output the error message returned to the user -->
@@ -346,7 +429,7 @@
 									
 									<div class="mb-3">
 										<label>New Password:</label>
-										<input oninput="passwordsMatchCheck()" type="password" class="form-control" id="newPasswordTextBox" placeholder="Enter New Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password" path="password"/>
+										<input oninput="passwordsMatchCheck()" type="password" class="form-control" id="newPasswordTextBox" placeholder="Enter New Password" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter a Password"/>
 									</div>
 									<div class="mb-3">
 										<label>Confirm Password:</label>
@@ -390,7 +473,7 @@
 									</div>
 
 									<!-- This will output the error message returned to the user -->
-									<div id="passwordErrorHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage}</div>
+									<div id="passwordErrorHelp_DeleteAccount" class="d-none"><i class="fa fa-exclamation-circle"></i> ${passwordErrorMessage_DeleteAccount}</div>
 									<br>
 									<!-- This is used so the user has to confirm they want to delete their account -->
 									<div class="form-check fw-bold">
