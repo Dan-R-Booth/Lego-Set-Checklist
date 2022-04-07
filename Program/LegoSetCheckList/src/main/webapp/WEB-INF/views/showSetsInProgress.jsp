@@ -771,6 +771,19 @@
 
 				window.location = "/editSetList/previousPage=set_list/?setListId=${set_list.setListId}&newSetListName=" + newSetListName + "&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
+			
+			// This function will return the user to the search page with the same filters and sorts they last had active
+			// and if they haven't been to the search page, to the default unfilter and sorted page
+			function backToSearch() {
+				openLoader();
+
+				if ("${searchURL}" != "") {
+					window.location = "${searchURL}";
+				}
+				else {
+					window.location = "/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
+				}
+			}
 
 		</script>
 		
@@ -801,6 +814,9 @@
 					
 					<div class="collapse navbar-collapse" id="navbar">
 						<ul class="navbar-nav me-auto">
+							<li class="nav-item mx-5">
+								<a class="nav-link" style="cursor: pointer;" onclick="backToSearch()"> <i class="fa fa-search"></i> Search for a Lego Set</a>
+							</li>
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
