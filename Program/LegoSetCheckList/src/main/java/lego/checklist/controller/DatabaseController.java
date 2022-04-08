@@ -805,6 +805,7 @@ public class DatabaseController {
         	setInSetListRepo.save(setInSetList);
         	
         	// This then saves the updated set_list to the database table SetLists
+        	set_list.updateDateTime();
         	set_listRepo.save(set_list);
         	
         	// This is used so the JSP page knows to inform the user that they have added the Lego
@@ -965,6 +966,7 @@ public class DatabaseController {
 		
 		// This decreases the total number of sets in the set_list and saves this to the db
 		set_list.removeSet();
+		set_list.updateDateTime();
 		set_listRepo.save(set_list);
 		
 		// This gets a list of sets belong to the logged in user, and adds these to the model
@@ -995,6 +997,7 @@ public class DatabaseController {
 		
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		set_list.setListName(newSetListName);
+		set_list.updateDateTime();
 		set_listRepo.save(set_list);
     	
     	// These are used so the JSP page knows to inform the user that they have created a new

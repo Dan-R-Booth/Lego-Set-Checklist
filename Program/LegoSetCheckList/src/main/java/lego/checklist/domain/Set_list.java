@@ -1,5 +1,6 @@
 package lego.checklist.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -36,6 +37,8 @@ public class Set_list {
 	
 	@Column(nullable = false)
 	private int totalSets;
+	
+	private LocalDateTime lastChangedDateTime;
 
 	public Set_list() {}
 	
@@ -44,6 +47,7 @@ public class Set_list {
 		this.listName = listName;
 		this.setsInSetList = setsInSetList;
 		this.totalSets = totalSets;
+		this.lastChangedDateTime = LocalDateTime.now();
 	}
 
 	public int getSetListId() {
@@ -90,5 +94,9 @@ public class Set_list {
 			}
 		}
 		return false;
+	}
+	
+	public void updateDateTime() {
+		this.lastChangedDateTime = LocalDateTime.now();
 	}
 }
