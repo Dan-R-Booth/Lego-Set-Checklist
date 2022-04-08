@@ -422,10 +422,70 @@
 			</div>
 
 			<div id="loggedInDiv" class="d-none">
-				<h2>Welcome back</h2>
-				Recent Set Lists:
-				<br>
-				Recent Sets in Progress:
+				<div class="container-fluid row">
+					<h2>Welcome Back</h2>
+					<ul class="list-unstyled col-sm-6">
+						<h4>Recent Set Lists:</h4>
+						<h5>
+							<div class="list-group">
+								<div class="list-group-item border">
+									<div class="row align-items-center">
+										<div class="col-7">
+											List name:
+										</div>
+										<div class="col-5">
+											Number of Sets:
+										</div>
+									</div>
+								</div>
+								<!-- This creates a list row using bootstrap, for every set in the set list and display the list name and number of sets -->
+								<c:forEach items="${sortedSet_lists}" var="set_list" varStatus="loop">
+									<div class="list-group-item border">
+										<div class="row align-items-center">
+											<div class="col-7">
+												<a id="name_${loop.index}" href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>
+											</div>
+											<div class="col-5">
+												<label id="num_sets_${loop.index}">${set_list.totalSets}</label>
+											</div>
+										</div>
+									</div>
+								</c:forEach>
+							</div>
+						</h5>
+					</ul>
+
+					<ul class="list-unstyled col-sm-6">
+						<h4>Recent Sets in Progress:</h4>
+						<h5>
+							<div class="list-group">
+								<div class="list-group-item border">
+									<div class="row align-items-center">
+										<div class="col-4">
+											Set Number:
+										</div>
+										<div class="col-7">
+											Set Name:
+										</div>
+									</div>
+								</div>
+								<!-- This creates a container using bootstrap, for every set progress and display the set image, num, name, year, theme and num of pieces -->
+								<c:forEach items="${sets}" var="set" varStatus="loop">
+									<div class="list-group-item border">
+										<div class="row align-items-center">
+											<div class="col-4">
+												<a href="/set?set_number=${set.num}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Lego Set">${set.num}</a>
+											</div>
+											<div class="col-7">
+												<label id="name_${loop.index}">${set.name}</label>
+											</div>
+										</div>
+									</div>
+								</c:forEach>
+							</div>
+						</h5>
+					</ul>
+				</div>
 			</div>
 
 			<!-- Modal to Import a Lego Checklist -->

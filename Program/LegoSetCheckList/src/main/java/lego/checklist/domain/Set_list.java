@@ -96,6 +96,10 @@ public class Set_list {
 		return false;
 	}
 	
+	public LocalDateTime getLastChangedDateTime() {
+		return lastChangedDateTime;
+	}
+	
 	public void updateDateTime() {
 		this.lastChangedDateTime = LocalDateTime.now();
 	}

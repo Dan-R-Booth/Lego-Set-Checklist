@@ -48,6 +48,10 @@ public class SetInProgress {
 		return set;
 	}
 	
+	public LocalDateTime getLastChangedDateTime() {
+		return lastChangedDateTime;
+	}
+
 	public void updateDateTime() {
 		this.lastChangedDateTime = LocalDateTime.now();
 	}

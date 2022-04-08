@@ -611,7 +611,7 @@
 				<!-- This is the header for all the Lego sets, made using a bootstrap row and columns with column names -->
 				<div class="row align-items-center my-3">
 					<div class="col">
-						<h6 style="cursor: pointer;" onclick="nameSort()"><span data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by List Name"> List name: <i id="nameSortIcon" class="fa fa-sort"></i></span></h6>
+						<h6 style="cursor: pointer;" onclick="nameSort()"><span data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by List Name">List name: <i id="nameSortIcon" class="fa fa-sort"></i></span></h6>
 					</div>
 					<div class="col">
 						<h6 style="cursor: pointer;" onclick="numSetsSort()" data-bs-toggle="tooltip" data-bs-placement="left" title="Sort by Number of Sets">Number of Sets: <i id="numSetsSortIcon" class="fa fa-sort"></i></h6>
@@ -623,11 +623,9 @@
 		</div>
 	    
 		<div class="mb-5" id="set_lists">
-			<!-- This creates a container using bootstrap, for every set in the set list and display the set image, number, name, year, theme and number of pieces -->
-			<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
+			<!-- This creates a container using bootstrap, for every set in the set list and display the list name and number of sets -->
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 				<div id="setList_${loop.index}" class="container-fluid border">
-					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
 						<div class="col">
 							<a id="name_${loop.index}" href="/set_list=${set_list.listName}" onclick="openLoader()" data-bs-toggle="tooltip" title="View Set List">${set_list.listName}</a>

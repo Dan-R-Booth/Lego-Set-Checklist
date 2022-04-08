@@ -1009,11 +1009,10 @@
 		</div>
 	    
 		<div class="mb-5" id="sets">
-			<!-- This creates a container using bootstrap, for every set in the set list and display the set image, num, name, year, theme and num of pieces -->
+			<!-- This creates a container using bootstrap, for every set progress and display the set image, num, name, year, theme and num of pieces -->
 			<c:forEach items="${sets}" var="set" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 				<div id="set_${loop.index}" class="container-fluid border">
-					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
 						<div class="col" data-bs-toggle="tooltip" title="Image of the Lego Set '${set.name}' (Click to enlarge)">
 							<!-- The style width sets the percentage size the image will be on any screen -->

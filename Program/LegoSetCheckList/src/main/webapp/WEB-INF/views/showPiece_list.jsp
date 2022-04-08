@@ -1024,7 +1024,6 @@
 			<c:forEach items="${set.piece_list}" var="piece" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 				<div id="piece_${loop.index}" class="container-fluid border">
-					<!-- This is the header for all the pieces in a Lego set, made using a bootstrap row and columns with piece attributes -->
 					<div class="row align-items-center my-3">
 						<div class="col" data-bs-toggle="tooltip" title="Image of the Lego Piece '${piece.name}' (Click to enlarge)">
 							<!-- The style width sets the percentage size the image will be on any screen -->
