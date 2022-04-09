@@ -38,7 +38,7 @@ public class MainController {
 		if (account != null) {
 			List<Set_list> lastChangedSet_lists = new ArrayList<>();
 			
-			// This gets the user's last three edited set lists that will be displayed to the user
+			// This gets the user's last three edited set lists that will be displayed to the user (set lists are sorted by last changed date time descending)
 			for (int i = 0; i < 3; i++) {
 				if (i < set_lists.size()) {
 					lastChangedSet_lists.add(set_lists.get(i));
