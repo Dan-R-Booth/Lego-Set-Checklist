@@ -200,8 +200,17 @@ public class DatabaseController {
 		
 		model.addAttribute("accountLoggedIn", usersAccount);
 		
-		// This gets a list of sets belong to the logged in user, and adds these to the model
+		// This gets a list of sets belong to the logged in user, sorts them by last changed time
+		// descending so most recent list is at the top and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(usersAccount);
+		
+		Collections.sort(set_lists, new Comparator<Set_list>() {
+			@Override
+			public int compare(Set_list set_list1, Set_list set_list2) {
+				return set_list2.getLastChangedDateTime().compareTo(set_list1.getLastChangedDateTime());
+			}
+		});
+		
     	model.addAttribute("set_lists", set_lists);
 		
 		// This redirects the user back to the index page
@@ -813,8 +822,16 @@ public class DatabaseController {
         	redirectAttributes.addFlashAttribute("setAdded", true);
         }
 		
-		// This gets a list of sets belong to the logged in user, and adds these to the model
+		// This gets a list of sets belong to the logged in user, sorts them by last changed time
+		// descending so most recent list is at the top and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+		
+		Collections.sort(set_lists, new Comparator<Set_list>() {
+			@Override
+			public int compare(Set_list set_list1, Set_list set_list2) {
+				return set_list2.getLastChangedDateTime().compareTo(set_list1.getLastChangedDateTime());
+			}
+		});
     	model.addAttribute("set_lists", set_lists);
 		
 		// These returns the user back to the page that the user called the controller from
@@ -932,8 +949,17 @@ public class DatabaseController {
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		set_listRepo.delete(set_list);
 		
-		// This gets a list of sets belong to the logged in user, and adds these to the model
+		// This gets a list of sets belong to the logged in user, sorts them by last changed time
+		// descending so most recent list is at the top and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+		
+		Collections.sort(set_lists, new Comparator<Set_list>() {
+			@Override
+			public int compare(Set_list set_list1, Set_list set_list2) {
+				return set_list2.getLastChangedDateTime().compareTo(set_list1.getLastChangedDateTime());
+			}
+		});
+		
     	model.addAttribute("set_lists", set_lists);
 		
     	removeUnneededSetInfo();
@@ -969,8 +995,17 @@ public class DatabaseController {
 		set_list.updateDateTime();
 		set_listRepo.save(set_list);
 		
-		// This gets a list of sets belong to the logged in user, and adds these to the model
+		// This gets a list of sets belong to the logged in user, sorts them by last changed time
+		// descending so most recent list is at the top and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+		
+		Collections.sort(set_lists, new Comparator<Set_list>() {
+			@Override
+			public int compare(Set_list set_list1, Set_list set_list2) {
+				return set_list2.getLastChangedDateTime().compareTo(set_list1.getLastChangedDateTime());
+			}
+		});
+		
     	model.addAttribute("set_lists", set_lists);
 		
     	removeUnneededSetInfo();
@@ -1006,8 +1041,17 @@ public class DatabaseController {
     	redirectAttributes.addFlashAttribute("setListEdited", true);
     	redirectAttributes.addFlashAttribute("newSetListName", newSetListName);
     	
-		// This gets a list of sets belong to the logged in user, and adds these to the model
+    	// This gets a list of sets belong to the logged in user, sorts them by last changed time
+		// descending so most recent list is at the top and adds these to the model
 		List<Set_list> set_lists = set_listRepo.findByAccount(account);
+		
+		Collections.sort(set_lists, new Comparator<Set_list>() {
+			@Override
+			public int compare(Set_list set_list1, Set_list set_list2) {
+				return set_list2.getLastChangedDateTime().compareTo(set_list1.getLastChangedDateTime());
+			}
+		});
+		
     	model.addAttribute("set_lists", set_lists);
 		
     	// These returns the user back to the page that the user called the controller from

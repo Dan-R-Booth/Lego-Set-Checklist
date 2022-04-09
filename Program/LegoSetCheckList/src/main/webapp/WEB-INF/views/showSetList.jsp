@@ -680,6 +680,8 @@
 			function addSetToList(set_num) {
 				var setListId = document.getElementById("selectList_" + set_num).value;
 
+				openLoader();
+				
 				window.location = "/addSetToList/previousPage=set_list/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=${set_list.listName}&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}
 

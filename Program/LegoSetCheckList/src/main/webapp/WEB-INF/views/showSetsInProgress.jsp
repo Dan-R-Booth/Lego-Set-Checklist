@@ -678,6 +678,8 @@
 			// This calls the controller to add a set to a set list
 			function addSetToList(set_num) {
 				var setListId = document.getElementById("selectList_" + set_num).value;
+
+				openLoader();
 				
 				window.location = "/addSetToList/previousPage=setsInProgress/?setListId=" + setListId + "&set_number=" + set_num + "&setListName=${set_list.listName}&" + getMulti_SortValues() + "&" + getBarOpen() + getFilters();
 			}

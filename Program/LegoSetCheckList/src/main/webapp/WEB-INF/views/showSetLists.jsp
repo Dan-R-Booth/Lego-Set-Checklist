@@ -624,6 +624,7 @@
 	    
 		<div class="mb-5" id="set_lists">
 			<!-- This creates a container using bootstrap, for every set in the set list and display the list name and number of sets -->
+			<c:forEach items="${set_lists}" var="set_list" varStatus="loop">
 				<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 				<div id="setList_${loop.index}" class="container-fluid border">
 					<div class="row align-items-center my-3">

@@ -439,7 +439,7 @@
 									</div>
 								</div>
 								<!-- This creates a list row using bootstrap, for every set in the set list and display the list name and number of sets -->
-								<c:forEach items="${sortedSet_lists}" var="set_list" varStatus="loop">
+								<c:forEach items="${lastChangedSet_lists}" var="set_list" varStatus="loop">
 									<div class="list-group-item border">
 										<div class="row align-items-center">
 											<div class="col-7">

@@ -1,6 +1,7 @@
 package lego.checklist.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,13 +27,26 @@ public class MainController {
 	@Autowired
 	private SetInProgressRepository setInProgessRepo;
 	
-	// This opens the website home page
+	// This opens the website's home page
 	@GetMapping("/")
 	public String home(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @SessionAttribute(value="set_lists", required=false) List<Set_list> set_lists) {
 		// This adds the a new account class that will be used by the forms to login and create an account
 		model.addAttribute("account", new Account());
 		
+		// If the user is logged in this gets the three last edited set lists to display to the user for quick access,
+		// along with the 3 last edited sets in progress to be displayed as well
 		if (account != null) {
+			List<Set_list> lastChangedSet_lists = new ArrayList<>();
+			
+			// This gets the user's last three edited set lists that will be displayed to the user
+			for (int i = 0; i < 3; i++) {
+				if (i < set_lists.size()) {
+					lastChangedSet_lists.add(set_lists.get(i));
+				}
+			}
+			
+			model.addAttribute("lastChangedSet_lists", lastChangedSet_lists);
+			
 			List<SetInProgress> setsInProgress = setInProgessRepo.findByAccount(account);
 			
 			// This sorts the sets in progress for the user by time and date last changed descending
@@ -43,27 +57,24 @@ public class MainController {
 				}
 			});
 			
-			model.addAttribute("setsInProgress", setsInProgress);
+			List<SetInProgress> lastChangedSetsInProgress = new ArrayList<>();
+			
+			// This gets the user's last three edited sets in progress that will be displayed to the user
+			for (int i = 0; i < 3; i++) {
+				if (i < setsInProgress.size()) {
+					lastChangedSetsInProgress.add(setsInProgress.get(i));
+				}
+			}
 			
 			List<Set> sets = new ArrayList<>();
 			
 			// This gets all the set info for all the sets the user has in progress
-			for (SetInProgress setInProgress : setsInProgress) {
+			for (SetInProgress setInProgress : lastChangedSetsInProgress) {
 				Set set = setInProgress.getSet();
 				sets.add(set);
 			}
 			
 			model.addAttribute("sets", sets);
-			
-			// This sorts the set lists for the user by time and date last changed descending
-			Collections.sort(set_lists, new Comparator<Set_list>() {
-				@Override
-				public int compare(Set_list set_list1, Set_list set_list2) {
-					return set_list2.getLastChangedDateTime().compareTo(set_list1.getLastChangedDateTime());
-				}
-			});
-			
-			model.addAttribute("sortedSet_lists", set_lists);
 		}
 		
 		return "index";

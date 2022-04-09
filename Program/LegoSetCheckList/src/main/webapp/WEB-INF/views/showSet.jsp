@@ -394,7 +394,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-								<button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Set</button>
+								<button type="submit" id="addSetToListButton_${set.num}" class="btn btn-primary" onclick="openLoader()"><i class="fa fa-plus"></i> Add Set</button>
 							</div>
 						</form>
 					</div>
