@@ -176,16 +176,6 @@
 					window.location = "/search/text=/barOpen=/sort=/minYear=/maxYear=/minPieces=/maxPieces=/theme_id=/uri/";
 				}
 			}
-			
-			// This clicks the button login-tab to switch to the login tab 
-			function loginTab() {
-				document.getElementById("login-tab").click();
-			}
-
-			// This clicks the button login-tab to switch to the login tab 
-			function signUpTab() {
-				document.getElementById("signUp-tab").click();
-			}
 
 			// This function is called everytime a change occurs in the listName textbox
 			// to check if the user already has a list with entered list name
@@ -259,7 +249,7 @@
 						</ul>
 						<ul class="navbar-nav">
 							<li class="nav-item ms-5">
-								<a class="d-none" id="login/signUpLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#login_SignUp_Modal"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
+								<a class="d-none" id="login/signUpLink" href="/openLogin_SignUp_Modal" data-bs-toggle="tooltip" title="Got to Home Page to Login/SignUp"> <i class="fa fa-sign-in"></i> Login/SignUp</a>
 							</li>
 							<li class="nav-item ms-5">
 								<a class="d-none" id="logoutLink" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#logoutModal"> <i class="fa fa-sign-out"></i> Logout</a>
@@ -352,8 +342,6 @@
 				<button class="btn btn-outline-secondary btn-dark text-white" type="button" onclick="backToSearch()" style="width: 75%"> BACK TO SEARCH </button>
 			</div>
 		</div>
-		
-		<!-- Modal to Login or Sign Up -->
 		
 		<!-- This code will only be run if the user is logged in -->
 		<c:if test="${not empty accountLoggedIn}">
