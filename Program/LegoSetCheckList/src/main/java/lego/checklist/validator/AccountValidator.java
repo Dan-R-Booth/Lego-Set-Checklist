@@ -1,11 +1,25 @@
 package lego.checklist.validator;
 
+import java.security.spec.KeySpec;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import lego.checklist.domain.Account;
 import lego.checklist.repository.AccountRepository;
+
+/* References:
+* [1]	S. Millington, "Hashing a Password in Java", Baeldung,
+* 		2022. [Online].
+* 		Available: https://www.baeldung.com/java-password-hashing. [Accessed: 10- Apr- 2022]
+* [2]	L. Gupta, "Java - Create a Secure Password Hash - HowToDoInJava",
+* 		HowToDoInJava, 2022. [Online].
+* 		Available: https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/. [Accessed: 10- Apr- 2022]
+*/
 
 public class AccountValidator implements Validator {
 
@@ -53,7 +67,7 @@ public class AccountValidator implements Validator {
 	}
 	
 	// This function is used to validate a user login request
-	public void validateLogin(Object target, Errors errors) {
+	public void validateLogin(Object target, Errors errors) throws Exception {
 		Account account = (Account) target;
 		String email = account.getEmail();
 		String password = account.getPassword();
@@ -89,12 +103,57 @@ public class AccountValidator implements Validator {
 			// the user their was a problem logging in is added to the instance of the Errors class errors
 			else {
 				Account accountFound = repo.findByEmail(account.getEmail());
+				String accountPassword = accountFound.getPassword();
 				
-				if (!accountFound.getPassword().equals(password)) {
+				
+				/*
+				 * From here until the end of the function I have used code from the websites [1] and [2].
+				 */
+				
+				// This uses code from website [2] to retrieve the saved password hash and salt from the data base.
+				String[] parts = accountPassword.split(":");
+				System.out.println("\n parts[0] " + parts[0] + "\n");
+				byte[] storedPasswordHash = fromHex(parts[0]);
+				byte[] salt = fromHex(parts[1]);
+				
+				/*
+				 * Here I have used code from the website [1] to hash and salt the inputed password,
+				 * using a PBKDF2 hash and the salt saved in the database
+				 */
+				KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+				SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+				
+				byte[] hash = factory.generateSecret(spec).getEncoded();
+				
+				/*
+				 * Here I have used code from this website [2] to compare the saved hashed
+				 * password in the database to the hashed inputed password
+				 */
+				int diff = storedPasswordHash.length ^ hash.length;
+			    for(int i = 0; i < storedPasswordHash.length && i < hash.length; i++)
+			    {
+			        diff |= storedPasswordHash[i] ^ hash[i];
+			    }
+				
+			    if (diff != 0) {
 					errors.rejectValue("email", "email_password", "Email address and/or Password incorrect");
 					errors.rejectValue("password", "email_password", "Email address and/or Password incorrect");
 				}
 			}
 		}
+	}
+
+	/*
+	 * Here I have used code from the website [2] to turn hex into byte array,
+	 * as this was not vital to the main function of the program but need for
+	 * being able to retrieve the hash and salt stored in the database.
+	 */
+	private static byte[] fromHex(String hex) {
+	    byte[] bytes = new byte[hex.length() / 2];
+	    for(int i = 0; i < bytes.length ;i++)
+	    {
+	        bytes[i] = (byte)Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+	    }
+	    return bytes;
 	}
 }

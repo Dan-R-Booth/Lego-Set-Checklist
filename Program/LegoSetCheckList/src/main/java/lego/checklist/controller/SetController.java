@@ -35,9 +35,9 @@ import lego.checklist.domain.Set;
 import lego.checklist.domain.Set_list;
 import lego.checklist.domain.Theme;
 
-//RestTemplate is used to perform HTTP request to a uri [1]
+// RestTemplate is used to perform HTTP request to a uri [1]
 
-//The Jackson-core [2] and Jackson-databind [5] libraries is used for working with JSON
+// The Jackson-core [2] and Jackson-databind [5] libraries is used for working with JSON
 
 /* References:
 * [1]	"RestTemplate (Spring Framework 5.3.14 API)",

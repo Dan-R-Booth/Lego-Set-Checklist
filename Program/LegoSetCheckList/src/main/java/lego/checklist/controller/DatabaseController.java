@@ -1,10 +1,15 @@
 package lego.checklist.controller;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +51,15 @@ import lego.checklist.repository.SetInfoRepository;
 import lego.checklist.repository.Set_listRepository;
 import lego.checklist.validator.AccountValidator;
 
+/* References:
+* [1]	S. Millington, "Hashing a Password in Java", Baeldung,
+* 		2022. [Online].
+* 		Available: https://www.baeldung.com/java-password-hashing. [Accessed: 10- Apr- 2022]
+* [2]	L. Gupta, "Java - Create a Secure Password Hash - HowToDoInJava",
+* 		HowToDoInJava, 2022. [Online].
+* 		Available: https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/. [Accessed: 10- Apr- 2022]
+*/
+
 @Controller
 @SessionAttributes({"accountLoggedIn", "set_lists"})
 public class DatabaseController {
@@ -74,9 +88,59 @@ public class DatabaseController {
 	// The api key used to access the Rebrickable api
 	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 	
+	/*
+	 * Here I have used code from the website [1] to hash and salt a password,
+	 * using a PBKDF2 hash and parsed salt, for a users account and added code
+	 * from website [2] to improve this, as password hashing was not vital to
+	 * the main function of the program I have borrowed this code here
+	 */
+	private String passwordEncryption(String password, byte[] salt) throws Exception {		
+		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		
+		byte[] hash = factory.generateSecret(spec).getEncoded();
+		
+		return toHex(hash) + ":" + toHex(salt);
+	}
+	
+	/*
+	 * Here I have used code from the website [2] to turn byte array into hex,
+	 * as this was not vital to the main function of the program but need for
+	 * being able to save hash and salt to the database.
+	 */
+	private static String toHex(byte[] array) {
+	    BigInteger bi = new BigInteger(1, array);
+	    String hex = bi.toString(16);
+	    
+	    int paddingLength = (array.length * 2) - hex.length();
+	    if(paddingLength > 0)
+	    {
+	        return String.format("%0"  +paddingLength + "d", 0) + hex;
+	    }else{
+	        return hex;
+	    }
+	}
+	
+	/*
+	 * Here I have used code from the website [1] which uses java security to
+	 * produces a random salt that is used for password hashing
+	 */
+	private byte[] generateSalt() {		
+		SecureRandom random = new SecureRandom();
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+		return salt;
+	}
+	
 	// This will create an new account for a user, as long as the entered details are valid
 	@PostMapping("/signUp")
-	public String signUp(@ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) {
+	public String signUp(@ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) throws Exception {
+		// This encrypts the entered password, with a new salt randomly generated
+		// and sets these to the account
+		byte[] salt = generateSalt();
+		String passwordHash = passwordEncryption(account.getPassword(), salt);
+		account.setPassword(passwordHash);
+		
 		// This creates an instance of the AccountValidator and calls the validate function
 		// with an Account generated using values entered in the signUp form. This function
 		// then checks if there are any errors with the accounts details and if there are
@@ -101,7 +165,6 @@ public class DatabaseController {
 				}
 				else if (error.getCode().equals("password")) {
 					passwordValid = false;
-					System.out.println(error.getDefaultMessage());
 					redirectAttributes.addFlashAttribute("passwordErrorMessage_SignUp", error.getDefaultMessage());
 				}
 			}
@@ -140,7 +203,7 @@ public class DatabaseController {
 	
 	// This will sign a user into their account, as long as the entered details are valid
 	@PostMapping("/login")
-	public String login(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+	public String login(@ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception {
 		// This creates an instance of the AccountValidator and calls the validateLogin function
 		// with an Account generated using values entered in the login form. This function
 		// then checks if there are any errors with the accounts details and if there are
@@ -219,7 +282,7 @@ public class DatabaseController {
 	
 	// This deletes a users account, as long as the password entered matches the saved password
 	@PostMapping("/deleteAccount")
-	public String deleteAccount(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) {
+	public String deleteAccount(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) throws Exception {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
 			redirectAttributes.addFlashAttribute("pageInfo", "edit your account");
@@ -265,7 +328,7 @@ public class DatabaseController {
 	
 	// This changes a users email address, as long as the password entered matches the saved password and the new email is valid
 	@GetMapping("/changeEmail")
-	public String changeEmail(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String oldEmail, @RequestParam(required = true) String newEmail, @RequestParam(required = true) String password, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+	public String changeEmail(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String oldEmail, @RequestParam(required = true) String newEmail, @RequestParam(required = true) String password, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes)  throws Exception {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
 			redirectAttributes.addFlashAttribute("pageInfo", "edit your account");
@@ -300,15 +363,18 @@ public class DatabaseController {
 					// This is only password incorrect as email is added automatically
 					redirectAttributes.addFlashAttribute("passwordErrorMessage_ChangeEmail", "Password incorrect");
 				}
-				System.out.println("\n oldEmail: " + oldEmail + " error: " + error.getDefaultMessage() + "\n");
 			}
 			// This is used so that the user knows that the password entered was incorrect
 			redirectAttributes.addFlashAttribute("passwordIncorrect_ChangeEmail", true);
 		}
 		
+		// This encrypts the entered password, with a new salt randomly generated
+		byte[] salt = generateSalt();
+		String encyptedPassword = passwordEncryption(account.getPassword(), salt);
+		
 		// This creates a new account with the users new email and password to compare with email addresses
 		// saved in the database as email must be unique
-		account = new Account(newEmail, password);
+		account = new Account(newEmail, encyptedPassword);
 		
 		// I reuse the validate for sign-up because this checks the email is valid and not already attached to another account
 		accountValidator.validate(account, result);
@@ -330,7 +396,6 @@ public class DatabaseController {
 		}
 		
 		if (errors == false) {
-			System.out.println("\n here \n");
 			// This sets the new password and updates the account logged
 			// in and then saves the updated account to the database
 			accountLoggedIn.setEmail(newEmail);
@@ -342,21 +407,19 @@ public class DatabaseController {
 			redirectAttributes.addFlashAttribute("emailChanged", true);
 		}
 		else {
-			System.out.println("\n error \n");
 			// This is used so that the user knows that their email was not changed
 			redirectAttributes.addFlashAttribute("emailChangedFailed", true);
 			
 			// This adds the email entered so it can be put back in the form
 			redirectAttributes.addFlashAttribute("emailChangedEntered", account.getEmail());
 		}
-		System.out.println("\n end \n");
 		// This redirects the user to the logout page
 		return "redirect:/profile";
 	}
 	
 	// This changes a users password, as long as the password entered matches the old saved password and the new password is valid
 	@GetMapping("/changePassword")
-	public String changePassword(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String email, @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+	public String changePassword(@SessionAttribute(value = "accountLoggedIn", required = true) Account accountLoggedIn, @RequestParam(required = true) String email, @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @ModelAttribute Account account, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception {
 		// If a user is not logged in this redirects the user to the access denied page
 		if (account == null) {
 			redirectAttributes.addFlashAttribute("pageInfo", "edit your account");
@@ -415,10 +478,12 @@ public class DatabaseController {
 		}
 		
 		if (errors == false) {
-			// This sets the new password and updates the account
-			// logged in and then saves the updated account to the
-			// database
-			accountLoggedIn.setPassword(newPassword);
+			// This encrypts the new password, with a new salt randomly generated
+			// This sets the new password  and salt and updates the account logged
+			// in and then saves the updated account to the database
+			byte[] salt = generateSalt();
+			String encyptedPassword = passwordEncryption(account.getPassword(), salt);
+			accountLoggedIn.setPassword(encyptedPassword);
 			model.addAttribute("accountLoggedIn", accountLoggedIn);
 			
 			accountRepo.save(accountLoggedIn);
