@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,9 +26,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 
+import lego.checklist.domain.Account;
 import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
+import lego.checklist.domain.PieceFound;
 import lego.checklist.domain.Set;
+import lego.checklist.domain.SetInProgress;
+import lego.checklist.repository.PieceFoundRepository;
+import lego.checklist.repository.SetInProgressRepository;
 
 //RestTemplate is used to perform HTTP request to a uri [1]
 
@@ -54,134 +61,108 @@ import lego.checklist.domain.Set;
 @SessionAttributes("set")
 public class PieceController {
 	// This stores the basic uri to the Rebrickable API
-	public final static String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
+	private final static String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 		
 	// The api key used to access the Rebrickable api
-	public final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	private final static String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	
+	@Autowired
+	private SetInProgressRepository setInProgessRepo;
+	
+	@Autowired
+	private PieceFoundRepository pieceFoundRepo;
 		
 	@GetMapping("set/{set_number}/pieces")
-	public String showPieces(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
+	public String showPieces(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, @RequestParam(required = false) Boolean hidePiecesNotFound, @RequestParam(required = false) Boolean changesMade) {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
 		
-		updateQuantityChecked(set, quantityChecked, piece_list);
+		// When quantityChecked (which holds the current quantities for each piece in the Lego Set)
+		// is parsed in this calls the updateQuantityChecked function to update the quantity checked
+		// for each piece in the Lego set
+		if (quantityChecked != null) {
+			updateQuantityChecked(set, quantityChecked, piece_list);
+		}
+		// Otherwise, if the user is logged in and the sets progress is saved to the database this updates
+		// every piece's quantity in the set, to match the quantity that is stored in the database
+		else if ((account != null) && (setInProgessRepo.findByAccountAndSet(account, set) != null)) {
+    		SetInProgress setInProgress = setInProgessRepo.findByAccountAndSet(account, set);
+    		List<PieceFound> piecesFound = pieceFoundRepo.findBySetInProgress(setInProgress);
+    		
+    		for (Piece piece : piece_list) {
+            	for (PieceFound pieceFound : piecesFound) {
+            		if (pieceFound.getPieceNumber().equals(piece.getNum()) && pieceFound.getColourName().equals(piece.getColour_name()) && pieceFound.isSpare() == piece.isSpare()) {
+            			piece.setQuantity_checked(pieceFound.getQuantityFound());
+            		}
+            	}
+            }
+    		
+    		set.setPiece_list(piece_list);
+    	}
 		
 		// If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
 		if (sort != null) {
 			
-			if (sort.equals("pieceNumber") || sort.equals("-pieceNumber")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Piece Number
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getNum().compareTo(piece2.getNum());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-pieceNumber")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-			else if (sort.equals("pieceName") || sort.equals("-pieceName")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Piece Name
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getName().compareTo(piece2.getName());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-pieceName")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-			else if (sort.equals("colour") || sort.equals("-colour")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Colour
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getColour_name().compareTo(piece2.getColour_name());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-colour")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-	    	else if (sort.equals("type") || sort.equals("-type")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Piece Type
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getPieceType().compareTo(piece2.getPieceType());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-type")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-	    	else if (sort.equals("quantity") || sort.equals("-quantity")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Quantity
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getQuantity() - piece2.getQuantity();
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-quantity")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
-	    	else if (sort.equals("quantityFound") || sort.equals("-quantityFound")) {
-	    		// This sorts the list of pieces so they are in alphabetical order by Quantity Found
-	    		Collections.sort(piece_list, new Comparator<Piece>() {
-	    			@Override
-	    			public int compare(Piece piece1, Piece piece2) {
-	    				return piece1.getQuantity_checked() - (piece2.getQuantity_checked());
-	    			}
-	    		});
-	    		
-	    		if (sort.equals("-quantityFound")) {
-	    			Collections.reverse(piece_list);
-	    		}
-	    	}
+    		// This sorts the list of pieces so they are in alphabetical order by Piece Number
+    		Collections.sort(piece_list, new Comparator<Piece>() {
+    			@Override
+    			public int compare(Piece piece1, Piece piece2) {
+    				
+    				if (sort.equals("pieceNumber")) {
+    					// This compares the pieces by Piece Number ascending
+    					return piece1.getNum().compareTo(piece2.getNum());
+    		    	}
+    				else if (sort.equals("-pieceNumber")) {
+    					// This compares the pieces by Piece Number descending
+    					return piece2.getNum().compareTo(piece1.getNum());
+    		    	}
+    				else if (sort.equals("pieceName")) {
+    					// This compares the pieces by Piece Name ascending
+    					return piece1.getName().toUpperCase().compareTo(piece2.getName().toUpperCase());
+    		    	}
+    				else if (sort.equals("-pieceName")) {
+    					// This compares the pieces by Piece Name descending
+    					return piece2.getName().toUpperCase().compareTo(piece1.getName().toUpperCase());
+    		    	}
+    				else if (sort.equals("colour")) {
+    					// This compares the pieces by Colour ascending
+    					return piece1.getColour_name().toUpperCase().compareTo(piece2.getColour_name().toUpperCase());
+    		    	}
+    				else if (sort.equals("-colour")) {
+    					// This compares the pieces by Colour descending
+    					return piece2.getColour_name().toUpperCase().compareTo(piece1.getColour_name().toUpperCase());
+    		    	}
+    				else if (sort.equals("type")) {
+    					// This compares the pieces by Piece Type ascending
+    					return piece1.getColour_name().toUpperCase().compareTo(piece2.getColour_name().toUpperCase());
+    		    	}
+    				else if (sort.equals("-type")) {
+    					// This compares the pieces by Piece Type descending
+    					return piece2.getPieceType().toUpperCase().compareTo(piece1.getPieceType().toUpperCase());
+    		    	}
+    				else if (sort.equals("quantity")) {
+    					// This compares the pieces by Quantity ascending
+    					return piece1.getQuantity() - piece2.getQuantity();
+    		    	}
+    				else if (sort.equals("-quantity")) {
+    					// This compares the pieces by Quantity Found descending
+    					return piece2.getQuantity() - piece1.getQuantity();
+    		    	}
+    				else if (sort.equals("quantityFound")) {
+    					// This compares the pieces by Quantity Found ascending
+    					return piece1.getQuantity_checked() - piece2.getQuantity_checked();
+    		    	}
+    				else {
+    					// This compares the pieces by Quantity descending
+    					return piece2.getQuantity_checked() - piece1.getQuantity_checked();
+    		    	}
+    			}
+    		});
 	    	
 	    	model.addAttribute("sort", sort);
 		}
-		
-		// This calls a function that adds all the model attributes needed to apply the filters that have been parsed in
-		addListFilters(model, quantityChecked, colourFilter, pieceTypeFilter, hidePiecesFound);
-		
-		// This calls a function that adds all the colours to a list that is used to display options to filter the list by colours
-		// This function also adds all the piece types to another list that is used to display options to filter the list by types
-		// of Lego pieces
-		getColoursAndPieceTypes(model, set);
-		
-    	model.addAttribute("set_number", set.getNum());
-    	model.addAttribute("num_items", piece_list.size());
-		return "showPiece_list";
-	}
-	
-	// Updates the quantity found for a Set object
-	public static void updateQuantityChecked(Set set, List<Integer> quantityChecked, List<Piece> piece_list) {
-		// quantityChecked List holds the quantities of all the current quantities for each piece
-		// This saves all changes made by the user to pieces checked to the Set class when passed in as a parameter
-		if (quantityChecked != null) {
-			// This updates the quantity checked for each piece in the Lego set
-			for (int i = 0; i < piece_list.size(); i++) {
-				Piece piece = piece_list.get(i);
-				piece.setQuantity_checked(quantityChecked.get(i));
-			}
-			
-			set.setPiece_list(piece_list);
-		}
-	}
-	
-	// This function adds all the model attributes needed to apply the filters that have been parsed in
-	public static void addListFilters(Model model, List<Integer> quantityChecked, String colourFilter,  String pieceTypeFilter, Boolean hidePiecesFound) {
+
 		// If there is a colour filters being parsed this will add an array of these to the model
 		// Otherwise it will just add the string All_Colours
 		if (colourFilter != null) {
@@ -216,9 +197,37 @@ public class PieceController {
 		
 		// If the boolean hidePiecesFound is parsed into the controller this adds it to the model
 		if (hidePiecesFound != null) {
-			System.out.println(hidePiecesFound);
 			model.addAttribute("hidePiecesFound", hidePiecesFound);
 		}
+		
+		// If the boolean hidePiecesNotFound is parsed into the controller this adds it to the model
+		if (hidePiecesNotFound != null) {
+			model.addAttribute("hidePiecesNotFound", hidePiecesNotFound);
+		}
+		
+		// If the boolean changesMade is parsed into the controller this adds it to the model
+		if (changesMade != null) {
+			model.addAttribute("changesMade", changesMade);
+		}
+		
+		// This calls a function that adds all the colours to a list that is used to display options to filter the list by colours
+		// This function also adds all the piece types to another list that is used to display options to filter the list by types
+		// of Lego pieces
+		getColoursAndPieceTypes(model, set);
+		
+    	model.addAttribute("set_number", set.getNum());
+    	model.addAttribute("num_items", piece_list.size());
+		return "showPiece_list";
+	}
+	
+	// Updates the quantity of pieces found for a Set object
+	public static void updateQuantityChecked(Set set, List<Integer> quantityChecked, List<Piece> piece_list) {
+		for (int i = 0; i < piece_list.size(); i++) {
+			Piece piece = piece_list.get(i);
+			piece.setQuantity_checked(quantityChecked.get(i));
+		}
+		
+		set.setPiece_list(piece_list);
 	}
 	
 	// This adds all the colours to a list that is used to display options to filter the list by colours
@@ -321,6 +330,12 @@ public class PieceController {
 	// This gets all the pieces in the Lego Set using the Lego Set pieces uri, starting with the first page of these Lego piece list,
 	// If there are other pages containing pieces on the api, this class will then be called recursively to get all of these pieces
 	public static List<Piece> getPiece_listPage(String piece_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+		// This makes the program wait one second before making an API call to stop a Too Many Requests error and timeout from the API
+		try {
+			Thread.sleep(1000);
+		}
+		catch (Exception e) {}
+		
 		// This uses restTemplate and the Lego set piece uri to call the API and then transforms the returned JSON into a String
 		String piece_list_JSON = restTemplate.getForObject(piece_list_uri, String.class);
 		
@@ -398,6 +413,12 @@ public class PieceController {
 	
 	// This returns a piece_list for pieces needed to build all the minifigures in a Lego set
 	public static List<Piece> getMinifigurePiece_list(String minifigure_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
+		// This makes the program wait one second before making an API call to stop a Too Many Requests error and timeout from the API
+		try {
+			Thread.sleep(1000);
+		}
+		catch (Exception e) {}
+		
 		// This creates an array list to store all the Lego pieces needed to build a Lego set
 		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
 		List<Minifigure> minifigures = new ArrayList<>();
@@ -516,8 +537,7 @@ public class PieceController {
 	 * I have labelled where I have started using this code below
 	 */
 	@GetMapping("/set/{set_number}/pieces/export")
-	public void export(Model model, @PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws Exception {
-		
+	public void export(@PathVariable String set_number, @ModelAttribute("set") Set set, @RequestParam("quantityChecked") List<Integer> quantityChecked, HttpServletResponse response) throws Exception {
 		
 		// This gets all the pieces in a Lego Set
 		List<Piece> piece_list = set.getPiece_list();
@@ -548,9 +568,9 @@ public class PieceController {
         //write all users to csv file
 		writer.writeNext(new String[] {set_number});
 		
+		// For each piece in the Lego set if its quantity is above zero, this writes a piece's number, colour name
+		// and if its a spare as a line to the new CSV file, as these values uniquely identity each Lego piece
 		for (Piece piece : piece_list) {
-			// This adds the number, colour name and if its a spare of pieces that have a quantity above zero,
-			// as these values uniquely identity each Lego piece
 			if (piece.getQuantity_checked() != 0) {
 				String[] csv_data = {piece.getNum(), piece.getColour_name(), String.valueOf(piece.isSpare()), String.valueOf(piece.getQuantity_checked())};
 				writer.writeNext(csv_data);

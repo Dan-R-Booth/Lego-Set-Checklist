@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,14 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,13 +29,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
 
+import lego.checklist.domain.Account;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.Set;
+import lego.checklist.domain.Set_list;
 import lego.checklist.domain.Theme;
 
-//RestTemplate is used to perform HTTP request to a uri [1]
+// RestTemplate is used to perform HTTP request to a uri [1]
 
-//The Jackson-core [2] and Jackson-databind [5] libraries is used for working with JSON
+// The Jackson-core [2] and Jackson-databind [5] libraries is used for working with JSON
 
 /* References:
 * [1]	"RestTemplate (Spring Framework 5.3.14 API)",
@@ -56,13 +61,13 @@ import lego.checklist.domain.Theme;
 @SessionAttributes({"set", "searchURL"})
 public class SetController {
 	// This stores the basic uri to the Rebrickable API
-	public final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
+	private final String rebrickable_uri = "https://rebrickable.com/api/v3/lego/";
 	
 	// The api key used to access the Rebrickable api
-	public final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
+	private final String rebrickable_api_key = "15b84a4cfa3259beb72eb08e7ccf55df";
 	
 	@GetMapping("/set")
-	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate) {
+	public String showSet(Model model, @RequestParam String set_number, @RequestParam(required = false) String set_variant, RestTemplate restTemplate, @SessionAttribute(value = "accountLoggedIn", required = false) Account account) {
 		
 		if (set_variant != null) {
 			// As there are different versions of certain sets denoted by '-' and the version number,
@@ -86,7 +91,7 @@ public class SetController {
 		}
 		catch (HttpClientErrorException e) {
 			
-			if (e.getMessage().contains("404 Not Found")) {
+			if (e.getRawStatusCode() == 404) {
 				model.addAttribute("notFound", true);
 			}
 			else {
@@ -99,7 +104,7 @@ public class SetController {
 	}
 	
 	@GetMapping("/search/text={text}/barOpen={barOpen}/sort={sort}/minYear={minYear}/maxYear={maxYear}/minPieces={minPieces}/maxPieces={maxPieces}/theme_id={theme_id}/uri/**")
-	public String showSetPage(Model model, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
+	public String showSetPage(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @PathVariable("text") String searchText, @PathVariable("barOpen") String barOpen, @PathVariable("sort") String sort, @PathVariable("minYear") String minYear, @PathVariable("maxYear") String maxYear, @PathVariable("minPieces") String minPieces, @PathVariable("maxPieces") String maxPieces, @PathVariable("theme_id") String filteredTheme_id, RestTemplate restTemplate, HttpServletRequest request) {
 		
 		// These are used so I can get the uri to the Rebrickable API for the set page out of the whole page url
 		String url = request.getRequestURI().toString() + "?" + request.getQueryString();
@@ -237,20 +242,20 @@ public class SetController {
         model.addAttribute("current", set_list_uri);
         model.addAttribute("searchText", searchText);
         model.addAttribute("sets", sets);
-        model.addAttribute("themes", ThemeController.themes);
         model.addAttribute("themeList", ThemeController.themeList);
 		return "search";
 	}
 	
+	// This gets all the information and Lego pieces for a Lego Set that is received from the Rebrickable API via the Set Number
 	private Set getSet(Model model, String set_number, RestTemplate restTemplate) {
 		// This is the uri to a specific set in the Rebrickable API
 		String set_uri = rebrickable_uri + "sets/" + set_number + "/?key=" + rebrickable_api_key;
-
+		
 		// The rest template created above is used to fetch the Lego set every time the website is loaded
 		// and here it uses the Lego set uri to call the API and then transforms the returned JSON into a String
 		String set_JSON = restTemplate.getForObject(set_uri, String.class);
 		
-		// Sets default values in case the following try catch statement fails
+		// Set's default values in case the following try catch statement fails
 		String num = "";
 		String name = "";
 		int year = -1;
@@ -315,12 +320,13 @@ public class SetController {
 	// This also takes values for filter and sort for the showPieceList page as if the import popup is on this page
 	// it needs these values to return to the exact some page if the import fails
 	@PostMapping("/openImport/previousPage={previousPage}")
-	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @ModelAttribute("set") Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound) {
-		
+	public String importPage(Model model, @RequestParam("importFile") MultipartFile importFile, RestTemplate restTemplate, @PathVariable("previousPage") String previousPage, @SessionAttribute(value = "set", required = false) Set previousSet, @RequestParam(required = false) String previous_set_number, @RequestParam(required = false) String sort, @RequestParam(required = false) List<Integer> quantityChecked, @RequestParam(required = false) String colourFilter, @RequestParam(required = false) String pieceTypeFilter, @RequestParam(required = false) Boolean hidePiecesFound, @RequestParam(required = false) Boolean hidePiecesNotFound, RedirectAttributes redirectAttributes) {
 		// validate file
         if (importFile.isEmpty()) {
-            model.addAttribute("message", "The file '" + importFile.getOriginalFilename() + "' is empty, please select a valid CSV file.");
-            model.addAttribute("error", true);
+        		// This is used so the JSP page knows to inform the user that the import failed
+        		// and why and is added to redirectAttributes so it stays after the page redirect
+        		redirectAttributes.addFlashAttribute("message", "The file '" + importFile.getOriginalFilename() + "' is empty, please select a valid CSV file.");
+        		redirectAttributes.addFlashAttribute("importError", true);
         } else {
             // parse CSV file to create a list of `User` objects
             try {
@@ -347,6 +353,7 @@ public class SetController {
                 
                 List<Piece> piece_list = set.getPiece_list();
                 
+                // This updates every piece's quantity in the set, to match the quantity that is stored in the CSV file
                 for (Piece piece : piece_list) {
                 	for (String[] piece_checked : pieces_checked) {
                 		if (piece_checked[0].equals(piece.getNum()) && piece_checked[1].equals(piece.getColour_name()) && piece_checked[2].equals(String.valueOf(piece.isSpare()))) {
@@ -365,38 +372,75 @@ public class SetController {
         		return "showSet";
             }
             catch (Exception ex) {
-                model.addAttribute("message", "An error occurred while processing the file: " + importFile.getOriginalFilename());
-                model.addAttribute("error", true);
+				// This is used so the JSP page knows to inform the user that the import failed
+        		// and why and is added to redirectAttributes so it stays after the page redirect
+				redirectAttributes.addFlashAttribute("message", "An error occurred while processing the file: '" + importFile.getOriginalFilename() + "'");
+				redirectAttributes.addFlashAttribute("importError", true);
             }
         }
         
         // If the import was called from the showPiece_list page this adds the values inputed from that page so that the user is returned
         // to the exact same page
-        if (previousPage.equals("showPiece_list")) {
-        	// This calls the function updateQuantityChecked in the PieceController class, that
-        	PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
+        if (previousPage.equals("Set_Pieces")) {
+        	// When quantityChecked (which holds the current quantities for each piece in the Lego Set)
+    		// is parsed in this calls the updateQuantityChecked function in the PieceController class
+        	// to update the quantity checked for each piece in the Lego set
+    		if (quantityChecked != null) {
+    			PieceController.updateQuantityChecked(previousSet, quantityChecked, previousSet.getPiece_list());
+    		}
         	
-        	System.out.println(sort + ":sort");
-        	
-	        // If their is a sort to be applied to the checklist (sorts not null), then the following is ran to apply this sort
+	        // If their is a sort to be applied to the checklist (sort not null), then it is added to string
+        	// thats added to the redirect as a requestParam
 	 		if (sort != null) {
-	 	    	model.addAttribute("sort", sort);
+	 	    	redirectAttributes.addFlashAttribute("sort", sort);
 	 		}
-	        
-	 		// This calls the function addListFilters in the PieceController class, that adds all the model attributes
-	 		// needed to apply the filters that have been parsed in
-			PieceController.addListFilters(model, quantityChecked, colourFilter, pieceTypeFilter, hidePiecesFound);
-	 		
-			// This calls a function in getColoursAndPieceTypes the PieceController class, that adds all the colours to a list that
-			// is used to display options to filter the list by colours. This function also adds all the piece types to another list
-			// that is used to display options to filter the list by types of Lego pieces
-			PieceController.getColoursAndPieceTypes(model, previousSet);
+	    	
+			String colourFilterRequestParam = "";
+
+			// If the string colourFilter is parsed into the controller it is added to redirectAttributes as an addAttribute so can
+			// be added to the string below as a URI variable and then this String can be added to the redirect as a requestParam.
+			// If this value is added directly to the String and then to the redirect, the redirect will not work properly.
+			// This is because any space will not be converted properly as "%20" but as added as a "+", however adding the string
+			// as an attribute of redirectAttributes and then using this attribute converts these spaces properly.
+			if (colourFilter != null) {
+				redirectAttributes.addAttribute("colourFilter", colourFilter);
+				colourFilterRequestParam = "&colourFilter={colourFilter}";
+			}
+
+			String pieceTypeFilterRequestParam = "";
+
+			// If the string pieceTypeFilter is parsed into the controller it is added to redirectAttributes as an addAttribute so can
+			// be added to the string below as a URI variable and then this String can be added to the redirect as a requestParam.
+			// If this value is added directly to the String and then to the redirect, the redirect will not work properly.
+			// This is because any space will not be converted properly as "%20" but as added as a "+", however adding the string
+			// as an attribute of redirectAttributes and then using this attribute converts these spaces properly.
+			if (pieceTypeFilter != null) {
+				redirectAttributes.addAttribute("pieceTypeFilter", pieceTypeFilter);
+				pieceTypeFilterRequestParam = "&pieceTypeFilter={pieceTypeFilter}";
+			}
+
+			String hidePiecesFoundRequestParam = "";
+
+			// If the boolean hidePiecesFound is parsed into the controller, it is added to string
+			// thats added to the redirect as a requestParam
+			if (hidePiecesFound != null) {
+				hidePiecesFoundRequestParam = "&hidePiecesFound=" + hidePiecesFound;
+			}
 			
-			model.addAttribute("set_number", previousSet.getNum());
-	    	model.addAttribute("num_items", previousSet.getPiece_list().size());
+			String hidePiecesNotFoundRequestParam = "";
+			
+			// If the boolean hidePiecesFound is parsed into the controller this adds it to the model
+			if (hidePiecesNotFound != null) {
+				hidePiecesNotFoundRequestParam = "&hidePiecesNotFound=" + hidePiecesNotFound;
+			}
+			
+			// This redirects the user back to the set pieces page and will display the errors with the import
+	    	return "redirect:/set/" + previous_set_number + "/pieces/?" + colourFilterRequestParam + pieceTypeFilterRequestParam + hidePiecesFoundRequestParam + hidePiecesNotFoundRequestParam;
         }
-		
-        return previousPage;
+        else {
+        	// This redirects the user back to the index page and will display the errors with the import
+    		return "redirect:/";
+        }
 	}
 	
 	// This gets a list of strings with each list containing a description and web link to an Lego instruction booklet for the Lego Set
@@ -450,5 +494,89 @@ public class SetController {
 		}
         
         return instructions;
+	}
+	
+	// This displays the page to display a logged in users set lists
+	@GetMapping("/set_lists")
+	public String showSetLists(Model model, @SessionAttribute(value = "accountLoggedIn", required = false) Account account, @SessionAttribute(value = "set_lists", required = false) List<Set_list> set_lists, @RequestParam(required = false) String searchText, @RequestParam(required = false) String barOpen, @RequestParam(required = false) String sort, @RequestParam(required = false) String minSets, @RequestParam(required = false) String maxSets, RedirectAttributes redirectAttributes) {
+		// If a user is not logged in this redirects the user to the access denied page
+		if (account == null) {
+			redirectAttributes.addFlashAttribute("pageInfo", "access the 'Set Lists' page");
+			return "redirect:/accessDenied";
+		}
+		
+		// This is used so that if the filter or sort bar was open or no bar was open on the search page
+		// otherwise if the user wasn't on the search page and this is empty then the filter bar starts off open
+		model.addAttribute("barOpen", barOpen);
+		
+		// If their is a sort to be applied to the Sets in Progress, then the following is ran to apply this sort
+		// (by default if no sort entered will be sorted by set_number ascending)
+		// -- Start of Sort --
+		if (sort == null) {
+			sort = "listName";
+		}
+		
+		String[] sorts = sort.split(",");
+		
+		model.addAttribute("sort1", sorts[0]);
+		if (sorts.length == 2) {
+			model.addAttribute("sort2", sorts[1]);
+		}
+		
+		// This sorts the sets in progress by the sorts selected, it compares each set in the list
+		// to one another while sorting, comparing by sort 1 and if they match sort 2 (if exists).
+		// This calls a function to do the comparison of each Set and the sort in use too
+		Collections.sort(set_lists, new Comparator<Set_list>() {
+			@Override
+			public int compare(Set_list setList1, Set_list setList2) {
+				int sortValue = getSortValue(sorts[0], setList1, setList2);
+				
+				if (sortValue == 0 && sorts.length == 2) {
+					sortValue = getSortValue(sorts[1], setList1, setList2);
+				}
+				
+				return sortValue;
+			}
+		});
+		// -- End of Sort --
+		
+		// If there is a text search being parsed this will add it to the model
+		if (searchText != null) {
+			model.addAttribute("searchText", searchText);
+		}
+		
+		// If there is a min sets being parsed this will add it to the model
+		if (minSets != null) {
+			model.addAttribute("minYear", minSets);
+		}
+		
+		// If there is a max sets being parsed this will add it to the model
+		if (maxSets != null) {
+			model.addAttribute("maxSets", maxSets);
+		}
+		
+		model.addAttribute("num_setLists", set_lists.size());
+		
+		return "showSetLists";
+	}
+	
+	// Compares two set lists by a sort and returns the value of the comparison
+	private int getSortValue(String sort, Set_list setList1, Set_list setList2) {
+		if (sort.equals("numSets")) {
+    		// This compares the sets by Number of Sets ascending
+			return setList1.getTotalSets() - setList2.getTotalSets();
+    	}
+    	else if (sort.equals("-numSets")) {
+    		// This compares the sets by Number of Sets descending
+			return setList2.getTotalSets() - setList1.getTotalSets();
+    	}
+    	else if (sort.equals("-listName")) {
+    		// This compares the sets by List Name descending
+    		return setList2.getListName().toUpperCase().compareTo(setList1.getListName().toUpperCase());
+    	}
+    	else {
+			// This compares the sets by List Name ascending
+			return setList1.getListName().toUpperCase().compareTo(setList2.getListName().toUpperCase());
+		}
 	}
 }
