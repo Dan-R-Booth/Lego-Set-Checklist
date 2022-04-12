@@ -1,0 +1,1 @@
+create database lego_set_checklist_db;
