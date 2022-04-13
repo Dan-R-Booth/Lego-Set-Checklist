@@ -849,7 +849,7 @@
 						<!-- The style width sets the percentage size the image will be on any screen -->
 						<!-- When clicked this will display a Model with the image enlarged within -->
 						<span data-bs-toggle="tooltip" data-bs-placement="right" title="Image of the Lego Set '${set.name}' (Click to enlarge)">
-							<img class="img-thumbnail rounded m-2" src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="width: 50%; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#setModal">
+							<img class="img-thumbnail rounded m-2" src="${set.img_url}" alt="Image of the Lego Set: ${set.name}" style="cursor: pointer; max-height: 180px;" data-bs-toggle="modal" data-bs-target="#setModal">
 						</span>
 					</div>
 					<div class="col">
