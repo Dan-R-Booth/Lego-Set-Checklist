@@ -27,7 +27,6 @@ import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 
 import lego.checklist.domain.Account;
-import lego.checklist.domain.Minifigure;
 import lego.checklist.domain.Piece;
 import lego.checklist.domain.PieceFound;
 import lego.checklist.domain.Set;
@@ -411,7 +410,9 @@ public class PieceController {
 		return pieces;
 	}
 	
-	// This returns a piece_list for pieces needed to build all the minifigures in a Lego set
+	// This gets all the minifigures in the Lego Set using the minifigure list uri, starting with the first page of these Lego minifigures,
+	// If there are other pages containing minifigures on the api, this class will then be called recursively to get all of these minifigures
+	// It then returns these pieces
 	public static List<Piece> getMinifigurePiece_list(String minifigure_list_uri, List<Piece> pieces, RestTemplate restTemplate) {
 		// This makes the program wait one second before making an API call to stop a Too Many Requests error and timeout from the API
 		try {
@@ -419,32 +420,7 @@ public class PieceController {
 		}
 		catch (Exception e) {}
 		
-		// This creates an array list to store all the Lego pieces needed to build a Lego set
-		// This is declared here in case the try catch statement, in the getPiece_ListPage Class, fails
-		List<Minifigure> minifigures = new ArrayList<>();
-		
-		// This calls the getMinifigurePieces function that gets all the pieces in the Lego Set
-		minifigures = getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
-		
-		// This creates an array list to store all the minfigure pieces needed to build all the minifigures in a Lego set
-		List<Piece> minifigure_pieces = new ArrayList<>();
-		
-		for (Minifigure minifigure : minifigures) {
-			List<Piece> minifigure_piece_list = minifigure.getMinifigure_pieces();
-			for (Piece piece : minifigure_piece_list) {
-				pieces.add(piece);
-			}
-		}
-		
-		pieces.addAll(minifigure_pieces);
-		
-		return pieces;
-	}
-	
-	// This gets all the minifigures in the Lego Set using the minifigure list uri, starting with the first page of these Lego minifigures,
-	// If there are other pages containing minifigures on the api, this class will then be called recursively to get all of these minifigures
-	public static List<Minifigure> getMinifigure_ListPage(String minifigure_list_uri, List<Minifigure> minifigures, RestTemplate restTemplate) {
-		// This uses restTemplate and the Lego set uri to call the API and then transforms the returned JSON into a String
+		// This uses restTemplate and the Lego set minifigure uri to call the API and then transforms the returned JSON into a String
 		String minifigure_JSON = restTemplate.getForObject(minifigure_list_uri, String.class);
 		
 		// This is wrapped in a try catch in case the string given to readTree() is not a JSON string
@@ -458,10 +434,10 @@ public class PieceController {
         	JsonNode nextNode = minifigure_listNode.path("next");
         	String next = nextNode.textValue();
 			
-        	// This provides the root of the JSON element where the JSON array of Lego pieces is stored
+        	// This provides the root of the JSON element where the JSON array of Lego minifigures is stored
         	minifigure_listNode = minifigure_listNode.path("results");
         	
-        	// This iterates through the JSON array of Lego pieces
+        	// This iterates through the JSON array of Lego minifigures
             for (JsonNode minifigureNode : minifigure_listNode) {
     	        	
             	JsonNode spare_partNode = minifigureNode.path("is_spare");
@@ -475,7 +451,7 @@ public class PieceController {
                 	
                 	// These return the data stored in the JsonNodes
                 	String num = numNode.textValue();
-                	int quantity = quantityNode.intValue();
+                	int minifigureQuantity = quantityNode.intValue();
                 	
                 	// This is the uri to the specific pieces in a set in the Rebrickable API
             		String piece_list_uri = rebrickable_uri + "minifigs/" + num + "/parts/?key=" + rebrickable_api_key;
@@ -485,18 +461,16 @@ public class PieceController {
             		List<Piece> piece_list = new ArrayList<>();
             		
             		// This calls the getPiece_listPage class that gets all the pieces in the Lego Set
-            		piece_list = PieceController.getPiece_listPage(piece_list_uri, piece_list, restTemplate);
+            		piece_list = getPiece_listPage(piece_list_uri, piece_list, restTemplate);
             		
-            		// This times all the pieces for a single minifigure so they are the total to make the total quantity of minifigures 
+            		// This times all the pieces for a single type minifigure so they are the total to make the total quantity of that type of minifigure
             		for (Piece piece : piece_list) {				
         				int piece_quantity = piece.getQuantity();
-        				int newPiece_quantity = piece_quantity*quantity;
+        				int newPiece_quantity = piece_quantity*minifigureQuantity;
         				piece.setQuantity(newPiece_quantity);
         			}
-                	
-                	Minifigure minifigure = new Minifigure(num, quantity, piece_list);
     				
-    				minifigures.add(minifigure);
+    				pieces.addAll(piece_list);
             	}
         	}
     		
@@ -504,7 +478,7 @@ public class PieceController {
             // and the piece list will be sent each time so when it is then returned it will contain all these pieces
             if (next != null) {
             	minifigure_list_uri = next + "&key=" + rebrickable_api_key;
-            	minifigures = getMinifigure_ListPage(minifigure_list_uri, minifigures, restTemplate);
+            	pieces = getMinifigurePiece_list(minifigure_list_uri, pieces, restTemplate);
             }
 
 		}
@@ -515,8 +489,7 @@ public class PieceController {
 			e.printStackTrace();
 		}
 		
-		
-		return minifigures;
+		return pieces;
 	}
 	
 	/*
