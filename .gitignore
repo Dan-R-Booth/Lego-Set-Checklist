@@ -3,5 +3,5 @@ Program/.metadata/
 
 # Hide files that only exist when word document is open
 Documents/~$*.docx
-Documents/~*.temp
+Documents/~*.tmp
 Documents/Research/~$*.docx
