@@ -471,18 +471,11 @@ public class PieceController {
             	
             		// These search for a path on the setNode Tree and return the node that matches this
                 	JsonNode numNode = minifigureNode.path("set_num");
-                	JsonNode nameNode = minifigureNode.path("set_name");
-                	JsonNode img_urlNode = minifigureNode.path("set_img_url");
                 	JsonNode quantityNode = minifigureNode.path("quantity");
                 	
                 	// These return the data stored in the JsonNodes
                 	String num = numNode.textValue();
-            		String name = nameNode.textValue();
-                	String img_url = img_urlNode.textValue();
                 	int quantity = quantityNode.intValue();
-                	
-                	// This is set to 0 as the user may not have checked any of these pieces yet
-    				int quantity_checked = 0;
                 	
                 	// This is the uri to the specific pieces in a set in the Rebrickable API
             		String piece_list_uri = rebrickable_uri + "minifigs/" + num + "/parts/?key=" + rebrickable_api_key;
@@ -499,14 +492,9 @@ public class PieceController {
         				int piece_quantity = piece.getQuantity();
         				int newPiece_quantity = piece_quantity*quantity;
         				piece.setQuantity(newPiece_quantity);
-        				
-        				if (quantity_checked > newPiece_quantity) {
-        					// Checks the pieces to match number of minifigures checked
-        					piece.setQuantity_checked(quantity_checked);
-        				}
         			}
                 	
-                	Minifigure minifigure = new Minifigure(num, name, img_url, quantity, quantity_checked, piece_list);
+                	Minifigure minifigure = new Minifigure(num, quantity, piece_list);
     				
     				minifigures.add(minifigure);
             	}
