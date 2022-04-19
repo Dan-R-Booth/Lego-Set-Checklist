@@ -388,11 +388,11 @@
 				var sort = sortValue(sort1);
 				
 				if (sort2 != "None") {
-					sort += ", " + sortValue(sort2);
+					sort += "," + sortValue(sort2);
 				}
 				
 				if (sort3 != "None") {
-					sort += ", " + sortValue(sort3);
+					sort += "," + sortValue(sort3);
 				}
 				
 				openLoader();
