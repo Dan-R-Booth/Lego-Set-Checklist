@@ -47,12 +47,9 @@ public class AccountValidator implements Validator {
 			ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
 		}
 
-		// These check that the email address contains no spaces and that an account does not already exist with the
-		// entered email. If any of these are wrong an error message is added to the instance of the Errors class errors
-		if (email.contains(" ")) {
-			errors.rejectValue("email", "email", "Email address connot contain spaces");
-		}
-		else if (repo.findByEmail(account.getEmail()) != null) {
+		// These check that an account does not already exist with the entered email. If the email
+		// is in use an error message is added to the instance of the Errors class errors
+		if (repo.findByEmail(account.getEmail()) != null) {
 			errors.rejectValue("email", "email", "Email address already in use");
 		}
 
@@ -75,12 +72,6 @@ public class AccountValidator implements Validator {
 		// This confirms if the entered email is blank or not and if it is returns an error message
 		if (email.isEmpty()) {
 			ValidationUtils.rejectIfEmpty(errors, "email", "email", "Email address connot be blank");
-		}
-		
-		// These check that the email address contains no space, that it is in a valid format.
-		// If any of these are wrong an error message is added to the instance of the Errors class errors
-		if (email.contains(" ")) {
-			errors.rejectValue("email", "email", "Email address connot contain spaces");
 		}
 
 		// This confirms if the entered password is blank or not and if it is returns an error message
