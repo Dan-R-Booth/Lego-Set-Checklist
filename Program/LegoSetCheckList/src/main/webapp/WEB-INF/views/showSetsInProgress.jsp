@@ -15,7 +15,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Lego: Set Checklist Creator - Search</title>
+		<title>Lego: Set Checklist Creator - Sets In Progress</title>
 
 		<meta charset="UTF-8" content="text/html; charset=UTF-8">
 
@@ -799,7 +799,7 @@
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 				<div class="container-fluid">
 					<a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Return to home page"> Lego: Set Checklist Creator </a>
-                    <span class="navbar-text text-white"> List Name: ${set_list.listName} </span>
+                    <span class="navbar-text text-white"> Sets in Progress </span>
 
 					<ul class="navbar-nav">
 						<li class="nav-item dropdown">

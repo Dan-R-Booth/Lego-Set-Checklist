@@ -15,7 +15,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Lego: Set Checklist Creator - Search</title>
+		<title>Lego: Set Checklist Creator - Set List: ${set_list.listName}</title>
 
 		<meta charset="UTF-8" content="text/html; charset=UTF-8">
 

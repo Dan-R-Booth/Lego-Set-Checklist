@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Lego: Set Checklist Creator</title>
+		<title>Lego: Set Checklist Creator - Profile</title>
 
 		<meta charset="UTF-8" content="text/html; charset=UTF-8">
 
