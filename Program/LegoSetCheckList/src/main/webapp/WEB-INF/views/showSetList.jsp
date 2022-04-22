@@ -115,7 +115,7 @@
 					document.getElementById("setDeletedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
 				}
 
-				// If a Lego set has just been edited, this will open an alert bar to inform the user of this
+				// If the Lego set has just been edited, this will open an alert bar to inform the user of this
 				if("${setListEdited}" == "true") {
 					document.getElementById("setListEditedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
 				}
@@ -1225,29 +1225,27 @@
 						<h5 class="modal-title" id="editSetListModalLabel">Edit Lego Set List Name</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<form method="POST" id="editSetListForm">
-						<div class="modal-body">
-							<div class="mb-3">
-								<h5> Set List: </h5>
-								<div class="form-floating mb-3">
-									<input id="newSetListNameTextBox" class="form-control" name="setListName" type="text" oninput="checkEditListName()" placeholder="Change List Name" value="${set_list.listName}">
-									<label class="text-secondary" for="setListNameTextBox"> Edit List Name </label>
-								</div>
-								
-								<!-- This is used so the user has to confirm the changes they are making -->
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" id="confirmListNameChange" onclick="checkEditListName()">
-									<label class="form-check-label" for="confirmListNameChange">I want to change the name of the Set List: '${set_list.listName}'</label>
-								</div>
-
-								<div id="editSetListHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+					<div class="modal-body" id="editSetListForm">
+						<div class="mb-3">
+							<h5> Set List: </h5>
+							<div class="form-floating mb-3">
+								<input id="newSetListNameTextBox" class="form-control" name="setListName" type="text" oninput="checkEditListName()" placeholder="Change List Name" value="${set_list.listName}">
+								<label class="text-secondary" for="setListNameTextBox"> Edit List Name </label>
 							</div>
+							
+							<!-- This is used so the user has to confirm the changes they are making -->
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="confirmListNameChange" onclick="checkEditListName()">
+								<label class="form-check-label" for="confirmListNameChange">I want to change the name of the Set List: '${set_list.listName}'</label>
+							</div>
+
+							<div id="editSetListHelp" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
 						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-							<button type="button" id="editSetListButton" class="btn btn-primary" onclick="editSetList()" disabled><i class="fa fa-plus"></i> Change List Name</button>
-						</div>
-					</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="button" id="editSetListButton" class="btn btn-primary" onclick="editSetList()" disabled><i class="fa fa-plus"></i> Change List Name</button>
+					</div>
 				</div>
 			</div>
 		</div>

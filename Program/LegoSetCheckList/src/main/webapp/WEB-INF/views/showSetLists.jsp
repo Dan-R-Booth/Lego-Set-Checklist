@@ -89,6 +89,11 @@
 					document.getElementById("setListDeletedAlert").setAttribute("class", "alert alert-primary alert-dismissible fade show");
 				}
 
+				// If a Lego set has just been edited, this will open an alert bar to inform the user of this
+				if("${setListEdited}" == "true") {
+					document.getElementById("setListEditedAlert").setAttribute("class", "alert alert-success alert-dismissible fade show");
+				}
+
 				// This adds bootstrap styling to tooltips
 				$('[data-bs-toggle="tooltip"]').tooltip();
 			}
@@ -606,6 +611,12 @@
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 
+			<!-- This alert will be display when a set list has been edited -->
+			<div class="d-none" id="setListEditedAlert" role="alert">
+				<i class="fa fa-check-circle"></i> <strong>Set List Name Changed to: "<i>${newSetListName}</i>"</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+
 			<!-- This uses bootstrap to create a container which width will be maximum on screens of any size, with a border -->
 			<div class="container-fluid border bg-white">
 				<!-- This is the header for all the Lego sets, made using a bootstrap row and columns with column names -->
@@ -675,29 +686,27 @@
 								<h5 class="modal-title" id="editSetListModalLabel_${set_list.setListId}">Edit Lego Set List Name</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
-							<form method="POST" id="editSetListForm_${set_list.setListId}">
-								<div class="modal-body">
-									<div class="mb-3">
-										<h5> Set List: </h5>
-										<div class="form-floating mb-3">
-											<input id="newSetListNameTextBox_${set_list.setListId}" class="form-control" name="setListName" type="text" oninput="checkEditListName('${set_list.setListId}')" placeholder="Change List Name" value="${set_list.listName}">
-											<label class="text-secondary" for="setListNameTextBox_${set_list.setListId}"> Edit List Name </label>
-										</div>
-										
-										<!-- This is used so the user has to confirm the changes they are making -->
-										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="confirmListNameChange_${set_list.setListId}" onclick="checkEditListName('${set_list.setListId}')">
-											<label class="form-check-label" for="confirmListNameChange_${set_list.setListId}">I want to change the name of the Set List: '${set_list.listName}'</label>
-										</div>
-
-										<div id="editSetListHelp_${set_list.setListId}" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
+							<div class="modal-body" id="editSetListForm_${set_list.setListId}">
+								<div class="mb-3">
+									<h5> Set List: </h5>
+									<div class="form-floating mb-3">
+										<input id="newSetListNameTextBox_${set_list.setListId}" class="form-control" name="setListName" type="text" oninput="checkEditListName('${set_list.setListId}')" placeholder="Change List Name" value="${set_list.listName}">
+										<label class="text-secondary" for="setListNameTextBox_${set_list.setListId}"> Edit List Name </label>
 									</div>
+									
+									<!-- This is used so the user has to confirm the changes they are making -->
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="confirmListNameChange_${set_list.setListId}" onclick="checkEditListName('${set_list.setListId}')">
+										<label class="form-check-label" for="confirmListNameChange_${set_list.setListId}">I want to change the name of the Set List: '${set_list.listName}'</label>
+									</div>
+
+									<div id="editSetListHelp_${set_list.setListId}" class="d-none"><i class="fa fa-exclamation-circle"></i> You already have a set list with the name entered, <br> Please enter a unique name</div>
 								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-									<button type="button" id="editSetListButton_${set_list.setListId}" class="btn btn-primary" onclick="editSetList('${set_list.setListId}')" disabled><i class="fa fa-plus"></i> Change List Name</button>
-								</div>
-							</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+								<button type="button" id="editSetListButton_${set_list.setListId}" class="btn btn-primary" onclick="editSetList('${set_list.setListId}')" disabled><i class="fa fa-plus"></i> Change List Name</button>
+							</div>
 						</div>
 					</div>
 				</div>

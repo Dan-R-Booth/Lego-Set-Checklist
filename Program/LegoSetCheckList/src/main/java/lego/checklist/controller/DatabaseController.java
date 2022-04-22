@@ -1098,7 +1098,7 @@ public class DatabaseController {
 		Set_list set_list = set_listRepo.findByAccountAndSetListId(account, setListId);
 		set_list.setListName(newSetListName);
 		set_list.updateDateTime();
-		set_listRepo.save(set_list);
+		set_listRepo.save(set_list);	
     	
     	// These are used so the JSP page knows to inform the user that they have created a new
     	// Set list and what its name is and are both added to redirectAttributes so they stay
