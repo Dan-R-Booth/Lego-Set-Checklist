@@ -1207,7 +1207,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Are you sure you want to delete the set list: "${set_list.listName}"? </p>
+                        <h6>Are you sure you want to delete the set list: "${set_list.listName}"? </h6>
+						<p>Once you delete this Set List it cannot be recovered</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
