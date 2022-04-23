@@ -173,7 +173,8 @@
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
 			<div class="container-fluid">
 	            <ol class="breadcrumb bg-dark">
-	                <li class="breadcrumb-item text-white" aria-current="page">Home</li>
+					<li class="breadcrumb-item"><a href="/">Home</a></li>
+	                <li class="breadcrumb-item text-white" aria-current="page">Access Denied</li>
 	            </ol>
 		    </div>
 		</nav>
