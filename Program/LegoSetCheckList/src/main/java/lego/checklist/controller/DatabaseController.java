@@ -389,10 +389,10 @@ public class DatabaseController {
 			for (ObjectError error : result.getAllErrors()) {
 				if (error.getCode().equals("email")) {
 					redirectAttributes.addFlashAttribute("newEmailErrorMessage", error.getDefaultMessage());
+					// This is used so that the user knows that the new email entered was incorrect
+					redirectAttributes.addFlashAttribute("newEmailIncorrect", true);
 				}
 			}
-			// This is used so that the user knows that the password entered was incorrect
-			redirectAttributes.addFlashAttribute("newEmailIncorrect", true);
 		}
 		
 		if (errors == false) {
