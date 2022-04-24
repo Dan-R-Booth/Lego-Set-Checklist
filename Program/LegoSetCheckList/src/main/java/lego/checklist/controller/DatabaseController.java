@@ -135,12 +135,6 @@ public class DatabaseController {
 	// This will create an new account for a user, as long as the entered details are valid
 	@PostMapping("/signUp")
 	public String signUp(@ModelAttribute Account account, BindingResult result, RedirectAttributes redirectAttributes) throws Exception {
-		// This encrypts the entered password, with a new salt randomly generated
-		// and sets these to the account
-		byte[] salt = generateSalt();
-		String passwordHash = passwordEncryption(account.getPassword(), salt);
-		account.setPassword(passwordHash);
-		
 		// This creates an instance of the AccountValidator and calls the validate function
 		// with an Account generated using values entered in the signUp form. This function
 		// then checks if there are any errors with the accounts details and if there are
@@ -182,6 +176,12 @@ public class DatabaseController {
 			// This redirects the user back to the index page
 			return "redirect:/";
 		}
+		// This encrypts the entered password, with a new salt randomly generated
+		// and sets these to the account
+		byte[] salt = generateSalt();
+		String passwordHash = passwordEncryption(account.getPassword(), salt);
+		account.setPassword(passwordHash);
+		
 		// This adds the created account to the database table Accounts
 		accountRepo.save(account);
 		
