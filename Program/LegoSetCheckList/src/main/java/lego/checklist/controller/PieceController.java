@@ -45,9 +45,9 @@ import lego.checklist.repository.SetInProgressRepository;
 * [2]	"jackson-core 2.13.1 javadoc (com.fasterxml.jackson.core)",
 *		Javadoc.io. [Online].
 *		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-core/latest/index.html. [Accessed: 05- Dec- 2021]
-* [3]	Atta, "Uploading and Parsing CSV File using Spring Boot",
-* 		Atta-Ur-Rehman Shah, 2020. [Online].
-* 		Available: https://attacomsian.com/blog/spring-boot-upload-parse-csv-file. [Accessed: 04- Jan- 2022]
+* [3]	Atta, "Export & Download Data as CSV File in Spring Boot",
+* 		Atta-Ur-Rehman Shah, 2019. [Online].
+* 		Available: https://attacomsian.com/blog/export-download-data-csv-file-spring-boot. [Accessed: 03- Jan- 2022]
 * [4]	Atta, "Reading and writing CSV files using OpenCSV",
 * 		Atta-Ur-Rehman Shah, 2019. [Online].
 * 		Available: https://attacomsian.com/blog/read-write-csv-files-opencsv. [Accessed: 03- Jan- 2022]
@@ -530,7 +530,7 @@ public class PieceController {
 		writer.writeNext(new String[] {set_number});
 		
 		// For each piece in the Lego set if its quantity is above zero, this writes a piece's number, colour name
-		// and if its a spare as a line to the new CSV file, as these values uniquely identity each Lego piece
+		// and if its a spare as a line to the new CSV file, as these values uniquely identity each Lego piece, along with the quantity found
 		for (Piece piece : piece_list) {
 			if (piece.getQuantity_checked() != 0) {
 				String[] csv_data = {piece.getNum(), piece.getColour_name(), String.valueOf(piece.isSpare()), String.valueOf(piece.getQuantity_checked())};

@@ -369,6 +369,7 @@ public class SetController {
                 model.addAttribute("notFound", false);
                 model.addAttribute("set_number", set_number);
                 
+                // This the displays the Set Page for the import Lego set the imported checklist is for
         		return "showSet";
             }
             catch (Exception ex) {
@@ -379,8 +380,8 @@ public class SetController {
             }
         }
         
-        // If the import was called from the showPiece_list page this adds the values inputed from that page so that the user is returned
-        // to the exact same page
+        // If the import fails and was called from the showPiece_list page this adds the values
+        // inputed from that page so that the user is returned to the exact same page
         if (previousPage.equals("Set_Pieces")) {
         	// When quantityChecked (which holds the current quantities for each piece in the Lego Set)
     		// is parsed in this calls the updateQuantityChecked function in the PieceController class
