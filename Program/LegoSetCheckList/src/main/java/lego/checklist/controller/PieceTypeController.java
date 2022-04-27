@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 */
 
 public class PieceTypeController {
-	// This creates a mapping so that I can get piece categories names without having to call the API each time
+	// This creates a mapping so that I can get piece type names without having to call the API each time
 	public static HashMap<Integer, String> pieceCategories = new HashMap<Integer, String>();
 	
 	// This stores the basic uri to the Rebrickable API

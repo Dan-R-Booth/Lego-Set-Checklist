@@ -94,7 +94,7 @@ public class ThemeController {
         String theme_name = "";
         
         // Checks to see if the theme's parent_id is 0, meaning their is no parent
-		// If it is not null getTheme() recursively calls itself with the parent_id until there are no more parents,
+		// If it is not 0 getTheme() recursively calls itself with the parent_id until there are no more parents,
 		// and returns each of these parent theme names in front of child theme name 
 		if (theme.getParent_id() != 0) {
 			theme_name += getTheme(theme.getParent_id()) + " > " +  theme.getName();
