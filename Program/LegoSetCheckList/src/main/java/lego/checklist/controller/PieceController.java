@@ -162,7 +162,7 @@ public class PieceController {
 	    	model.addAttribute("sort", sort);
 		}
 
-		// If there is a colour filters being parsed this will add an array of these to the model
+		// If there is a colour filters being parsed (so if are applied they are remembered) this will add an array of these to the model
 		// Otherwise it will just add the string All_Colours
 		if (colourFilter != null) {
 			if (colourFilter.equals("none")) {
@@ -178,7 +178,7 @@ public class PieceController {
 			model.addAttribute("colourFilter", "All_Colours");
 		}
 		
-		// If there is a piece type filters being parsed this will add an array of these to the model
+		// If there is a piece type filters being parsed (so if are applied they are remembered) this will add an array of these to the model
 		// Otherwise it will just add the string All_PieceTypes
 		if (pieceTypeFilter != null) {
 			if (pieceTypeFilter.equals("none")) {

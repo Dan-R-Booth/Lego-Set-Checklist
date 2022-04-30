@@ -1,5 +1,6 @@
 package lego.checklist.domain;
 
+//This class is used to store Lego Set Theme information received from the Rebrickable API.
 public class Theme {
 	
 	private int id;

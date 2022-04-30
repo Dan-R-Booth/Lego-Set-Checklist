@@ -8,6 +8,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+/* References:
+ * [1]	V. Mihalcea, S. Ebersole, A. Boriero, G. Morling, G. Badner, C. Cranford, E. Bernard, S. Grinovero, B. Meyer, H. Ferentschik, G. King, C. Bauer, M. Andersen, K. Maesen, R.Vansa and L. Jacomet,
+ * 		“Hibernate ORM 5.5.9.Final User Guide”,
+ * 		Docs.jboss.org. [online]
+ * 		Available: https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html. [Accessed: 28- Feb- 2022].
+ * [2]	O. Gierke, T. Darimont, C. Strobl, M. Paluch and J. Bryant,
+ * 		"Spring Data JPA - Reference Documentation",
+ * 		docs.spring.io, 2022. [Online].
+ * 		Available: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/. [Accessed: 28- Feb- 2022]
+ */
+
+// This class is used to store Lego Set information received from the Rebrickable API.
+// It is also uses hibernate [1] and JPA annotations [2] to create the 'SetInfo' table in the database to store information on Lego Set's that are either in a Setlist or is a Set in Progress.
 @Entity
 @Table(name = "SetInfo")
 public class Set {

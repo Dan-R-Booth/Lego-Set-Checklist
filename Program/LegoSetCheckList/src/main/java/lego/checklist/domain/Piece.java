@@ -1,5 +1,6 @@
 package lego.checklist.domain;
 
+// This class is used to store Lego Piece information received from the Rebrickable API.
 public class Piece {
 	
 	private String num;

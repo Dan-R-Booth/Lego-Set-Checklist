@@ -103,7 +103,7 @@ public class AccountValidator implements Validator {
 				
 				// This uses code from website [2] to retrieve the saved password hash and salt from the data base.
 				String[] parts = accountPassword.split(":");
-				System.out.println("\n parts[0] " + parts[0] + "\n");
+
 				byte[] storedPasswordHash = fromHex(parts[0]);
 				byte[] salt = fromHex(parts[1]);
 				
