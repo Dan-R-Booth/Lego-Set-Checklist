@@ -56,6 +56,7 @@ import lego.checklist.repository.SetInProgressRepository;
 * 		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/index.html. [Accessed: 05- Dec- 2021]
 */
 
+// The Piece Controller handles the retrieval of pieces in a Lego Set, as well as, controlling the Piece Checklist Page.
 @Controller
 @SessionAttributes("set")
 public class PieceController {

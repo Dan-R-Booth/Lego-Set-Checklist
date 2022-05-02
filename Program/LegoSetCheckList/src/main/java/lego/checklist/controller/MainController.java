@@ -20,6 +20,8 @@ import lego.checklist.domain.SetInProgress;
 import lego.checklist.domain.Set_list;
 import lego.checklist.repository.SetInProgressRepository;
 
+// This controller loads the Home Page, and if a user is logged in this adds their last changed 3 changed
+// setlists and last 3 saved sets in progress as Model Attributes so they can view these on this page.
 @Controller
 public class MainController {
 	

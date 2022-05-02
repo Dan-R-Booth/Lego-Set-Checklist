@@ -31,6 +31,7 @@ import lego.checklist.domain.Theme;
 * 		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/index.html. [Accessed: 05- Dec- 2021]
 */
 
+// This Controller runs on start-up and creates a hash map of all Lego Set Themes which are retrieved from the Rebrickable API
 public class ThemeController {
 	// This creates a mapping so that I can get theme names and parent ids without having to call the API each time
 	public static HashMap<Integer, Theme> themes = new HashMap<Integer, Theme>();

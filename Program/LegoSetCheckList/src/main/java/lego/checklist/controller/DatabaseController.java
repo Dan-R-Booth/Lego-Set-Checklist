@@ -60,6 +60,7 @@ import lego.checklist.validator.AccountValidator;
 * 		Available: https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/. [Accessed: 10- Apr- 2022]
 */
 
+// This controller handles all database functions between the views and database. It handles the displaying of all pages that only a logged-in user can view.
 @Controller
 @SessionAttributes({"accountLoggedIn", "set_lists"})
 public class DatabaseController {

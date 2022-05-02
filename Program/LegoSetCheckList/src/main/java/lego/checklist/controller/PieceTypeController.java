@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 * 		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/index.html. [Accessed: 05- Dec- 2021]
 */
 
+// This Controller runs on start-up and creates a hash map of all Lego Piece Types which are retrieved from the Rebrickable API
 public class PieceTypeController {
 	// This creates a mapping so that I can get piece type names without having to call the API each time
 	public static HashMap<Integer, String> pieceCategories = new HashMap<Integer, String>();

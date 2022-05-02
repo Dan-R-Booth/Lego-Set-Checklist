@@ -57,6 +57,7 @@ import lego.checklist.domain.Theme;
 * 		Available: https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/index.html. [Accessed: 05- Dec- 2021]
 */
 
+// The Set Controller handles the retrieval of Lego Set information, and views that involve Lego Sets.
 @Controller
 @SessionAttributes({"set", "searchURL"})
 public class SetController {

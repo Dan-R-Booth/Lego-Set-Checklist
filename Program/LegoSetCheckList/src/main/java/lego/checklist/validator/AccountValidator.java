@@ -21,6 +21,7 @@ import lego.checklist.repository.AccountRepository;
 * 		Available: https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/. [Accessed: 10- Apr- 2022]
 */
 
+// This is used to check a user's entered email and password to create an account, and the entered email and password to login to an account. 
 public class AccountValidator implements Validator {
 
 	private AccountRepository repo;
