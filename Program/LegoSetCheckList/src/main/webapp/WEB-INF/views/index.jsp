@@ -377,7 +377,7 @@
 			</nav>
 		</div>
 		
-		<div class="container-fluid mb-5">
+		<div class="container-fluid pb-5">
 			<div id="loggedOutDiv" class="d-none">
 				<h2 class="pb-3">Welcome to the Lego Set Checklist Creator</h2>
 				<div class="border border-3 border-dark p-3">
