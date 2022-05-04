@@ -296,7 +296,6 @@
 				if (set_number.length == 0) {
 					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-invalid");
 					document.getElementById("set_number").setAttribute("title", "Set Number Cannot be Empty");
-					alert("Set Number Cannot be Empty");
 				}
 				else {
 					document.getElementById("set_number").setAttribute("class", "form-control col-xs-1 is-valid");
@@ -306,7 +305,6 @@
 				if (set_variant.length == 0) {
 					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-invalid");
 					document.getElementById("set_variant").setAttribute("title", "Set Variant Number Cannot be Empty");
-					alert("Set Variant Cannot be Empty");
 				}
 				else {
 					document.getElementById("set_variant").setAttribute("class", "form-control col-xs-1 is-valid");
@@ -633,7 +631,6 @@
 
 			// This asks the user to confirm they want logout and if they do the user is sent to the database controller to do this 
 			function logout() {
-                alert("You have been successfully logged out")
                 window.location = "/logout";
 			}
 
