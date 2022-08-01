@@ -2,7 +2,7 @@
 
 ## Information about this repository
 
-### List of Software Files
+### List of Software Files<pre>
 
 Program <br/>
 └─ LegoSetCheckList <br/>
@@ -180,11 +180,11 @@ Program <br/>
 ├─ HELP.md<br/>
 └─ settings.gradle<br/>
 
+</pre>
+
 <br/>
 
-
 <br/>
-
 
 ### Installation of software
 
