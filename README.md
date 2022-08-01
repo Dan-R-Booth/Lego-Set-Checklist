@@ -188,7 +188,7 @@ Program
    `create user lego_set_checklist identified by 'password';`
    `create database lego_set_checklist_db;`
    `grant all privileges on lego_set_checklist_db.* to lego_set_checklist;`
-2. Run the file *LegoSetCheckList-1.0.0.war* found in *Program/LegoSetCheckList/build/ibs/LegoSetCheckList-1.0.0.war* using the following in a terminal:
+2. Run the file *LegoSetCheckList-1.0.0.war* found in *Program/LegoSetCheckList/build/libs/LegoSetCheckList-1.0.0.war* using the following in a terminal:
    `java -jar LegoSetCheckList-1.0.0.war`
 3. You can then acess the website in a browser with the URl:
    `localhost:8080`
