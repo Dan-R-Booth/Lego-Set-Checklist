@@ -1,7 +1,6 @@
 # Hide the metadata used for STS config
 Program/.metadata/
 
-# Hide files that only exist when word document is open
-Documents/~*.docx
-Documents/*/~$*.docx
-Documents/~*.tmp
+# Hide folders not needed
+/Documents
+/Planning
