@@ -2,15 +2,7 @@
 
 ## Information about this repository
 
-### Project Description
-
-This project is a website that allows users to search for a Lego Set for which they would like to view a digital checklist for all pieces in the Lego Set. This checklist can then be used by users to check that they have all the Lego pieces required to build/rebuild that particular Lego Set. <br/>
-
-For example, you have a Lego set that you have taken apart and put all the pieces in a box along with other Lego pieces, and you would like to rebuild the set, you could do this easily using a digital
-checklist.
-
 ### List of Software Files
-
 <pre>
 Program <br/>
 └─ LegoSetCheckList <br/>
