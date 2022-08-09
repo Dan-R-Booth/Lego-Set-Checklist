@@ -2,15 +2,15 @@
 
 ## Information about this repository
 
-This is a website I created which purpose is to find a Lego Set and view all the pieces in this Lego set in a check list. Here you can tick the pieces off the list when building this set for the first time or again, or you could use it to check if you have right pieces to build set that you don't own. `<br/>`
+This is a website I created which purpose is to find a Lego Set and view all the pieces in this Lego set in a check list. Here you can tick the pieces off the list when building this set for the first time or again, or you could use it to check if you have right pieces to build set that you don't own.<br/>
 
-For example, you have a Lego set that you have taken apart and put all the pieces in a box along with other Lego pieces, and you would like to rebuild the set,you could do this easily using a digital checklist.`<br/>`
+For example, you have a Lego set that you have taken apart and put all the pieces in a box along with other Lego pieces, and you would like to rebuild the set,you could do this easily using a digital checklist.<br/>
 
-The website was bulit using the Spring Model-View-Controller (MVC) framework, and has been designed to adjust for screen sizes so it is compatable across desktop, laptop and mobile devices. On Lego Sets is aquired using the Rebrickable API [1] and intsruction booklets for these Sets from the BrickSet API [2].`<br/>`
+The website was bulit using the Spring Model-View-Controller (MVC) framework, and has been designed to adjust for screen sizes so it is compatable across desktop, laptop and mobile devices. On Lego Sets is aquired using the Rebrickable API [1] and intsruction booklets for these Sets from the BrickSet API [2].<br/>
 
-[1]    "Rebrickable API | Rebrickable - Build with LEGO",  *Rebrickable.com* . [Online].`<br/>` Available: [https://rebrickable.com/api/](https://rebrickable.com/api/). [Accessed: 17- Nov- 2021]`<br/>`
+[1]    "Rebrickable API | Rebrickable - Build with LEGO",  *Rebrickable.com* . [Online].<br/> Available: [https://rebrickable.com/api/](https://rebrickable.com/api/). [Accessed: 17- Nov- 2021]<br/>
 
-[2]    Huw, "API version 3 documentation",  *Brickset.com* , 2021. [Online].`<br/>` Available: [https://brickset.com/article/52664/api-version-3-documentation](https://brickset.com/article/52664/api-version-3-documentation). [Accessed: 17-Nov- 2021]`<br/>`
+[2]    Huw, "API version 3 documentation",  *Brickset.com* , 2021. [Online].<br/> Available: [https://brickset.com/article/52664/api-version-3-documentation](https://brickset.com/article/52664/api-version-3-documentation). [Accessed: 17-Nov- 2021]<br/>
 
 ### List of Software Files
 
